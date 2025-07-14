@@ -7,12 +7,12 @@ import { House,ShoppingCart,SquarePen,Download,Sofa } from 'lucide-react';
 const links = [
   { name: "TOP", href: "/top", icon: House },
   {
-    name: "sales input",
-    href: "/sales",
+    name: "Inventory Management",
+    href: "/inventory",
     icon: ShoppingCart,
   },
     {
-    name: "Product list",
+    name: "Product List",
     href: "/product",
     icon: Sofa,
   },
