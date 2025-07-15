@@ -53,7 +53,7 @@ export default function Page() {
             Wellcome To Select Shop!!
           </h1>
           <button
-            className="btn btn-accent bg-[#CFF7D3] rounded-[4px] w-[240px] h-[48px] absolute bottom-[330px]"
+            className="btn btn-outline border-4 border-neutral-200 text-neutral-100 rounded-[4px] w-[240px] h-[48px] absolute bottom-[330px] hover:text-neutral-800"
             onClick={() =>
               (
                 document.getElementById("my_modal_1") as HTMLDialogElement
