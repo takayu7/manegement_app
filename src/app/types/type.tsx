@@ -1,21 +1,27 @@
 //型定義一覧
 
+
 export type User = {
   id: string;
   name: string;
   password: string;
 };
 
-export enum Supplier {
-  shopA = "shopA", // 故障履歴
-  shopB = "shopB",
-  shopC = "shopC",
-}
+export type Category = {
+  id: number;
+  name: string;
+};
+
+export type Supplier = {
+  id: number;
+  name: string;
+};
 
 export type Product = {
+  id: number;
   name: string;
   category: number;
-  supplier: Supplier;
+  supplier: number;
   count: number;
   cost: number;
   price: number;
