@@ -10,6 +10,7 @@ export default async function Page() {
       count: 3,
     }
   ];
+
   return (
     <>
       <h1 className="text-xl">product</h1>
