@@ -1,5 +1,6 @@
 "use client";
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
+import { loginData } from "./sampleDate/loginData";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 // 状態型（State）
@@ -37,6 +38,24 @@ export default function Page() {
   const [, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  const [isInputChecked, setIsInputChecked] = useState(false);
+  useEffect(() => {
+    if (state.id && state.password) {
+      setIsInputChecked(false);
+    } else {
+      setIsInputChecked(true);
+    }
+  }, [state.id, state.password]);
+
+  const [loginError, setLoginError] = useState(false);
+  function ellorMessage(id: string, password: string) {
+    if (id == loginData.id && password == loginData.password) {
+      router.push("/top");
+    } else {
+      setLoginError(true);
+    }
+  }
+
   return (
     <main className="flex min-h-screen flex-col bg-stone-300">
       <div className="flex items-center justify-center relative">
@@ -56,14 +75,16 @@ export default function Page() {
             className="btn btn-outline border-4 border-neutral-200 text-neutral-100 rounded-[4px] w-[240px] h-[48px] absolute bottom-[330px] hover:text-neutral-800"
             onClick={() =>
               (
-                document.getElementById("my_modal_1") as HTMLDialogElement
+                document.getElementById("loginDiaLog") as HTMLDialogElement
               )?.showModal()
             }
           >
             Accent
           </button>
         </div>
-        <dialog id="my_modal_1" className="modal">
+
+        {/* ログインダイヤログ */}
+        <dialog id="loginDiaLog" className="modal">
           <div className="modal-box bg-[#999999] w-[290px] h-[263.4px]">
             <h2 className="text-[#76F6CE] text-[24px] font-bold text-center leading-[120%]">
               login
@@ -118,25 +139,59 @@ export default function Page() {
                 </div>
 
                 <button
-                  className=" rounded-[4px] bg-[#FFFFFF] w-[103px] h-[28px] absolute right-[124.5px] top-[100px]"
+                  className="btn rounded-[4px] bg-[#FFFFFF] w-[103px] h-[28px] absolute right-[124.5px] top-[100px]"
                   onClick={() => dispatch({ type: "RESET" })}
                 >
                   <span className="text-[#999999]">cancel</span>
                 </button>
               </form>
               <button
-                className="bg-[#CFF7D3] rounded-[4px]  w-[103px] h-[28px] absolute left-[130px] top-[100px]"
-                onClick={() =>
-                  state.id != "" && state.password != ""
-                    ? router.push("/top")
-                    : alert("ID、またはパスワードを入力してください")
-                }
+                className="btn bg-[#CFF7D3] rounded-[4px]  w-[103px] h-[28px] absolute left-[130px] top-[100px]"
+                disabled={isInputChecked}
+                onClick={() => {
+                  ellorMessage(state.id, state.password);
+                  if (loginError) {
+                    (
+                      document.getElementById(
+                        "showErrorMessage"
+                      ) as HTMLDialogElement
+                    )?.showModal();
+                  }
+                }}
               >
                 <span className="text-[#999999]">log in</span>
               </button>
             </div>
           </div>
         </dialog>
+        {/* ログインダイヤログ（ここまで）*/}
+
+        {/* エラーメッセージダイヤログ */}
+        <dialog id="showErrorMessage" className="modal">
+          <div role="alert" className="alert alert-error mb-200 w-[550px]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6 shrink-0 stroke-current"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>The ID or password is incorrect.</span>
+            <form method="dialog">
+              {/* if there is a button in form, it will close the modal */}
+              <button className="btn" onClick={() => setLoginError(false)}>
+                Close
+              </button>
+            </form>
+          </div>
+        </dialog>
+        {/* エラーメッセージダイヤログ（ここまで）*/}
       </div>
     </main>
   );
