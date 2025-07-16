@@ -3,9 +3,9 @@ import Image from "next/image";
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { [key: string]: string };
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const staffImage = searchParams.staff;
+  const staffImage = searchParams?.staff as string | "/staff/amy-burns.png";
   return (
     <>
       <h1 className="text-xl">TOP</h1>
