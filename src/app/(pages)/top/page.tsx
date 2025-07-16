@@ -5,7 +5,7 @@ export default async function Page({
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
-  const staffImage = searchParams?.staff as string | "/staff/amy-burns.png";
+  const staffImage = (searchParams?.staff as string) || "/staff/amy-burns.png";
   return (
     <>
       <h1 className="text-xl">TOP</h1>
