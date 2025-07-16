@@ -1,0 +1,147 @@
+"use client";
+import React, { useState, useEffect, useTransition } from "react";
+import { Product, Category, Supplier } from "@/app/types/type";
+import { jpMoneyChange } from "@/app/lib/utils";
+import { Trash2, SquarePen } from "lucide-react";
+import { ProductEditDialog } from "@/app/components/ProductEditDialog";
+import { DeleteDialog } from "@/app/components/DeleteDialog";
+
+export interface ProductTableProps {
+  productDataList: Product[];
+  categoryList: Category[];
+  supplierList: Supplier[];
+  onSave: (product: Product) => void;
+  onDelete: (productId: string) => void;
+}
+
+const headerNames: string[] = [
+  "Name",
+  "Category",
+  "Supplier",
+  "Count",
+  "Cost",
+  "Price",
+  "TotalCost",
+  "TotalPrice",
+  "edit",
+  "delete",
+];
+
+const ProductTable: React.FC<ProductTableProps> = ({
+  productDataList,
+  categoryList,
+  supplierList,
+  onSave,
+  onDelete,
+}) => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [productDatas, setProductDatas] = useState<Product[]>(productDataList);
+  const [isPending, startTransition] = useTransition();
+
+  // 編集ダイアログの保存処理
+  const handleSave = (product: Product) => {
+    startTransition(() => {
+      onSave(product); // サーバーアクションを呼ぶ
+    });
+  };
+  // 削除ダイアログの保存処理
+  const handleDelete = (productId: string) => {
+    startTransition(() => {
+      onDelete(productId); // サーバーアクションを呼ぶ
+    });
+  };
+
+  useEffect(() => {
+    setProductDatas(productDataList);
+  }, [productDataList]);
+
+  // カテゴリの名前を取得する関数
+  const categoryTitleChange = (num: number) => {
+    const category = categoryList.find((cat) => cat.id === num);
+    return category ? category.name : "Unknown";
+  };
+
+  // 仕入れ先の名前を取得する関数
+  const supplierTitleChange = (num: number) => {
+    const supplier = supplierList.find((sup) => sup.id === num);
+    return supplier ? supplier.name : "Unknown";
+  };
+
+  return (
+    <div className="overflow-x-auto">
+      <table className="table">
+        {/* head */}
+        <thead>
+          <tr>
+            {headerNames.map((headerName, index) => (
+              <th key={index}>{headerName}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {productDatas.map((product, index) => (
+            <tr key={index}>
+              <td>{product.name}</td>
+              <td>{categoryTitleChange(product.category)}</td>
+              <td>{supplierTitleChange(product.supplier)}</td>
+              <td>{product.count}</td>
+              <td>{jpMoneyChange(product.cost)}</td>
+              <td>{jpMoneyChange(product.price)}</td>
+              <td>{jpMoneyChange(product.cost * product.count)}</td>
+              <td>{jpMoneyChange(product.price * product.count)}</td>
+              <td>
+                <button
+                  onClick={() => {
+                    setSelectedProduct(product);
+                    (
+                      document.getElementById(
+                        "ProductEditDialog"
+                      ) as HTMLDialogElement
+                    )?.showModal();
+                  }}
+                  className="btn btn-ghost rounded-lg"
+                >
+                  <SquarePen />
+                </button>
+              </td>
+              <td>
+                <button
+                  onClick={() => {
+                    console.log("delete button clicked", product);
+                    setSelectedProduct(product);
+                    (
+                      document.getElementById(
+                        "DeleteDialog"
+                      ) as HTMLDialogElement
+                    )?.showModal();
+                  }}
+                  className="btn btn-ghost rounded-lg"
+                >
+                  <Trash2 />
+                </button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {isPending && <span className="text-rose-500">update...</span>}
+      <ProductEditDialog
+        product={selectedProduct}
+        categoryList={categoryList}
+        supplierList={supplierList}
+        onSave={(product: Product) => {
+          handleSave(product);
+        }}
+      />
+      <DeleteDialog
+        productId={selectedProduct?.id}
+        onDelete={(productId: string) => {
+          handleDelete(productId);
+          setSelectedProduct(null);
+        }}
+      />
+    </div>
+  );
+};
+
+export default ProductTable;

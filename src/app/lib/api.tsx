@@ -109,11 +109,11 @@ export async function updateProduct(product: Product) {
 }
 
 // 商品データの削除
-export async function deleteProduct(id: number) {
+export async function deleteProduct(productId: string) {
   try {
     const data = await sql<Product[]>`
       DELETE FROM product
-      WHERE id = ${id}
+      WHERE id = ${productId}
       RETURNING *;
     `;
 

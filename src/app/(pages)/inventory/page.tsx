@@ -1,54 +1,44 @@
 import React from "react";
-import { fetchUserDatas } from "@/app/lib/api";
-import { sampleData } from "@/app/sampleDate/productSampleData";
-import { categories } from "@/app/lib/utils";
+import {
+  fetchProductDatas,
+  fetchCategoryList,
+  fetchSupplierList,
+  updateProduct,
+  deleteProduct,
+} from "@/app/lib/api";
+import  ProductTable from "@/app/components/ProductTable";
+import { Product } from "@/app/types/type";
+import { revalidatePath } from "next/cache";
 
 export default async function Page() {
-  const userData = await fetchUserDatas();
+  const productDataList = await fetchProductDatas();
+  const categoryList = await fetchCategoryList();
+  const supplierList = await fetchSupplierList();
 
-  const headerNames: string[] = [
-    "Name",
-    "Category",
-    "Supplier",
-    "Count",
-    "Cost",
-    "Price",
-    "TotalCost",
-    "TotalPrice",
-    "",
-  ];
+  const handleSave = async (product: Product) => {
+    "use server";
+    await updateProduct(product);
+     // ページを再取得
+    revalidatePath("/inventory");
+  };
+  const handleDelete = async (productId: string) => {
+    "use server";
+    await deleteProduct(productId);
+     // ページを再取得
+    revalidatePath("/inventory");
+  };
 
   return (
     <>
-      <h1 className="text-xl">inventory management</h1>
-      <div className="overflow-x-auto">
-        <table className="table">
-          {/* head */}
-          <thead>
-            <tr>
-              {headerNames.map((headerName, index) => (
-                <th key={index}>{headerName}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {sampleData.map((product, index) => (
-              <tr key={index}>
-                <td>{product.name}</td>
-                <td>{categories(product.category)}</td>
-                <td>{product.supplier}</td>
-                <td>{product.count}</td>
-                <td>{product.cost}</td>
-                <td>{product.price}</td>
-                <td>{product.cost * product.count}</td>
-                <td>{product.price * product.count}</td>
-                <td>
-                  <button className="btn btn-ghost btn-xs">details</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <div className="space-y-6">
+        <h1 className="text-xl">inventory management</h1>
+        <ProductTable
+          productDataList={productDataList}
+          categoryList={categoryList}
+          supplierList={supplierList}
+          onSave={handleSave}
+          onDelete={handleDelete}
+        />
       </div>
     </>
   );
