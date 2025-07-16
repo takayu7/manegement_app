@@ -16,6 +16,23 @@ export async function fetchUserDatas() {
     throw new Error("Failed to fetch user data.");
   }
 }
+// ユーザーデータの登録
+export async function createUser(user: User) {
+  try {
+    const data = await sql<User[]>`
+      INSERT INTO users (id, name, password, icon)
+      VALUES (${user.id}, ${user.name}, ${user.password}, ${user.icon})
+      RETURNING *;
+    `;
+
+    console.log("data:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to create user.");
+  }
+}
 // カテゴリリストの取得
 export async function fetchCategoryList() {
   try {

@@ -1,15 +1,6 @@
 import Image from "next/image";
 
 export default async function Page() {
-  const productSampleData = [
-    {
-      id: 1,
-      name: "Card Title",
-      explanation: "A card component has a figure, a body part, and inside body there are title and actions parts",
-      image: "/product/image1.jpg",
-      count: 3,
-    }
-  ];
 
   return (
     <>
