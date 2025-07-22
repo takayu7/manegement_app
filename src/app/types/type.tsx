@@ -26,6 +26,7 @@ export type Product = {
   count: number;
   cost: number;
   price: number;
+  explanation: string;
 };
 
 

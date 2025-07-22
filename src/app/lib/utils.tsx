@@ -31,7 +31,7 @@ export const categories = (categoryNumber: number, categoryName: string) => {
 };
 
 //　円表示切り替え関数
-const formatCurrency = (amount: number) => {
+export const formatCurrency = (amount: number) => {
   return amount.toLocaleString("ja-JP", { style: "currency", currency: "JPY" });
 };
 export const jpMoneyChange = (price: number) => {
