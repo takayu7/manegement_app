@@ -8,10 +8,11 @@ import { jpMoneyChange } from "@/app/lib/utils";
 export interface PurchaseProductProps {
   categoryList: Category[];
   supplierList: Supplier[];
+  onSave: (product: Product) => void;
 }
 
 const defaultData: Product = {
-  id: "",
+  id: "a11111",
   name: "",
   category: 1,
   supplier: 1,
@@ -27,6 +28,7 @@ const defaultData: Product = {
 export const Purchase: React.FC<PurchaseProductProps> = ({
   categoryList,
   supplierList,
+  onSave,
 }) => {
   const [addProduct, setAddProduct] = useState<Product>(defaultData);
 
@@ -75,11 +77,17 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
 
   //addボタン
   const handleAdd = () => {
-    const newId = id(latestId);
+    
+    // const newId = id(latestId);
+    const newId = "a1111";
+    setAddProduct({...addProduct,id:newId})
     const productWithId = { ...addProduct, id: newId };
     setLatestId(newId);
+    console.log(addProduct);
+    onSave(addProduct);
     setAddProduct(defaultData);
-    alert("input contents: " + JSON.stringify(productWithId, null, 2));
+    // alert("input contents: " + JSON.stringify(productWithId, null, 2));
+    
   };
 
   //resetボタン
