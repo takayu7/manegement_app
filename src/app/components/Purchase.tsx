@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Download, ListRestart, ListPlus } from "lucide-react";
 import { Category, Product, Supplier } from "@/app/types/type";
-import { formatCurrency } from "@/app/lib/utils";
+import { jpMoneyChange } from "@/app/lib/utils";
 // import { categories } from "../lib/utils";
 
 export interface PurchaseProductProps {
@@ -16,6 +16,7 @@ const defaultData: Product = {
   category: 1,
   supplier: 1,
   count: 0,
+  orderCount: 0,
   cost: 0,
   price: 0,
   explanation: "",
@@ -40,9 +41,8 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
     addProduct.count > 0 &&
     addProduct.supplier !== undefined &&
     addProduct.cost > 0 &&
-    addProduct.price > 0 ;
+    addProduct.price > 0;
 
-  
   // 自動採番（ID）
   function id(latestId: string | null): string {
     const letters = "abcdefghijklmnopqrstuvwxyz";
@@ -136,14 +136,15 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
         {/* 商品説明 */}
         <li className="flex items-center gap-4">
           <label className="w-40">explanation :</label>
-          <textarea 
+          <textarea
             name="explanation"
-           
             value={addProduct.explanation}
-            onChange={(e)=>setAddProduct({...addProduct, explanation: e.target.value})}
-             placeholder="explanation"
-             className="rounded-sm mx-5 border-2 p-1 text-lg textarea textarea-success"
-            />
+            onChange={(e) =>
+              setAddProduct({ ...addProduct, explanation: e.target.value })
+            }
+            placeholder="explanation"
+            className="rounded-sm mx-5 border-2 p-1 text-lg textarea textarea-success"
+          />
         </li>
 
         {/* 仕入れ数 */}
@@ -189,7 +190,6 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
                 <span className="text-sm">{supplier.name}</span>
               </label>
             ))}
-            
           </div>
         </li>
 
@@ -243,7 +243,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
         <li className="flex items-center gap-4">
           <label className="w-40">total：</label>
           <span className="mx-10 p-1 font-bold mr-1 w-1xl text-1xl">
-            {formatCurrency(total)}
+            {jpMoneyChange(total)}
           </span>
         </li>
       </ul>

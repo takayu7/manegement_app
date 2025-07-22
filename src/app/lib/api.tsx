@@ -36,7 +36,7 @@ export async function createUser(user: User) {
 // カテゴリリストの取得
 export async function fetchCategoryList() {
   try {
-    const data = await sql<Category[]>`SELECT * FROM categorylist`;
+    const data = await sql<Category[]>`SELECT * FROM categorylist ORDER BY id`;
 
     console.log("categoryList:", data);
 
@@ -50,7 +50,7 @@ export async function fetchCategoryList() {
 // 仕入れリストの取得
 export async function fetchSupplierList() {
   try {
-    const data = await sql<Supplier[]>`SELECT * FROM supplierlist`;
+    const data = await sql<Supplier[]>`SELECT * FROM supplierlist ORDER BY id`;
 
     console.log("supplierList:", data);
 
@@ -65,10 +65,7 @@ export async function fetchSupplierList() {
 export async function fetchProductDatas() {
   try {
     const data = await sql<Product[]>`
-    SELECT
-      *
-    FROM
-      product
+    SELECT * FROM product
     `;
 
     // const data = await sql<User[]>`SELECT * FROM product`;
@@ -85,8 +82,8 @@ export async function fetchProductDatas() {
 export async function createProduct(product: Product) {
   try {
     const data = await sql<Product[]>`
-      INSERT INTO product (id,name, category, supplier, count, cost, price)
-      VALUES (${product.id}, ${product.name}, ${product.category}, ${product.supplier}, ${product.count}, ${product.cost}, ${product.price})
+      INSERT INTO product (id,name, category,explanation, supplier, count, cost, price, orderCount)
+      VALUES (${product.id}, ${product.name}, ${product.category}, ${product.explanation}, ${product.supplier}, ${product.count}, ${product.cost}, ${product.price}, ${product.count})
       RETURNING *;
     `;
 
@@ -107,10 +104,12 @@ export async function updateProduct(product: Product) {
       SET
         name = ${product.name},
         category = ${product.category},
+        explanation = ${product.explanation},
         supplier = ${product.supplier},
         count = ${product.count},
         cost = ${product.cost},
-        price = ${product.price}
+        price = ${product.price},
+        orderCount = ${product.orderCount}
       WHERE
         id = ${product.id}
       RETURNING *;

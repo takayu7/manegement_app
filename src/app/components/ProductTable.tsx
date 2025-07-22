@@ -2,9 +2,10 @@
 import React, { useState, useEffect, useTransition } from "react";
 import { Product, Category, Supplier } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
-import { Trash2, SquarePen } from "lucide-react";
+import { Trash2, SquarePen, SquarePlus } from "lucide-react";
 import { ProductEditDialog } from "@/app/components/ProductEditDialog";
 import { DeleteDialog } from "@/app/components/DeleteDialog";
+import { OrderDialog } from "@/app/components/OrderDialog";
 
 export interface ProductTableProps {
   productDataList: Product[];
@@ -25,6 +26,7 @@ const headerNames: string[] = [
   "TotalPrice",
   "edit",
   "delete",
+  "order",
 ];
 
 const ProductTable: React.FC<ProductTableProps> = ({
@@ -74,7 +76,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
         <thead>
           <tr>
             {headerNames.map((headerName, index) => (
-              <th key={index}>{headerName}</th>
+              <th
+                key={index}
+                className={` ${index > 7 ? "text-center w-5" : ""}`}
+              >
+                {headerName}
+              </th>
             ))}
           </tr>
         </thead>
@@ -84,12 +91,14 @@ const ProductTable: React.FC<ProductTableProps> = ({
               <td>{product.name}</td>
               <td>{categoryTitleChange(product.category)}</td>
               <td>{supplierTitleChange(product.supplier)}</td>
-              <td>{product.count}</td>
+              <td>
+                {product.count} / {product.orderCount}
+              </td>
               <td>{jpMoneyChange(product.cost)}</td>
               <td>{jpMoneyChange(product.price)}</td>
               <td>{jpMoneyChange(product.cost * product.count)}</td>
               <td>{jpMoneyChange(product.price * product.count)}</td>
-              <td>
+              <td className="text-center">
                 <button
                   onClick={() => {
                     setSelectedProduct(product);
@@ -104,10 +113,9 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   <SquarePen />
                 </button>
               </td>
-              <td>
+              <td className="text-center">
                 <button
                   onClick={() => {
-                    console.log("delete button clicked", product);
                     setSelectedProduct(product);
                     (
                       document.getElementById(
@@ -118,6 +126,21 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   className="btn btn-ghost rounded-lg"
                 >
                   <Trash2 />
+                </button>
+              </td>
+              <td className="text-center">
+                <button
+                  onClick={() => {
+                    setSelectedProduct(product);
+                    (
+                      document.getElementById(
+                        "OrderDialog"
+                      ) as HTMLDialogElement
+                    )?.showModal();
+                  }}
+                  className="btn btn-ghost rounded-lg"
+                >
+                  <SquarePlus />
                 </button>
               </td>
             </tr>
@@ -138,6 +161,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
         onDelete={(productId: string) => {
           handleDelete(productId);
           setSelectedProduct(null);
+        }}
+      />
+      <OrderDialog
+        product={selectedProduct}
+        onSave={(product: Product) => {
+          handleSave(product);
         }}
       />
     </div>

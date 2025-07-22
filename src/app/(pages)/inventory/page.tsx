@@ -17,6 +17,7 @@ export default async function Page() {
 
   const handleSave = async (product: Product) => {
     "use server";
+    console.log("product:", product);
     await updateProduct(product);
      // ページを再取得
     revalidatePath("/inventory");

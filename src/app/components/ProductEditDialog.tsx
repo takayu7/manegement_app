@@ -19,7 +19,9 @@ const defaultData: Product = {
   supplier: 1,
   count: 0,
   cost: 0,
+  orderCount: 0,
   price: 0,
+  explanation: "",
 };
 
 export const ProductEditDialog: React.FC<EditDialogProps> = ({
@@ -74,6 +76,19 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
                 </option>
               ))}
             </select>
+          </li>
+          {/* 説明 */}
+          <li className="flex items-center gap-4">
+            <label className="w-40">explanation :</label>
+            <textarea
+              name="explanation"
+              value={editProduct.explanation}
+              onChange={(e) =>
+                setEditProduct({ ...editProduct, explanation: e.target.value })
+              }
+              placeholder="explanation"
+              className="rounded-sm mx-5 border-2 p-1 text-lg textarea textarea-success"
+            />
           </li>
           {/* 仕入れ先 */}
           <li className="flex items-center gap-4">
@@ -138,6 +153,48 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
                 }
               }}
               placeholder="price"
+              className="input rounded-sm mx-5 p-1 text-lg"
+            />
+          </li>
+          {/* 個数 */}
+          <li className="flex items-center gap-4">
+            <label className="w-40">count：</label>
+            <input
+              id="count"
+              name="count"
+              type="text"
+              value={editProduct.count}
+              onChange={(e) => {
+                const v = e.target.value;
+                if (/^\d*$/.test(v)) {
+                  setEditProduct({
+                    ...editProduct,
+                    count: v === "" ? 0 : Number(v),
+                  });
+                }
+              }}
+              placeholder="count"
+              className="input rounded-sm mx-5 p-1 text-lg"
+            />
+          </li>
+          {/* 発注数 */}
+          <li className="flex items-center gap-4">
+            <label className="w-40">orderCount：</label>
+            <input
+              id="orderCount"
+              name="orderCount"
+              type="text"
+              value={editProduct.orderCount}
+              onChange={(e) => {
+                const v = e.target.value;
+                if (/^\d*$/.test(v)) {
+                  setEditProduct({
+                    ...editProduct,
+                    orderCount: v === "" ? 0 : Number(v),
+                  });
+                }
+              }}
+              placeholder="orderCount"
               className="input rounded-sm mx-5 p-1 text-lg"
             />
           </li>

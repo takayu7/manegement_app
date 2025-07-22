@@ -24,6 +24,7 @@ export type Product = {
   category: number;
   supplier: number;
   count: number;
+  orderCount: number;
   cost: number;
   price: number;
   explanation: string;
