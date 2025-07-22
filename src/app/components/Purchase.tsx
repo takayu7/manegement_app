@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useTransition } from "react";
 import { Download, ListRestart, ListPlus } from "lucide-react";
 import { Category, Product, Supplier } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
@@ -17,7 +17,7 @@ const defaultData: Product = {
   category: 1,
   supplier: 1,
   count: 0,
-  orderCount: 0,
+  order: 0,
   cost: 0,
   price: 0,
   explanation: "",
@@ -31,6 +31,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
   onSave,
 }) => {
   const [addProduct, setAddProduct] = useState<Product>(defaultData);
+  const [isPending, startTransition] = useTransition();
 
   // 合計金額
   const total = addProduct.cost * addProduct.count;
@@ -84,7 +85,9 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
     const productWithId = { ...addProduct, id: newId };
     setLatestId(newId);
     console.log(addProduct);
+    startTransition(() => {
     onSave(addProduct);
+    });
     setAddProduct(defaultData);
     // alert("input contents: " + JSON.stringify(productWithId, null, 2));
     
@@ -168,6 +171,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
                 setAddProduct({
                   ...addProduct,
                   count: v === "" ? 0 : Number(v),
+                  order: v === "" ? 0 : Number(v),
                 });
               }
             }}
@@ -275,6 +279,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
           add
         </button>
       </div>
+      {isPending && <span className="text-rose-500 text-end">update...</span>}
     </main>
   );
 };

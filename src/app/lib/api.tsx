@@ -68,7 +68,6 @@ export async function fetchProductDatas() {
     SELECT * FROM product
     `;
 
-    // const data = await sql<User[]>`SELECT * FROM product`;
     console.log("data:", data);
 
     return data;
@@ -82,8 +81,8 @@ export async function fetchProductDatas() {
 export async function createProduct(product: Product) {
   try {
     const data = await sql<Product[]>`
-      INSERT INTO product (id,name, category,explanation, supplier, count, cost, price, orderCount)
-      VALUES (${product.id}, ${product.name}, ${product.category}, ${product.explanation}, ${product.supplier}, ${product.count}, ${product.cost}, ${product.price}, ${product.count})
+      INSERT INTO product (id,name, category, supplier, count, cost, price, "order",explanation)
+      VALUES (${product.id}, ${product.name}, ${product.category}, ${product.supplier}, ${product.count}, ${product.cost}, ${product.price}, ${product.order}, ${product.explanation})
       RETURNING *;
     `;
 
@@ -104,12 +103,12 @@ export async function updateProduct(product: Product) {
       SET
         name = ${product.name},
         category = ${product.category},
-        explanation = ${product.explanation},
         supplier = ${product.supplier},
         count = ${product.count},
         cost = ${product.cost},
         price = ${product.price},
-        orderCount = ${product.orderCount}
+        "order" = ${product.order},
+        explanation = ${product.explanation}
       WHERE
         id = ${product.id}
       RETURNING *;

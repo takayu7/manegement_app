@@ -2,59 +2,31 @@ import React from "react";
 import { fetchProductDatas } from "@/app/lib/api";
 import { jpMoneyChange } from "@/app/lib/utils";
 
-// const productDataList = [
-//   {
-//     id: "1",
-//     name: "Sample Product",
-//     category: 1,
-//     supplier: 1,
-//     count: 10,
-//     orderCount: 20,
-//     cost: 100,
-//     price: 150,
-//   },
-//   {
-//     id: "2",
-//     name: "Sample Product 2",
-//     category: 1,
-//     supplier: 1,
-//     count: 8,
-//     orderCount: 10,
-//     cost: 80,
-//     price: 120,
-//   },
-//   {
-//     id: "3",
-//     name: "Sample Product 3",
-//     category: 2,
-//     supplier: 2,
-//     count: 5,
-//     orderCount: 15,
-//     cost: 50,
-//     price: 90,
-//   },
-// ];
 
 export default async function Parameter() {
   const productDataList = await fetchProductDatas();
   const salesData = productDataList.reduce((acc, product) => {
-    const { name, cost, price, count, orderCount } = product;
-    const countPercent = Math.ceil(100 * (1 - count / orderCount));
+    const { name, cost, price, count, order } = product;
+    const countPercent = Math.ceil(100 * (1 - count / order));
     acc.push({
       name: name,
       cost: cost,
       price: price,
       count: count,
-      orderCount: orderCount,
+      order: order,
       countPercent: countPercent,
     });
     return acc;
-  }, [] as { name: string; cost: number; price: number; count: number; orderCount: number; countPercent: number }[]);
+  }, [] as { name: string; cost: number; price: number; count: number; order: number; countPercent: number }[]);
 
-  const salesCheck = (data: { price: number; orderCount: number; count: number; cost: number }) => {
-    return data.price * (data.orderCount - data.count) -
-           data.cost * data.orderCount;
-  }
+  const salesCheck = (data: {
+    price: number;
+    order: number;
+    count: number;
+    cost: number;
+  }) => {
+    return data.price * (data.order - data.count) - data.cost * data.order;
+  };
 
   return (
     <>
@@ -68,7 +40,11 @@ export default async function Parameter() {
           >
             <div className="w-40">
               <span>{data.name}</span>
-              <span className={`${salesCheck(data) < 0 ? "text-error" : "text-success"}`}>
+              <span
+                className={`${
+                  salesCheck(data) < 0 ? "text-error" : "text-success"
+                }`}
+              >
                 {jpMoneyChange(salesCheck(data))}
               </span>
             </div>

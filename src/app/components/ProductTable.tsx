@@ -92,7 +92,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
               <td>{categoryTitleChange(product.category)}</td>
               <td>{supplierTitleChange(product.supplier)}</td>
               <td>
-                {product.count} / {product.orderCount}
+                {product.count} / {product.order}
               </td>
               <td>{jpMoneyChange(product.cost)}</td>
               <td>{jpMoneyChange(product.price)}</td>

@@ -17,11 +17,10 @@ const defaultData: Product = {
   supplier: 1,
   count: 0,
   cost: 0,
-  orderCount: 0,
+  order: 0,
   price: 0,
   explanation: "",
 };
-
 export const OrderDialog: React.FC<EditDialogProps> = ({ product, onSave }) => {
   const [editProduct, setEditProduct] = useState<Product>(defaultData);
 
@@ -53,6 +52,7 @@ export const OrderDialog: React.FC<EditDialogProps> = ({ product, onSave }) => {
                   setEditProduct({
                     ...editProduct,
                     count: editProduct.count + 1,
+                    order: editProduct.order + 1,
                   });
                 }}
               >
@@ -65,6 +65,7 @@ export const OrderDialog: React.FC<EditDialogProps> = ({ product, onSave }) => {
                     setEditProduct({
                       ...editProduct,
                       count: editProduct.count - 1,
+                      order: editProduct.order - 1,
                     });
                   }
                 }}

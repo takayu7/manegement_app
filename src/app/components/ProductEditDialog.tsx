@@ -19,7 +19,7 @@ const defaultData: Product = {
   supplier: 1,
   count: 0,
   cost: 0,
-  orderCount: 0,
+  order: 0,
   price: 0,
   explanation: "",
 };
@@ -179,22 +179,22 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
           </li>
           {/* 発注数 */}
           <li className="flex items-center gap-4">
-            <label className="w-40">orderCount：</label>
+            <label className="w-40">order：</label>
             <input
-              id="orderCount"
-              name="orderCount"
+              id="order"
+              name="order"
               type="text"
-              value={editProduct.orderCount}
+              value={editProduct.order}
               onChange={(e) => {
                 const v = e.target.value;
                 if (/^\d*$/.test(v)) {
                   setEditProduct({
                     ...editProduct,
-                    orderCount: v === "" ? 0 : Number(v),
+                    order: v === "" ? 0 : Number(v),
                   });
                 }
               }}
-              placeholder="orderCount"
+              placeholder="order"
               className="input rounded-sm mx-5 p-1 text-lg"
             />
           </li>

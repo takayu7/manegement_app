@@ -1,6 +1,5 @@
 //型定義一覧
 
-
 export type User = {
   id: string;
   name: string;
@@ -24,10 +23,8 @@ export type Product = {
   category: number;
   supplier: number;
   count: number;
-  orderCount: number;
+  order: number;
   cost: number;
   price: number;
   explanation: string;
 };
-
-
