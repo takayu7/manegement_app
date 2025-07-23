@@ -12,7 +12,7 @@ export interface PurchaseProductProps {
 }
 
 const defaultData: Product = {
-  id: "a11111",
+  id: "",
   name: "",
   category: 1,
   supplier: 1,
@@ -46,51 +46,30 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
     addProduct.cost > 0 &&
     addProduct.price > 0;
 
-  // 自動採番（ID）
-  function id(latestId: string | null): string {
+  // 自動採番（ID）ランダム
+  function id(): string {
     const letters = "abcdefghijklmnopqrstuvwxyz";
-    const maxNumber = 99999;
-
-    if (latestId === null) {
-      return "a00000";
-    }
-
-    const letterPart = latestId[0];
-    const numberPart = parseInt(latestId.slice(1), 10);
-
-    let nextLetterIndex = letters.indexOf(letterPart);
-    let nextNumber = numberPart;
-
-    if (nextNumber < maxNumber) {
-      nextNumber += 1;
-    } else {
-      nextNumber = 0;
-      nextLetterIndex += 1;
-    }
-
-    const newLetter = letters[nextLetterIndex];
-    const newNumber = nextNumber.toString().padStart(5, "0");
-
-    return `${newLetter}${newNumber}`;
+    const randomLetter = letters[Math.floor(Math.random() * letters.length)];
+    const randomNumber = Math.floor(Math.random() * 100000)
+      .toString()
+      .padStart(5, "0");
+    return randomLetter + randomNumber;
   }
-
-  const [latestId, setLatestId] = useState<string>(id(null));
 
   //addボタン
   const handleAdd = () => {
-    
     // const newId = id(latestId);
-    const newId = "a1111";
-    setAddProduct({...addProduct,id:newId})
+    const newId = id();
     const productWithId = { ...addProduct, id: newId };
-    setLatestId(newId);
-    console.log(addProduct);
+    setAddProduct(productWithId);
+
+    console.log(productWithId);
     startTransition(() => {
-    onSave(addProduct);
+      onSave(productWithId);
     });
+
     setAddProduct(defaultData);
-    // alert("input contents: " + JSON.stringify(productWithId, null, 2));
-    
+    alert(JSON.stringify(productWithId, null, 2));
   };
 
   //resetボタン
@@ -99,9 +78,9 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
   };
 
   return (
-    <main>
+    <main className="max-w-3xl mx-10 px-3">
       <div className="flex">
-        <h1 className="mb-10 text-xl md:text-4xl font-bold">
+        <h1 className="mb-15 text-xl md:text-4xl font-bold">
           <Download className="inline-block mr-2.5 size-8.5" />
           Purchase
         </h1>
@@ -110,7 +89,9 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
       {/* 商品名 */}
       <ul className="text-xl font-medium space-y-15 mb-20">
         <li className="flex items-center gap-4">
-          <label className="w-40">name :</label>
+          <label className="text-xl font-semibold text-gray-700 w-43">
+            name :
+          </label>
           <input
             id="name"
             name="name"
@@ -125,7 +106,9 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
 
         {/* カテゴリ */}
         <li className="flex items-center gap-4">
-          <label className="w-40">category :</label>
+          <label className="text-xl font-semibold text-gray-700 w-43">
+            category :
+          </label>
           <select
             id="category"
             name="category"
@@ -146,7 +129,9 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
 
         {/* 商品説明 */}
         <li className="flex items-center gap-4">
-          <label className="w-40">explanation :</label>
+          <label className="text-xl font-semibold text-gray-700 w-43">
+            explanation :
+          </label>
           <textarea
             name="explanation"
             value={addProduct.explanation}
@@ -160,7 +145,9 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
 
         {/* 仕入れ数 */}
         <li className="flex items-center gap-4">
-          <label className="w-40">count :</label>
+          <label className="text-xl font-semibold text-gray-700 w-43">
+            count :
+          </label>
           <input
             name="count"
             type="text"
@@ -182,7 +169,9 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
 
         {/* 仕入れ先 */}
         <li className="flex items-center gap-4">
-          <label className="w-40">supplier：</label>
+          <label className="text-xl font-semibold text-gray-700 w-43">
+            supplier：
+          </label>
           <div className="flex gap-4">
             {supplierList.map((supplier) => (
               <label key={supplier.id} className="flex items-center">
@@ -207,7 +196,9 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
 
         {/* 原価 */}
         <li className="flex items-center gap-4">
-          <label className="w-40">cost：</label>
+          <label className="text-xl font-semibold text-gray-700 w-43">
+            cost：
+          </label>
           <input
             id="cost"
             name="cost"
@@ -229,7 +220,9 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
 
         {/* 販売価格 */}
         <li className="flex items-center gap-4">
-          <label className="w-40">price：</label>
+          <label className="text-xl font-semibold text-gray-700 w-43">
+            price：
+          </label>
           <input
             id="price"
             name="price"
@@ -253,14 +246,16 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
         </li>
 
         <li className="flex items-center gap-4">
-          <label className="w-40">total：</label>
+          <label className="text-xl font-semibold text-gray-700 w-43">
+            total：
+          </label>
           <span className="mx-10 p-1 font-bold mr-1 w-1xl text-1xl">
             {jpMoneyChange(total)}
           </span>
         </li>
       </ul>
 
-      <div className="flex gap-3 mt-2 justify-end">
+      <div className="flex gap-3 justify-end">
         <button
           type="reset"
           className="btn btn-outline btn-xl btn-wide"
@@ -277,9 +272,11 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
         >
           <ListPlus />
           add
+          {isPending && (
+            <span className="loading loading-dots loading-xl text-success ">loading</span>
+          )}
         </button>
       </div>
-      {isPending && <span className="text-rose-500 text-end">update...</span>}
     </main>
   );
 };
