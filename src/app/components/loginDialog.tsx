@@ -69,17 +69,16 @@ export default function LoginDialog() {
   }
 
   return (
-    <div>
       <dialog id="loginDiaLog" className="modal">
-        <div className="modal-box bg-[#999999] w-[290px] h-[263.4px]">
+        <div className="modal-box bg-stone-700/80 w-[360px] h-[280px]">
           <h2 className="text-[#76F6CE] text-[24px] font-bold text-center leading-[120%]">
             login
           </h2>
-          <p className="py-3 ">Please enter your ID and password to log in</p>
+          <p className="py-5 text-gray-50">Please enter your ID and password to log in</p>
           <div className="relative mt-[-10px]">
             <form method="dialog">
               {/* if there is a button in form, it will close the modal */}
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-2">
                 <input
                   className="mx-auto m-3 bg-[#FFFFFF]
                      rounded-[4px] w-[250px] h-[27px]"
@@ -91,7 +90,7 @@ export default function LoginDialog() {
                   placeholder="ID"
                 />
                 <input
-                  className="mx-auto mb-3 bg-[#FFFFFF] rounded-[4px]  w-[250px] h-[27px]"
+                  className="mx-auto mb-3 bg-[#FFFFFF] rounded-[4px] p-1 w-[250px] h-[27px]"
                   type={showPassword ? "text" : "password"}
                   value={state.password}
                   onChange={(e) => {
@@ -114,20 +113,20 @@ export default function LoginDialog() {
                   <EyeOff
                     width={25}
                     height={25}
-                    className="absolute top-[52px] left-[218px]"
+                    className="absolute top-[60px] left-[240px]"
                     onClick={() => setShowPassword((prev) => !prev)}
                   />
                 )}
               </div>
               <button
-                className="btn rounded-[4px] bg-[#FFFFFF] w-[103px] h-[28px] absolute right-[124.5px] top-[100px]"
+                className="btn rounded-[4px] bg-[#FFFFFF] w-[103px] h-[28px] absolute right-[180px] top-[110px]"
                 onClick={loginCanceled}
               >
                 <span className="text-[#999999]">cancel</span>
               </button>
             </form>
             <button
-              className="btn bg-[#CFF7D3] rounded-[4px]  w-[103px] h-[28px] absolute left-[130px] top-[100px]"
+              className="btn bg-[#CFF7D3] rounded-[4px]  w-[103px] h-[28px] absolute left-[180px] top-[110px]"
               disabled={isInputChecked} // 入力が未チェックの場合はボタンを無効化
               onClick={() => {
                 checkError(state.id, state.password);
@@ -146,6 +145,5 @@ export default function LoginDialog() {
           </div>
         </div>
       </dialog>
-    </div>
   );
 }
