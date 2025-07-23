@@ -2,10 +2,11 @@
 import React, { useState, useEffect, useTransition } from "react";
 import { Product, Category, Supplier } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
-import { Trash2, SquarePen, SquarePlus } from "lucide-react";
+import { Trash2, SquarePen, SquarePlus , ShoppingCart } from "lucide-react";
 import { ProductEditDialog } from "@/app/components/ProductEditDialog";
 import { DeleteDialog } from "@/app/components/DeleteDialog";
 import { OrderDialog } from "@/app/components/OrderDialog";
+import { SaleDialog } from "@/app/components/SaleDialog";
 
 export interface ProductTableProps {
   productDataList: Product[];
@@ -27,6 +28,7 @@ const headerNames: string[] = [
   "edit",
   "delete",
   "order",
+  "sale",
 ];
 
 const ProductTable: React.FC<ProductTableProps> = ({
@@ -78,7 +80,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
             {headerNames.map((headerName, index) => (
               <th
                 key={index}
-                className={` ${index > 7 ? "text-center w-5" : ""}`}
+                className={` ${index > 7 ? "text-center w-4" : ""}`}
               >
                 {headerName}
               </th>
@@ -143,6 +145,21 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   <SquarePlus />
                 </button>
               </td>
+                            <td className="text-center">
+                <button
+                  onClick={() => {
+                    setSelectedProduct(product);
+                    (
+                      document.getElementById(
+                        "SaleDialog"
+                      ) as HTMLDialogElement
+                    )?.showModal();
+                  }}
+                  className="btn btn-ghost rounded-lg"
+                >
+                  <ShoppingCart />
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -164,6 +181,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
         }}
       />
       <OrderDialog
+        product={selectedProduct}
+        onSave={(product: Product) => {
+          handleSave(product);
+        }}
+      />
+            <SaleDialog
         product={selectedProduct}
         onSave={(product: Product) => {
           handleSave(product);

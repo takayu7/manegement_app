@@ -33,6 +33,25 @@ export async function createUser(user: User) {
     throw new Error("Failed to create user.");
   }
 }
+
+// ユーザーデータの削除
+export async function deleteUser(userId: string) {
+  try {
+    const data = await sql<User[]>`
+      DELETE FROM users
+      WHERE id = ${userId}
+      RETURNING *;
+    `;
+
+    console.log("data:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to delete user.");
+  }
+}
+
 // カテゴリリストの取得
 export async function fetchCategoryList() {
   try {
