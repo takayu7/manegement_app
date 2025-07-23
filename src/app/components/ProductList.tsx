@@ -1,76 +1,39 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
-
-import { Supplier, Category } from "@/app/types/type";
+import React, { useEffect, useState } from "react";
+// import { jpMoneyChange } from "@/app/lib/utils";
+import { Product, Supplier, Category } from "@/app/types/type";
 // import { Product, Category, Supplier } from "@/app/types/type";
 import { Sofa } from "lucide-react";
 // import { count } from "console";
 
-export interface Product {
-  id: string;
-  name: string;
-  count: number;
-  image: string;
-  explanation: string;
-  price: number;
-  category?: Category;
-  supplier?: Supplier;
-  cost?: number;
+export interface ProductListProps {
+  productDataList: Product[];
+  categoryList: Category[];
+  supplierList: Supplier[];
 }
-export default function Page() {
+
+export const ProductList: React.FC<ProductListProps> = ({
+  productDataList,
+  // categoryList,
+  // supplierList,
+}) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const productSampleData = [
-    {
-      id: "1",
-      name: "shoes",
-      explanation:
-        "A card component has a figure, a body part, and inside body there are title and actions parts",
-      image: "/product/image1.jpg",
-      count: 3,
-      price: 5000,
-    },
-    {
-      id: "2",
-      name: "plant",
-      explanation: "This plant will make the room look brighter.",
-      image: "/product/image2.png",
-      count: 5,
-      price: 3000,
-    },
-    {
-      id: "3",
-      name: "cap",
-      explanation: "cool",
-      image: "/product/image4.jpg",
-      count: 10,
-      price: 2000,
-    },
-    {
-      id: "4",
-      name: "clothes",
-      explanation: "cool",
-      image: "/product/image6.jpg",
-      count: 10,
-      price: 2000,
-    },
-    {
-      id: "5",
-      name: "pet goods",
-      explanation: "cool",
-      image: "/product/image5.jpg",
-      count: 10,
-      price: 2000,
-    },
-    {
-      id: "6",
-      name: "plates",
-      explanation: "plates",
-      image: "/product/image3.jpg",
-      count: 10,
-      price: 2000,
-    },
-  ];
+  const [productDatas, setProductDatas] = useState<Product[]>(productDataList);
+
+  const CategoryImages: Record<string, string> = {
+    "1": "/product/image2.jpg",
+    "2": "/product/image6.jpg",
+    "3": "/product/image4.jpg",
+    "4": "/product/image3.jpg",
+    "5": "/product/image7.jpg",
+    "6": "/product/image5.jpg",
+    "7": "/product/image1.jpg",
+  };
+
+  useEffect(() => {
+    setProductDatas(productDataList);
+  }, [productDataList]);
 
   return (
     <>
@@ -80,14 +43,14 @@ export default function Page() {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
-        {productSampleData.map((product) => (
+        {productDatas.map((product) => (
           <div
             key={product.id}
             className="card-body flex flex-col justify-between bg-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-300 h-full"
           >
             <figure className="flex justify-center">
               <Image
-                src={product.image}
+                src={CategoryImages[product.category]}
                 alt={product.name}
                 width={220}
                 height={100}
@@ -95,15 +58,15 @@ export default function Page() {
               />
             </figure>
             <div className="p-0">
-              <h2 className="card-title text-2xl justify-center mt-1">
+              <h2 className="card-title text-xl justify-center mt-1 text-gray-600">
                 {product.name}
               </h2>
               <div className="card-actions justify-center">
                 <button
-                  className="btn btn-success btn-wide mt-1.5 "
+                  className="btn btn-success btn-dash btn-wide mt-1.5 "
                   onClick={() => setSelectedProduct(product)}
                 >
-                  product details
+                details
                 </button>
               </div>
             </div>
@@ -117,7 +80,7 @@ export default function Page() {
           <div className="bg-white w-200 p-10 flex flex-row rounded-2xl">
             <div className="flex-shrink-0 inline-block mr-5">
               <Image
-                src={selectedProduct.image}
+                src={CategoryImages[selectedProduct.category]}
                 alt={selectedProduct.name}
                 width={250}
                 height={100}
@@ -146,4 +109,6 @@ export default function Page() {
       )}
     </>
   );
-}
+};
+
+export default ProductList;
