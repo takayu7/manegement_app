@@ -87,15 +87,15 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
                 setEditProduct({ ...editProduct, explanation: e.target.value })
               }
               placeholder="explanation"
-              className="rounded-sm mx-5 border-2 p-1 text-lg textarea textarea-success"
+              className="rounded-sm mx-5 border-2 p-1 text-lg textarea"
             />
           </li>
           {/* 仕入れ先 */}
           <li className="flex items-center gap-4">
             <label className="w-40">supplier：</label>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2 mx-5">
               {supplierList.map((supplier) => (
-                <label key={supplier.id} className="flex items-center">
+                <div key={supplier.id} className="flex items-center">
                   <input
                     type="radio"
                     name="supplier"
@@ -110,7 +110,7 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
                     className="ml-5 mr-2 radio radio-success"
                   />
                   <span className="text-sm">{supplier.name}</span>
-                </label>
+                </div>
               ))}
             </div>
           </li>

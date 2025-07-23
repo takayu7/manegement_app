@@ -7,7 +7,7 @@ export default async function Parameter() {
   const productDataList = await fetchProductDatas();
   const salesData = productDataList.reduce((acc, product) => {
     const { name, cost, price, count, order } = product;
-    const countPercent = Math.ceil(100 * (1 - count / order));
+    const countPercent = Math.ceil(100 * (count / order));
     acc.push({
       name: name,
       cost: cost,
@@ -18,6 +18,11 @@ export default async function Parameter() {
     });
     return acc;
   }, [] as { name: string; cost: number; price: number; count: number; order: number; countPercent: number }[]);
+
+  const totalSales = productDataList.reduce(
+  (total, product) => total + (product.price * (product.order - product.count) - product.cost * product.order),
+  0
+);
 
   const salesCheck = (data: {
     price: number;
@@ -30,12 +35,12 @@ export default async function Parameter() {
 
   return (
     <>
-      <ul className="flex items-center gap-3">
+      <ul className="flex flex-wrap items-center gap-3">
         {salesData.map((data, index) => (
           <li
             key={index}
             className={`flex items-center gap-4  rounded-lg p-4 shadow-md ${
-              data.countPercent >= 80 ? "bg-rose-200" : "bg-emerald-50"
+              data.countPercent <= 20 ? "bg-rose-200" : "bg-emerald-50"
             }`}
           >
             <div className="w-40">
@@ -50,12 +55,12 @@ export default async function Parameter() {
             </div>
             <div
               className={`radial-progress w-24 h-24 ${
-                data.countPercent >= 80 ? "text-error" : "text-success"
+                data.countPercent <= 20 ? "text-error" : "text-success"
               }`}
               style={
                 {
                   "--value": data.countPercent,
-                  "--size": "96px",
+                  "--size": "94px",
                 } as React.CSSProperties
               }
               aria-valuenow={data.countPercent}
@@ -66,6 +71,7 @@ export default async function Parameter() {
           </li>
         ))}
       </ul>
+      <div className={`flex justify-center mt-5 rounded-lg py-5 w-full ${totalSales < 0 ? "bg-rose-200" : "bg-emerald-50"}`}>Cost of goods sold: {jpMoneyChange(totalSales)}</div>
     </>
   );
 }

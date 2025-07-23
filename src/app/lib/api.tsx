@@ -65,7 +65,7 @@ export async function fetchSupplierList() {
 export async function fetchProductDatas() {
   try {
     const data = await sql<Product[]>`
-    SELECT * FROM product
+    SELECT * FROM product ORDER BY name
     `;
 
     console.log("data:", data);
