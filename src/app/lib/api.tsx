@@ -76,7 +76,46 @@ export async function fetchSupplierList() {
     return data;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch user data.");
+    throw new Error("Failed to fetch supplier.");
+  }
+}
+
+// 仕入れリストの更新
+export async function updateSupplierList(supplier: Supplier) {
+  try {
+    const data = await sql<Supplier[]>`
+      UPDATE supplierlist
+      SET
+        name = ${supplier.name}
+      WHERE
+        id = ${supplier.id}
+      RETURNING *;
+    `;
+
+    console.log("data:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to update supplier.");
+  }
+}
+
+// 仕入れリストの削除
+export async function deleteSupplierList(id: number) {
+  try {
+    const data = await sql<Supplier[]>`
+      DELETE FROM supplierlist
+      WHERE id = ${id}
+      RETURNING *;
+    `;
+
+    console.log("data:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to delete supplier.");
   }
 }
 
