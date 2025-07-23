@@ -28,3 +28,13 @@ export type Product = {
   price: number;
   explanation: string;
 };
+
+export type Todo = {
+  id: string;
+  todoid: number;
+  name: string;
+  icon: number;
+  todo: string | null;
+  deadline: Date | null;
+  checked: Date | null;
+};

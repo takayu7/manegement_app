@@ -1,5 +1,5 @@
 import postgres from "postgres";
-import { User, Product, Category, Supplier } from "@/app/types/type";
+import { User, Product, Category, Supplier, Todo } from "@/app/types/type";
 
 const sql = postgres(process.env.POSTGRES_URL!);
 
@@ -196,5 +196,90 @@ export async function deleteProduct(productId: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to delete product.");
+  }
+}
+
+// TODOデータの取得
+export async function fetchTodo() {
+  try {
+    const data = await sql<Todo[]>`
+      SELECT
+        todo.id AS id,
+        todoid,
+        users.name,
+        users.icon,
+        todo,
+        deadline,
+        checked
+      FROM todo INNER JOIN users ON todo.id = users.id
+      ORDER BY deadline;
+    `;
+
+    console.log("todo:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch todo data.");
+  }
+}
+
+// TODOデータの登録
+export async function createTodo(todo: Todo) {
+  try {
+    const data = await sql<Todo[]>`
+      INSERT INTO todo (id,todo, deadline, checked)
+      VALUES (${todo.id}, ${todo.todo}, ${todo.deadline}, ${todo.checked})
+      RETURNING *;
+    `;
+
+    console.log("data:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to create todo.");
+  }
+}
+
+
+// TODOデータの更新
+export async function updateTodo(todo: Todo) {
+  try {
+    const data = await sql<Todo[]>`
+      UPDATE todo
+      SET
+        todo = ${todo.todo},
+        deadline = ${todo.deadline},
+        checked = ${todo.checked}
+      WHERE
+        id = ${todo.id}
+      RETURNING *;
+    `;
+
+    console.log("data:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to update todo.");
+  }
+}
+
+// TODOデータの削除
+export async function deleteTodo(todoId: string) {
+  try {
+    const data = await sql<Todo[]>`
+      DELETE FROM todo
+      WHERE id = ${todoId}
+      RETURNING *;
+    `;
+
+    console.log("data:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to delete todo.");
   }
 }
