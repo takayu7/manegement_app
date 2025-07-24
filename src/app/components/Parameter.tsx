@@ -104,7 +104,7 @@ export default async function Parameter() {
           </li>
         ))}
       </ul>
-      <ul className="flex items-center justify-between gap-4 mt-5">
+      <ul className="flex items-center flex-wrap justify-between gap-1 mt-5">
         {Object.entries(categoryProfitMap).map(([category, profit]) => (
           <li
             key={category}

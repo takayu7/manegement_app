@@ -97,7 +97,7 @@ const SideNav = () => {
           href="/"
         >
           <Image
-            src="/logo2.png"
+            src="/logo.png"
             alt="Description"
             width={240}
             height={200}
