@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useReducer, useState } from "react";
-import { loginData } from "../sampleDate/loginData";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { User } from "../types/type";
+import { Loading } from "./Loading";
 
 // 状態型（State）
 type FormState = {
@@ -41,6 +42,9 @@ export default function LoginDialog() {
   const [showPassword, setShowPassword] = useState(false);
 
   const [isInputChecked, setIsInputChecked] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // ← ローディング状態追加
+  const [loginError, setLoginError] = useState(false);
+  const [userImfomation, setUserInfomation] = useState<User[]>([]);
   useEffect(() => {
     if (state.id && state.password) {
       setIsInputChecked(false);
@@ -49,101 +53,123 @@ export default function LoginDialog() {
     }
   }, [state.id, state.password]);
 
-  //ログインダイヤログでcancelボタンが押されたときの処理
   function loginCanceled() {
     dispatch({ type: "RESET" });
     setShowPassword(false);
   }
 
-  const [loginError, setLoginError] = useState(false);
-  //ユーザーの入力値が予め登録されている情報と一致しているかを確認する処理
-  function checkError(id: string, password: string) {
-    loginData.map((staff) => {
-      if (id == staff.id && password == staff.password) {
-        const staffQuery = `?staff=${encodeURIComponent(staff.staffImage)}`;
+  const fetchData = async () => {
+    try {
+      const userDataList = await fetch("/api/users");
+      const json = await userDataList.json();
+      setUserInfomation(json);
+    } catch (error) {
+      console.error("ユーザーデータの取得に失敗:", error);
+    } finally {
+      setIsLoading(false); // ← データ取得後ローディングを解除
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  async function checkError(id: string, password: string) {
+    setIsLoading(true); // ← ログイン中にローディングを表示
+    let matched = false;
+
+    for (const staff of userImfomation) {
+      if (id === staff.id && password === staff.password) {
+        matched = true;
+        const staffQuery = `?staff=${encodeURIComponent(staff.icon)}`;
         router.push(`/top${staffQuery}`);
-      } else {
-        setLoginError(true);
+        return; // router.push 後に setIsLoading(false) は不要
       }
-    });
+    }
+
+    setIsLoading(false); // ← マッチしなかった場合のみ false に戻す
+    if (!matched) {
+      setLoginError(true);
+    }
   }
 
+  // ローディング中はスピナーを表示
+  if (isLoading) return <Loading />;
+
   return (
-      <dialog id="loginDiaLog" className="modal">
-        <div className="modal-box bg-stone-700/80 w-[360px] h-[280px]">
-          <h2 className="text-[#76F6CE] text-[24px] font-bold text-center leading-[120%]">
-            login
-          </h2>
-          <p className="py-5 text-gray-50">Please enter your ID and password to log in</p>
-          <div className="relative mt-[-10px]">
-            <form method="dialog">
-              {/* if there is a button in form, it will close the modal */}
-              <div className="flex flex-col gap-2">
-                <input
-                  className="mx-auto m-3 bg-[#FFFFFF]
-                     rounded-[4px] w-[250px] h-[27px]"
-                  type="text"
-                  value={state.id}
-                  onChange={(e) =>
-                    dispatch({ type: "SET_ID", payload: e.target.value })
-                  }
-                  placeholder="ID"
-                />
-                <input
-                  className="mx-auto mb-3 bg-[#FFFFFF] rounded-[4px] p-1 w-[250px] h-[27px]"
-                  type={showPassword ? "text" : "password"}
-                  value={state.password}
-                  onChange={(e) => {
-                    dispatch({
-                      type: "SET_PASSWORD",
-                      payload: e.target.value,
-                    });
-                    setPassword(e.target.value);
-                  }}
-                  placeholder="PASS WORD"
-                />
-                {showPassword ? (
-                  <Eye
-                    width={25}
-                    height={25}
-                    className="absolute top-[60px] left-[240px]"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  />
-                ) : (
-                  <EyeOff
-                    width={25}
-                    height={25}
-                    className="absolute top-[60px] left-[240px]"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  />
-                )}
-              </div>
-              <button
-                className="btn rounded-[4px] bg-[#FFFFFF] w-[103px] h-[28px] absolute right-[180px] top-[110px]"
-                onClick={loginCanceled}
-              >
-                <span className="text-[#999999]">cancel</span>
-              </button>
-            </form>
-            <button
-              className="btn bg-[#CFF7D3] rounded-[4px]  w-[103px] h-[28px] absolute left-[180px] top-[110px]"
-              disabled={isInputChecked} // 入力が未チェックの場合はボタンを無効化
-              onClick={() => {
-                checkError(state.id, state.password);
-                if (loginError) {
-                  (
-                    document.getElementById(
-                      "showErrorMessage"
-                    ) as HTMLDialogElement
-                  )?.showModal();
-                  setLoginError(false);
+    <dialog id="loginDiaLog" className="modal">
+      <div className="modal-box bg-stone-700/80 w-[360px] h-[280px]">
+        <h2 className="text-[#76F6CE] text-[24px] font-bold text-center leading-[120%]">
+          login
+        </h2>
+        <p className="py-5 text-gray-50">
+          Please enter your ID and password to log in
+        </p>
+        <div className="relative mt-[-10px]">
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <div className="flex flex-col gap-2">
+              <input
+                className="mx-auto m-3 bg-[#FFFFFF] rounded-[4px] w-[250px] h-[27px]"
+                type="text"
+                value={state.id}
+                onChange={(e) =>
+                  dispatch({ type: "SET_ID", payload: e.target.value })
                 }
-              }}
+                placeholder="ID"
+              />
+              <input
+                className="mx-auto mb-3 bg-[#FFFFFF] rounded-[4px] p-1 w-[250px] h-[27px]"
+                type={showPassword ? "text" : "password"}
+                value={state.password}
+                onChange={(e) => {
+                  dispatch({ type: "SET_PASSWORD", payload: e.target.value });
+                  setPassword(e.target.value);
+                }}
+                placeholder="PASS WORD"
+              />
+              {showPassword ? (
+                <Eye
+                  width={25}
+                  height={25}
+                  className="absolute top-[60px] left-[240px]"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                />
+              ) : (
+                <EyeOff
+                  width={25}
+                  height={25}
+                  className="absolute top-[60px] left-[240px]"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                />
+              )}
+            </div>
+            <button
+              className="btn rounded-[4px] bg-[#FFFFFF] w-[103px] h-[28px] absolute right-[180px] top-[110px]"
+              onClick={loginCanceled}
             >
-              <span className="text-[#999999]">log in</span>
+              <span className="text-[#999999]">cancel</span>
             </button>
-          </div>
+          </form>
+          <button
+            className="btn bg-[#CFF7D3] rounded-[4px]  w-[103px] h-[28px] absolute left-[180px] top-[110px]"
+            disabled={isInputChecked}
+            onClick={async () => {
+              await checkError(state.id, state.password);
+              if (loginError) {
+                (
+                  document.getElementById(
+                    "showErrorMessage"
+                  ) as HTMLDialogElement
+                )?.showModal();
+                setLoginError(false);
+              }
+            }}
+          >
+            <span className="text-[#999999]">log in</span>
+          </button>
         </div>
-      </dialog>
+      </div>
+    </dialog>
   );
 }
