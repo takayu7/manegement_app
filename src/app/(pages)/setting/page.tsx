@@ -1,6 +1,6 @@
 import React from "react";
 import { Setting } from "@/app/components/Setting";
-import { SettingUser } from "@/app/components/SettingUser";
+import { CollapseUser } from "@/app/components/CollapseUser";
 import { SettingSupplier } from "@/app/components/SettingSupplier";
 import { createUser } from "@/app/lib/api";
 import { revalidatePath } from "next/cache";
@@ -18,7 +18,7 @@ export default function Page() {
   return (
     <>
       <Setting />
-      <SettingUser onSave={handleSave} />
+      <CollapseUser />
       <SettingSupplier onSave={handleSave} />
     </>
   );
