@@ -1,7 +1,14 @@
 "use client";
-import LoginDialog from "./components/loginDialog";
+import { Loading } from "./components/Loading";
+import dynamic from "next/dynamic";
+import React from "react";
 import ErrorMessageDiaolog from "./components/errorMessageDiaolog";
 import Image from "next/image";
+
+const LoginDialog = dynamic(() => import("./components/loginDialog"), {
+  loading: () => <Loading />,
+  ssr: false,
+});
 
 export default function Page() {
   return (
@@ -17,7 +24,7 @@ export default function Page() {
         </div>
         <div className="relative z-10 flex items-center justify-center min-h-screen">
           <h1 className="text-[#FAFAFA] text-[100px] font-serif font-bold mb-[200px]">
-            Wellcome To Select Shop!!
+            Welcome To Select Shop!!
           </h1>
           <button
             className="btn btn-outline border-4 border-neutral-200 text-neutral-100 rounded-[4px] w-[240px] h-[48px] absolute bottom-[330px] hover:text-neutral-800"
