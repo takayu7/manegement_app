@@ -9,7 +9,7 @@ export default function Header() {
   const userIcon = searchParams.get("staff") || "0"; // デフォルトはアイコン1
 
   return (
-    <div className="flex w-full h-20 items-center justify-between py-4 px-8">
+    <div className="flex w-full h-20 items-center justify-between py-4 px-10">
       {userName ? (
         <div className="flex items-center gap-4">
           <Image
