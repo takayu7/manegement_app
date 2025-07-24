@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Parameter from "@/app/components/Parameter";
 
-export default async function Page({
+export default function Page({
   searchParams,
 }: {
   searchParams?: { [key: string]: string | string[] | undefined };
