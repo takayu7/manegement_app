@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import clsx from "clsx";
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -13,6 +12,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { Loading } from "../components/Loading";
+import dynamic from "next/dynamic";
+import ErrorMessageDiaolog from "@/app/components/errorMessageDiaolog";
 
 const links = [
   { name: "TOP", href: "/top", icon: House },
@@ -70,6 +71,11 @@ const NavLinks = ({ onNavigate }: { onNavigate: (href: string) => void }) => {
   );
 };
 
+const LoginDialog = dynamic(() => import("@/app/components/loginDialog"), {
+  loading: () => <Loading />,
+  ssr: false,
+});
+
 const SideNav = () => {
   const router = useRouter();
   const pathname = usePathname();
@@ -92,9 +98,13 @@ const SideNav = () => {
     <>
       {isLoading && <Loading />}
       <div className="flex h-full flex-col px-3 py-4 md:px-2">
-        <Link
-          className="mb-2 flex h-20 items-center justify-start rounded-md bg-cyan-100 md:h-40 relative overflow-hidden"
-          href="/"
+        <button
+          className="btn mb-2 flex h-20 items-center justify-start rounded-md md:h-40 relative overflow-hidden p-0"
+          onClick={() =>
+            (
+              document.getElementById("loginDiaLog") as HTMLDialogElement
+            )?.showModal()
+          }
         >
           <Image
             src="/logo.png"
@@ -103,7 +113,7 @@ const SideNav = () => {
             height={200}
             className="object-contain"
           />
-        </Link>
+        </button>
         <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
           <NavLinks onNavigate={handleNavigation} />
           <div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
@@ -115,6 +125,10 @@ const SideNav = () => {
           </button>
         </div>
       </div>
+      {/* ログインダイヤログ*/}
+      <LoginDialog />
+      {/* エラーメッセージダイヤログ*/}
+      <ErrorMessageDiaolog />
     </>
   );
 };
