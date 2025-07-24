@@ -93,10 +93,16 @@ const SideNav = () => {
       {isLoading && <Loading />}
       <div className="flex h-full flex-col px-3 py-4 md:px-2">
         <Link
-          className="mb-2 flex h-20 items-end justify-start rounded-md bg-cyan-100 p-4 md:h-40"
+          className="mb-2 flex h-20 items-center justify-start rounded-md bg-cyan-100 md:h-40 relative overflow-hidden"
           href="/"
         >
-          <Image src="/yubi.png" alt="Description" width={100} height={100} />
+          <Image
+            src="/logo2.png"
+            alt="Description"
+            width={240}
+            height={200}
+            className="object-contain"
+          />
         </Link>
         <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
           <NavLinks onNavigate={handleNavigation} />
