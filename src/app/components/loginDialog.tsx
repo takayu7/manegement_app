@@ -106,7 +106,7 @@ export default function LoginDialog() {
                   <Eye
                     width={25}
                     height={25}
-                    className="absolute top-[52px] left-[218px]"
+                    className="absolute top-[60px] left-[240px]"
                     onClick={() => setShowPassword((prev) => !prev)}
                   />
                 ) : (
