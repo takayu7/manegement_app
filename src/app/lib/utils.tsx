@@ -8,6 +8,7 @@ import {
   Footprints,
 } from "lucide-react";
 
+// カテゴリアイコンを返す関数
 export const categories = (categoryNumber: number) => {
   const iconCss = "flex items-center gap-1";
   const iconSize = "h-7 w-7";
@@ -72,3 +73,23 @@ const formatCurrency = (amount: number) => {
 export const jpMoneyChange = (price: number) => {
   return <div>{formatCurrency(price)}</div>;
 };
+
+//userIconIDを元にアイコンを返す
+  export const SelectStaffIcon = (iconId:string) => {
+    switch (iconId) {
+      case "1":
+        return "/staff/amy-burns.png";
+      case "2":
+        return "/staff/balazs-orban.png";
+      case "3":
+        return "/staff/delba-de-oliveira.png";
+      case "4":
+        return "/staff/evil-rabbit.png";
+      case "5":
+        return "/staff/lee-robinson.png";
+      case "6":
+        return "/staff/michael-novotny.png";
+      default:
+        return "/staff/amy-burns.png"; // デフォルトのアイコン
+    }
+  };

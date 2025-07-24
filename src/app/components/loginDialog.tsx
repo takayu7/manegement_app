@@ -81,7 +81,7 @@ export default function LoginDialog() {
     for (const staff of userImfomation) {
       if (id === staff.id && password === staff.password) {
         matched = true;
-        const staffQuery = `?staff=${encodeURIComponent(staff.icon)}`;
+        const staffQuery = `?staff=${encodeURIComponent(staff.icon)}&userName=${encodeURIComponent(staff.name)}`;
         router.push(`/top${staffQuery}`);
         return; // router.push 後に setIsLoading(false) は不要
       }
