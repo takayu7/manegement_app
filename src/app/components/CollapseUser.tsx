@@ -3,7 +3,7 @@ import { User } from "@/app/types/type";
 import { revalidatePath } from "next/cache";
 import { RegisterUser } from "./RegisterUser";
 import { createUser } from "@/app/lib/api";
-import { ShowUserInfomation } from "./ShowUserInfomation";
+import { ShowUserInfomation } from "@/app/components/ShowUserInfomation";
 
 export const CollapseUser = () => {
   const handleSave = async (user: User) => {
