@@ -26,7 +26,7 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
 
   // 自動採番（ID）
   function getRandomNumFromServer() {
-    const randomNumber = Math.floor(Math.random() * 999999).toString();
+    const randomNumber = Math.floor(Math.random() * 999_999).toString();
     return randomNumber;
   }
   async function automaticNumbering() {
@@ -45,8 +45,8 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
   }, []);
 
   //addボタン
-  const handleAdd = () => {
-    const result = confirm("登録しますか？");
+  const handleAdd = async () => {
+    const result = confirm("Would you like to register?");
     if (result) {
       console.log("ID : " + addUser.id);
       console.log(addUser);
@@ -59,8 +59,14 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
 
   //ラジオボタンのチェックを外す処理
   const [selectedValue, setSelectedValue] = useState(0);
-  const clearRadioSelection = () => {
+  const clearRadioSelection = async () => {
     setSelectedValue(0);
+  };
+
+  const hanndleClick = async () => {
+    await handleAdd();
+    await clearRadioSelection();
+    window.location.reload();
   };
 
   return (
@@ -130,12 +136,11 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
             className="btn btn-primary"
             disabled={!isAllFilled}
             onClick={() => {
-              handleAdd();
-              clearRadioSelection();
+              hanndleClick();
             }}
           >
             <ListPlus />
-            登録
+            ADD
           </button>
         </div>
         {isPending && <span className="text-rose-500 text-end">update...</span>}
