@@ -1,12 +1,32 @@
 "use client";
-import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { SelectStaffIcon } from "@/app/lib/utils";
 import Image from "next/image";
+import { Player } from "@lottiefiles/react-lottie-player";
 
 export default function Header() {
-  const searchParams = useSearchParams();
-  const userName = searchParams.get("userName");
-  const userIcon = searchParams.get("staff") || "0"; // デフォルトはアイコン1
+  const [userName, setUserName] = useState<string | null>(null);
+  const [userIcon, setUserIcon] = useState<string>("0");
+
+  // 値の取得処理を関数化
+  const updateHeaderInfo = () => {
+    const storedName = sessionStorage.getItem("userName");
+    const storedIcon = sessionStorage.getItem("staffIcon") || "0";
+    setUserName(storedName);
+    setUserIcon(storedIcon);
+  };
+
+  useEffect(() => {
+    updateHeaderInfo();
+
+    // カスタムイベント監視
+    const handler = () => updateHeaderInfo();
+    window.addEventListener("headerUpdate", handler);
+
+    return () => {
+      window.removeEventListener("headerUpdate", handler);
+    };
+  }, []);
 
   return (
     <div className="flex w-full h-20 items-center justify-between py-4 px-10">
@@ -24,6 +44,12 @@ export default function Header() {
       ) : (
         <p>ログインしてください</p>
       )}
+      <Player
+        autoplay
+        loop
+        src="/lottie/Lottie_Lego.json"
+        style={{ height: "100px", width: "100px" }}
+      />
     </div>
   );
 }

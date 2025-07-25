@@ -1,9 +1,9 @@
+"use client";
 import React from "react";
-import { fetchProductDatas } from "@/app/lib/api";
 import { jpMoneyChange, categories } from "@/app/lib/utils";
+import { Product } from "@/app/types/type";
 
-export default async function Parameter() {
-  const productDataList = await fetchProductDatas();
+export default function Parameter({ productDataList }: { productDataList: Product[] }) {
 
   const salesData = productDataList.reduce((acc, product) => {
     const { name, cost, price, count, order } = product;

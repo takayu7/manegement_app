@@ -80,11 +80,15 @@ export default function LoginDialog() {
 
     for (const staff of userImfomation) {
       if (id === staff.id && password === staff.password) {
-        matched = true;
-        const staffQuery = `?staff=${encodeURIComponent(staff.icon)}&userName=${encodeURIComponent(staff.name)}&id=${encodeURIComponent(staff.id)}`;
-        router.push(`/top${staffQuery}`);
-        return; // router.push 後に setIsLoading(false) は不要
-      }
+  matched = true;
+  if (typeof window !== "undefined") {
+    sessionStorage.setItem("staffIcon", String(staff.icon));
+    sessionStorage.setItem("userName", staff.name);
+    sessionStorage.setItem("staffId", staff.id);
+  }
+  router.push("/top"); // クエリ不要
+  return;
+}
     }
 
     setIsLoading(false); // ← マッチしなかった場合のみ false に戻す

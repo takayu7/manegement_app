@@ -2,11 +2,12 @@
 import React, { useState, useEffect, useTransition } from "react";
 import { Product, Category, Supplier } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
-import { Trash2, SquarePen, SquarePlus , ShoppingCart } from "lucide-react";
+import { SquarePen, SquarePlus, ShoppingCart } from "lucide-react";
 import { ProductEditDialog } from "@/app/components/ProductEditDialog";
 import { DeleteDialog } from "@/app/components/DeleteDialog";
 import { OrderDialog } from "@/app/components/OrderDialog";
 import { SaleDialog } from "@/app/components/SaleDialog";
+import { Player } from "@lottiefiles/react-lottie-player";
 
 export interface ProductTableProps {
   productDataList: Product[];
@@ -41,6 +42,8 @@ const ProductTable: React.FC<ProductTableProps> = ({
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [productDatas, setProductDatas] = useState<Product[]>(productDataList);
   const [isPending, startTransition] = useTransition();
+  // 追加: useStateをコンポーネント上部に
+  const [deleteAutoplay, setDeleteAutoplay] = useState(false);
 
   // 編集ダイアログの保存処理
   const handleSave = (product: Product) => {
@@ -126,8 +129,15 @@ const ProductTable: React.FC<ProductTableProps> = ({
                     )?.showModal();
                   }}
                   className="btn btn-ghost rounded-lg"
+                  onMouseEnter={() => setDeleteAutoplay(true)}
+                  onMouseLeave={() => setDeleteAutoplay(false)}
                 >
-                  <Trash2 />
+                  <Player
+                    autoplay={deleteAutoplay}
+                    loop
+                    src="/lottie/Delete.json"
+                    style={{ height: "30px", width: "30px" }}
+                  />
                 </button>
               </td>
               <td className="text-center">
@@ -145,14 +155,12 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   <SquarePlus />
                 </button>
               </td>
-                            <td className="text-center">
+              <td className="text-center">
                 <button
                   onClick={() => {
                     setSelectedProduct(product);
                     (
-                      document.getElementById(
-                        "SaleDialog"
-                      ) as HTMLDialogElement
+                      document.getElementById("SaleDialog") as HTMLDialogElement
                     )?.showModal();
                   }}
                   className="btn btn-ghost rounded-lg"
@@ -186,7 +194,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
           handleSave(product);
         }}
       />
-            <SaleDialog
+      <SaleDialog
         product={selectedProduct}
         onSave={(product: Product) => {
           handleSave(product);
