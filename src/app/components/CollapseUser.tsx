@@ -1,8 +1,9 @@
 import React from "react";
 import { User } from "@/app/types/type";
 import { revalidatePath } from "next/cache";
-import { SettingUser } from "./SettingUser";
+import { RegisterUser } from "./RegisterUser";
 import { createUser } from "@/app/lib/api";
+import { ShowUserInfomation } from "./ShowUserInfomation";
 
 export const CollapseUser = () => {
   const handleSave = async (user: User) => {
@@ -20,11 +21,15 @@ export const CollapseUser = () => {
         <div className="collapse-title bg-[#6E6B41] text-[30px] text-primary-content text-center peer-checked:bg-[#3F9877] peer-checked:text-secondary-content">
           User
         </div>
-        {/* User登録（ここから） */}
-        <SettingUser onSave={handleSave} />
-        {/* User登録（ここまで） */}
-
-        {/* User情報表示 */}
+        <div
+          className="collapse-content flex flex-row bg-[#6E6B41]
+         text-primary-content peer-checked:bg-[#3F9877] peer-checked:text-secondary-content"
+        >
+          {/* User登録 */}
+          <RegisterUser onSave={handleSave} />
+          {/* User情報表示 */}
+          <ShowUserInfomation />
+        </div>
       </div>
     </>
   );
