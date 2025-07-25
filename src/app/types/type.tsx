@@ -38,3 +38,10 @@ export type Todo = {
   deadline: Date | null;
   checked: Date | null;
 };
+
+export type CartItem = {
+  id: string;
+  name: string;
+  buyCount: number;
+  price: number;
+};
