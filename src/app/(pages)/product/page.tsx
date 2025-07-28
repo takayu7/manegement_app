@@ -1,19 +1,18 @@
 import ProductList from "@/app/components/ProductList";
-import { fetchProductDatas, updateProduct, deleteProduct } from "@/app/lib/api";
+import { fetchProductDatas, updateProduct, updateBuyProduct } from "@/app/lib/api";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import type { Product } from "@/app/types/type";
+import type { CartItem, Product } from "@/app/types/type";
+import { revalidatePath } from "next/cache";
 
 export default async function ProductListPage() {
   const productDataList = await fetchProductDatas();
 
-  const handleBuy = async (product: Product) => {
+  const handleBuy = async (cart: CartItem[]) => {
     "use server";
-    await updateProduct(product);
-  };
-  const handleDelete = async (productId: string) => {
-    "use server";
-    await deleteProduct(productId);
+    await updateBuyProduct(cart);
+    // ページを再取得
+    revalidatePath("/product");
   };
 
   return (
@@ -21,9 +20,9 @@ export default async function ProductListPage() {
       <ProductList
         productDataList={productDataList}
         onSave={handleBuy}
-        onDelete={handleDelete}
+
       />
       <ToastContainer />
     </div>
   );
-}
+};
