@@ -28,12 +28,13 @@ export const CountDown = () => {
   } else if (nowMinutes >= endMinutes) {
     worktime = 100;
   } else {
-    worktime = ((nowMinutes - startMinutes) / (endMinutes - startMinutes)) * 100;
+    worktime =
+      ((nowMinutes - startMinutes) / (endMinutes - startMinutes)) * 100;
   }
   worktime = Math.max(0, Math.min(100, worktime));
 
   //時間帯によってアイコンが変わる処理
-  const timeIcon =(hours:number)=>{
+  const timeIcon = (hours: number) => {
     if (hours < 12) {
       return "/lottie/Meditation.json";
     } else if (hours < 17) {
@@ -41,21 +42,30 @@ export const CountDown = () => {
     } else {
       return "/lottie/Reading.json";
     }
-  }
+  };
 
   return (
     <>
-      <div className="py-5 px-10 rounded-md border border-gray-300 shadow-md">
-        <div className="grid grid-flow-col gap-5 text-center auto-cols-max -mb-5">
+      <div className="px-5 rounded-md border space-y-3 border-gray-300 shadow-md py-5 lg:px-10 lg:space-y-0">
+        <div className="grid grid-flow-col gap-3 text-center auto-cols-max lg:-mb-5 lg:gap-5">
           <div className="flex flex-col">
             <Player
               autoplay
               loop
               src={timeIcon(hours)}
-              style={{ height: "200px", width: "200px" }}
+              style={{
+                height:
+                  typeof window !== "undefined" && window.innerWidth < 1024
+                    ? "0px"
+                    : "200px",
+                width:
+                  typeof window !== "undefined" && window.innerWidth < 1024
+                    ? "0px"
+                    : "200px",
+              }}
             />
           </div>
-          <div className="flex flex-col pt-10">
+          <div className="flex flex-col md:pt-10">
             <span className="countdown font-mono text-5xl">
               <span
                 style={{ "--value": String(month) } as React.CSSProperties}
@@ -63,7 +73,7 @@ export const CountDown = () => {
             </span>
             month
           </div>
-          <div className="flex flex-col pt-10">
+          <div className="flex flex-col md:pt-10">
             <span className="countdown font-mono text-5xl">
               <span
                 style={{ "--value": String(date) } as React.CSSProperties}
@@ -71,7 +81,7 @@ export const CountDown = () => {
             </span>
             day
           </div>
-          <div className="flex flex-col pt-10">
+          <div className="flex flex-col md:pt-10">
             <span className="countdown font-mono text-5xl">
               <span
                 style={{ "--value": String(hours) } as React.CSSProperties}
@@ -79,7 +89,7 @@ export const CountDown = () => {
             </span>
             hours
           </div>
-          <div className="flex flex-col pt-10">
+          <div className="flex flex-col md:pt-10">
             <span className="countdown font-mono text-5xl">
               <span
                 style={{ "--value": String(minutes) } as React.CSSProperties}
@@ -87,7 +97,7 @@ export const CountDown = () => {
             </span>
             min
           </div>
-          <div className="flex flex-col pt-10">
+          <div className="flex flex-col md:pt-10">
             <span className="countdown font-mono text-5xl">
               <span
                 style={{ "--value": String(seconds) } as React.CSSProperties}
@@ -96,10 +106,12 @@ export const CountDown = () => {
             sec
           </div>
         </div>
-        <progress className="progress progress-primary w-full" value={worktime} max="100"></progress>
+        <progress
+          className="progress progress-primary w-full"
+          value={worktime}
+          max="100"
+        ></progress>
       </div>
     </>
   );
 };
-
-

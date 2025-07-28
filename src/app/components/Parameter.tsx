@@ -68,7 +68,7 @@ export default function Parameter({
 
   return (
     <>
-      <ul className="flex flex-wrap items-center gap-3">
+      <ul className="flex flex-wrap items-center justify-center gap-3">
         {salesData.map((data, index) => (
           <li
             key={index}

@@ -37,11 +37,11 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
   }, [product]);
 
   return (
-    <dialog id="ProductEditDialog" className="modal p-10">
-      <div className="modal-box w-1/3 max-w-5xl p-10 ">
+    <dialog id="ProductEditDialog" className="modal md:p-5">
+      <div className="modal-box max-w-5xl p-10 lg:w-1/3">
         <ul className="text-xl font-medium space-y-3 mb-5">
           {/* 商品名 */}
-          <li className="flex items-center gap-4">
+          <li className="flex flex-col gap-1 md:items-center md:gap-4 md:flex-row">
             <label className="w-40">name :</label>
             <input
               id="name"
@@ -51,11 +51,11 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
                 setEditProduct({ ...editProduct, name: e.target.value })
               }
               placeholder="name"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg"
+              className="input rounded-sm border-2 p-1 text-lg md:mx-5 "
             />
           </li>
           {/* カテゴリ */}
-          <li className="flex items-center gap-4">
+          <li className="flex flex-col gap-1 md:items-center md:gap-4 md:flex-row">
             <label className="w-40">category :</label>
             <select
               id="category"
@@ -68,7 +68,7 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
                   category: Number(e.target.value),
                 })
               }
-              className="select rounded-sm mx-5 border-2 p-1 text-lg"
+              className="select rounded-sm border-2 p-1 text-lg md:mx-5"
             >
               {categoryList.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -78,7 +78,7 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
             </select>
           </li>
           {/* 説明 */}
-          <li className="flex items-center gap-4">
+          <li className="flex flex-col gap-1 md:items-center md:gap-4 md:flex-row">
             <label className="w-40">explanation :</label>
             <textarea
               name="explanation"
@@ -87,13 +87,13 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
                 setEditProduct({ ...editProduct, explanation: e.target.value })
               }
               placeholder="explanation"
-              className="rounded-sm mx-5 border-2 p-1 text-lg textarea"
+              className="rounded-sm border-2 p-1 text-lg textarea md:mx-5"
             />
           </li>
           {/* 仕入れ先 */}
-          <li className="flex items-center gap-4">
+          <li className="flex flex-col gap-1 md:items-center md:gap-4 md:flex-row">
             <label className="w-40">supplier：</label>
-            <div className="flex flex-wrap gap-2 mx-5">
+            <div className="flex flex-wrap gap-2 md:mx-5">
               {supplierList.map((supplier) => (
                 <div key={supplier.id} className="flex items-center">
                   <input
@@ -203,13 +203,13 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
           <form method="dialog" className="flex justify-center gap-2">
             <button
               type="submit"
-              className="btn btn-outline btn-success btn-wide"
+              className="btn btn-outline btn-success md:btn-wide"
               onClick={() => onSave(editProduct)}
             >
               <ListPlus />
               OK
             </button>
-            <button className="btn btn-wide">Close</button>
+            <button className="btn md:btn-wide">Close</button>
           </form>
         </div>
       </div>

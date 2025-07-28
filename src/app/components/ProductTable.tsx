@@ -77,7 +77,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
       <table className="table">
         {/* head */}
         <thead>
-          <tr>
+          <tr className="grid grid-cols-4 lg:table-row lg:grid-cols-none">
             {headerNames.map((headerName, index) => (
               <th
                 key={index}
@@ -90,7 +90,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
         </thead>
         <tbody>
           {productDatas.map((product, index) => (
-            <tr key={index}>
+            <tr key={index}  className={`grid grid-cols-4 lg:table-row lg:grid-cols-none ${index % 2 ==0 && "bg-gray-100"}`}>
               <td>{product.name}</td>
               <td>{categoryTitleChange(product.category)}</td>
               <td>{supplierTitleChange(product.supplier)}</td>
@@ -128,8 +128,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   }}
                   className="btn btn-ghost rounded-lg"
                 >
-                  <Trash2
-                  />
+                  <Trash2 />
                 </button>
               </td>
               <td className="text-center">

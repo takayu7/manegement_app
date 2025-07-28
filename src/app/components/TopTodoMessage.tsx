@@ -31,7 +31,7 @@ export const TopTodoMessage: React.FC<TopTodoMessageProps> = ({
 
   return (
     <>
-      <div className="flex items-center gap-1 pb-2 mb-4">
+      <div className="flex items-center flex-col gap-1 pb-2 mb-4 lg:flex-row">
         <Player
           autoplay
           loop
