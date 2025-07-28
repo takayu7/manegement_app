@@ -1,5 +1,5 @@
 import postgres from "postgres";
-import { User, Product, Category, Supplier, Todo } from "@/app/types/type";
+import { User, Product, Category, Supplier, Todo, CartItem } from "@/app/types/type";
 
 const sql = postgres(process.env.POSTGRES_URL!);
 
@@ -161,7 +161,7 @@ export async function updateProduct(product: Product) {
       SET
         name = ${product.name},
         category = ${product.category},
-        supplier = ${product.supplier},
+        supplier = ${product.supplier}, 
         count = ${product.count},
         cost = ${product.cost},
         price = ${product.price},
@@ -175,6 +175,26 @@ export async function updateProduct(product: Product) {
     console.log("data:", data);
 
     return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to update product.");
+  }
+}
+
+// 商品データの購入処理
+export async function updateBuyProduct(cart: CartItem[]) {
+  try {
+const results: Product[] = [];
+for (const item of cart) {
+  const data = await sql<Product[]>`
+    UPDATE product
+    SET count = count - ${item.buyCount}
+    WHERE id = ${item.id}
+    RETURNING *;
+  `;
+  results.push(...data);
+}
+return results;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to update product.");
