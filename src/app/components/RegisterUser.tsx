@@ -134,7 +134,7 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={!isAllFilled}
+            disabled={!isAllFilled || isPending}
             onClick={() => {
               hanndleClick();
             }}

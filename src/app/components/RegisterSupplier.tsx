@@ -66,7 +66,9 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
     const newId = await automaticNumbering();
     console.log(newId);
     await handleAdd(newId);
-    window.location.reload();
+    setTimeout(() => {
+      window.location.reload();
+    }, 2000);
   };
 
   return (
@@ -92,7 +94,7 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={!isAllFilled}
+            disabled={!isAllFilled || isPending}
             onClick={() => {
               hanndleClick();
             }}
