@@ -1,7 +1,7 @@
 import React from "react";
 import { Setting } from "@/app/components/Setting";
 import { CollapseUser } from "@/app/components/CollapseUser";
-import { SettingSupplier } from "@/app/components/SettingSupplier";
+import { CollapseSupplier } from "@/app/components/CollapseSupplier";
 import { createUser } from "@/app/lib/api";
 import { revalidatePath } from "next/cache";
 import { User } from "@/app/types/type";
@@ -19,7 +19,7 @@ export default function Page() {
     <>
       <Setting />
       <CollapseUser />
-      <SettingSupplier onSave={handleSave} />
+      <CollapseSupplier />
     </>
   );
 }

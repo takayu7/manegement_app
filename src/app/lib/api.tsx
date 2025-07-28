@@ -80,6 +80,24 @@ export async function fetchSupplierList() {
   }
 }
 
+// 仕入リストの登録
+export async function createSupplier(supplier: Supplier) {
+  try {
+    const data = await sql<Supplier[]>`
+      INSERT INTO supplierlist (id, name)
+      VALUES (${supplier.id}, ${supplier.name})
+      RETURNING *;
+    `;
+
+    console.log("data:", data);
+
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to create supplier.");
+  }
+}
+
 // 仕入れリストの更新
 export async function updateSupplierList(supplier: Supplier) {
   try {
@@ -241,7 +259,6 @@ export async function createTodo(todo: Todo) {
     throw new Error("Failed to create todo.");
   }
 }
-
 
 // TODOデータの更新
 export async function updateTodo(todo: Todo) {
