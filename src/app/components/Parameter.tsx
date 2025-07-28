@@ -3,8 +3,11 @@ import React from "react";
 import { jpMoneyChange, categories } from "@/app/lib/utils";
 import { Product } from "@/app/types/type";
 
-export default function Parameter({ productDataList }: { productDataList: Product[] }) {
-
+export default function Parameter({
+  productDataList,
+}: {
+  productDataList: Product[];
+}) {
   const salesData = productDataList.reduce((acc, product) => {
     const { name, cost, price, count, order } = product;
     const countPercent = Math.ceil(100 * (count / order));
@@ -93,7 +96,7 @@ export default function Parameter({ productDataList }: { productDataList: Produc
               style={
                 {
                   "--value": data.countPercent,
-                  "--size": "94px",
+                  "--size": data.countPercent === 0 ? "0px" : "96px",
                 } as React.CSSProperties
               }
               aria-valuenow={data.countPercent}

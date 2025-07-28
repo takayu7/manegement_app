@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useTransition } from "react";
 import { Product, Category, Supplier } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
-import { SquarePen, SquarePlus, ShoppingCart } from "lucide-react";
+import { SquarePen, SquarePlus, ShoppingCart, Trash2 } from "lucide-react";
 import { ProductEditDialog } from "@/app/components/ProductEditDialog";
 import { DeleteDialog } from "@/app/components/DeleteDialog";
 import { OrderDialog } from "@/app/components/OrderDialog";
@@ -42,8 +42,6 @@ const ProductTable: React.FC<ProductTableProps> = ({
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [productDatas, setProductDatas] = useState<Product[]>(productDataList);
   const [isPending, startTransition] = useTransition();
-  // 追加: useStateをコンポーネント上部に
-  const [deleteAutoplay, setDeleteAutoplay] = useState(false);
 
   // 編集ダイアログの保存処理
   const handleSave = (product: Product) => {
@@ -129,14 +127,8 @@ const ProductTable: React.FC<ProductTableProps> = ({
                     )?.showModal();
                   }}
                   className="btn btn-ghost rounded-lg"
-                  onMouseEnter={() => setDeleteAutoplay(true)}
-                  onMouseLeave={() => setDeleteAutoplay(false)}
                 >
-                  <Player
-                    autoplay={deleteAutoplay}
-                    loop
-                    src="/lottie/Delete.json"
-                    style={{ height: "30px", width: "30px" }}
+                  <Trash2
                   />
                 </button>
               </td>
@@ -172,7 +164,21 @@ const ProductTable: React.FC<ProductTableProps> = ({
           ))}
         </tbody>
       </table>
-      {isPending && <span className="text-rose-500">update...</span>}
+      {isPending && (
+        <Player
+          autoplay
+          loop
+          src="/lottie/Loading.json"
+          style={{
+            height: "100px",
+            width: "100px",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        />
+      )}
       <ProductEditDialog
         product={selectedProduct}
         categoryList={categoryList}

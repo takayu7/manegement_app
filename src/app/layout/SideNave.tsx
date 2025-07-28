@@ -9,6 +9,7 @@ import {
   Download,
   Sofa,
   Settings,
+  Power
 } from "lucide-react";
 import Image from "next/image";
 import { Loading } from "../components/Loading";
@@ -99,7 +100,7 @@ const SideNav = () => {
       {isLoading && <Loading />}
       <div className="flex h-full flex-col px-3 py-4 md:px-2">
         <button
-          className="btn mb-2 flex h-20 items-center justify-start rounded-md md:h-40 relative overflow-hidden p-0"
+          className="btn mb-2 h-0 items-center justify-start rounded-md md:h-40 relative overflow-hidden p-0 hidden md:flex"
           onClick={() =>
             (
               document.getElementById("loginDiaLog") as HTMLDialogElement
@@ -121,6 +122,7 @@ const SideNav = () => {
             onClick={() => handleNavigation("/")}
             className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
           >
+            <Power className="w-6" />
             <div className="hidden md:block">Sign Out</div>
           </button>
         </div>
