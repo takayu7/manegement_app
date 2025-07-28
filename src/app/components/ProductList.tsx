@@ -1,16 +1,14 @@
 "use client";
+import React, { startTransition, useEffect, useState } from "react";
 import Image from "next/image";
-import React, { useEffect, useState, useTransition } from "react";
 import { toast } from "react-toastify";
-// import { jpMoneyChange } from "@/app/lib/utils";
-import { Product } from "@/app/types/type";
 import { Sofa, ShoppingCart, CircleX, Plus, Minus } from "lucide-react";
+import { Product, CartItem } from "@/app/types/type";
 import { CartDialog } from "@/app/components/CartDialog";
 
 export interface ProductListProps {
   productDataList: Product[];
-  onDelete: (productId: string) => void;
-  onSave: (product: Product) => void;
+  onSave: (cart: CartItem[]) => void;
 }
 
 export const ProductList: React.FC<ProductListProps> = ({
@@ -22,7 +20,6 @@ export const ProductList: React.FC<ProductListProps> = ({
   const [buyProduct, setBuyProduct] = useState(0);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isPending, startTransition] = useTransition();
 
   const CategoryImages: Record<string, string> = {
     "1": "/product/image2.jpg",
@@ -34,52 +31,38 @@ export const ProductList: React.FC<ProductListProps> = ({
     "7": "/product/image1.jpg",
   };
 
-  type CartItem = {
-    id: string;
-    name: string;
-    count: number;
-    price: number;
-  };
-
-  const handleBuy = () => {
-    //0以下の場合返す
+  // 商品をカートに追加
+  const handleAdd = () => {
     if (!selectedProduct || buyProduct <= 0) return;
 
-    //カート商品
     const newItem: CartItem = {
       id: selectedProduct.id,
       name: selectedProduct.name,
-      count: buyProduct,
+      buyCount: buyProduct,
       price: selectedProduct.price,
     };
 
-    //追加
-    setCartItems([...cartItems, newItem]);
-
-    // 在庫を更新
-    const updatedProduct = {
-      ...selectedProduct,
-      count: selectedProduct.count - buyProduct,
-    };
-
-    setProductDatas((prev) =>
-      prev.map((p) => (p.id === updatedProduct.id ? updatedProduct : p))
-    );
-
-    onSave(updatedProduct);
-
-    setSelectedProduct(null);
-    setBuyProduct(0);
-
-    //トースト表示
-    toast.success("Thank you for your purchase!!", {
-      position: "bottom-right",
-      autoClose: 4000, //4秒
-      theme: "colored",
+    setCartItems((prev) => {
+      return [...prev, newItem];
     });
 
-    // カードを閉じる
+    setBuyProduct(0);
     setSelectedProduct(null);
+
+    toast.success("Added to cart", {
+      position: "bottom-right",
+      autoClose: 4000,
+      theme: "colored",
+    });
+  };
+
+  // カート商品を購入
+  const handleBuy = (cart: CartItem[]) => {
+    startTransition(() => {
+      onSave(cart);
+    });
+    setCartItems([]);
+    setIsCartOpen(false);
   };
 
   useEffect(() => {
@@ -127,7 +110,7 @@ export const ProductList: React.FC<ProductListProps> = ({
         </div>
         <div className="indicator fixed top-35 right-30">
           <span className="indicator-item badge badge-primary">
-            {buyProduct}
+            {cartItems.length}
           </span>
           <button
             onClick={() => setIsCartOpen(true)}
@@ -188,10 +171,9 @@ export const ProductList: React.FC<ProductListProps> = ({
               <div className="flex items-end">
                 <button
                   type="submit"
-                  className="btn btn-outline btn-success btn-lg absolute bottom-7 right-10 hover:"
+                  className="btn btn-outline btn-success btn-lg absolute bottom-7 right-10"
                   onClick={() => {
-                    onSave(selectedProduct);
-                    handleBuy();
+                    handleAdd();
                   }}
                 >
                   <ShoppingCart className="mr-0.5" />
@@ -212,9 +194,10 @@ export const ProductList: React.FC<ProductListProps> = ({
       )}
       {isCartOpen && (
         <CartDialog
+          product={productDataList}
           cartItems={cartItems}
           onClose={() => setIsCartOpen(false)}
-          onDelete={() => setIsCartOpen(false)}
+          onSave={handleBuy}
         />
       )}
     </>
