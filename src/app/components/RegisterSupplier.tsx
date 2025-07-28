@@ -29,37 +29,43 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
     const maxId = Math.max(
       ...suppliers.map((supplier: { id: number }) => supplier.id)
     );
-    setAddSupplier({ ...addSupplier, id: maxId + 1 });
+    let newId = maxId + 1;
+    //setAddSupplier({ ...addSupplier, id: maxId + 1 });
     //IDが連番になっているかの確認
     for (const comparedSupplier of suppliers) {
       if (comparedSupplier.id === previousId + 1) {
         previousId += 1;
       } else {
-        setAddSupplier({ ...addSupplier, id: previousId + 1 });
+        newId = previousId + 1;
+        //setAddSupplier({ ...addSupplier, id: previousId + 1 });
         break;
       }
     }
+    return newId;
   }
 
-  useEffect(() => {
-    automaticNumbering();
-  }, []);
+  // useEffect(() => {
+  //   automaticNumbering();
+  // }, []);
 
   //addボタン
-  const handleAdd = async () => {
+  const handleAdd = async (newId: number) => {
     const result = confirm("Would you like to register?");
+    const newSupplier = { ...addSupplier, id: newId };
     if (result) {
-      console.log("ID : " + addSupplier.id);
-      console.log(addSupplier);
+      console.log("ID : " + newSupplier.id);
+      console.log(newSupplier);
       startTransition(() => {
-        onSave(addSupplier);
+        onSave(newSupplier);
       });
       setAddSupplier(defaultData);
     }
   };
 
   const hanndleClick = async () => {
-    await handleAdd();
+    const newId = await automaticNumbering();
+    console.log(newId);
+    await handleAdd(newId);
     window.location.reload();
   };
 
