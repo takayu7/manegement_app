@@ -31,16 +31,16 @@ export const SaleDialog: React.FC<EditDialogProps> = ({ product, onSave }) => {
   const stock = product?.count || 0;
 
   return (
-    <dialog id="SaleDialog" className="modal p-10">
-      <div className="modal-box w-1/3 max-w-5xl p-10 ">
+    <dialog id="SaleDialog" className="modal md:p-5">
+      <div className="modal-box max-w-5xl p-10 lg:w-1/3">
         <ul className="text-xl font-medium space-y-5 mb-5">
           {/* 商品名 */}
           <li className="flex items-center justify-center">
             <span>{editProduct.name || "No Name"}</span>
           </li>
-          <li className="flex items-center justify-between">
+          <li className="flex items-center flex-col md:flex-row md:justify-between">
             <label>count：</label>
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center justify-center gap-4 mt-3 md:mt-0">
               <label>{stock}</label>
               <label>→</label>
               <label>{editProduct.count}</label>
@@ -72,13 +72,13 @@ export const SaleDialog: React.FC<EditDialogProps> = ({ product, onSave }) => {
           <form method="dialog" className="flex justify-center gap-2">
             <button
               type="submit"
-              className="btn btn-outline btn-success btn-wide"
+              className="btn btn-outline btn-success md:btn-wide"
               onClick={() => onSave(editProduct)}
             >
               <ListPlus />
               OK
             </button>
-            <button className="btn btn-wide">Close</button>
+            <button className="btn md:btn-wide">Close</button>
           </form>
         </div>
       </div>

@@ -101,7 +101,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
               <td>{jpMoneyChange(product.price)}</td>
               <td>{jpMoneyChange(product.cost * product.count)}</td>
               <td>{jpMoneyChange(product.price * product.count)}</td>
-              <td className="text-center">
+              <td className="-ml-2 md:ml-0 md:text-center">
                 <button
                   onClick={() => {
                     setSelectedProduct(product);
@@ -116,7 +116,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   <SquarePen />
                 </button>
               </td>
-              <td className="text-center">
+              <td className="-ml-2 md:ml-0 md:text-center">
                 <button
                   onClick={() => {
                     setSelectedProduct(product);
@@ -131,7 +131,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   <Trash2 />
                 </button>
               </td>
-              <td className="text-center">
+              <td className="-ml-2 md:ml-0 md:text-center">
                 <button
                   onClick={() => {
                     setSelectedProduct(product);
@@ -146,7 +146,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   <SquarePlus />
                 </button>
               </td>
-              <td className="text-center">
+              <td className="-ml-2 md:ml-0 md:text-center">
                 <button
                   onClick={() => {
                     setSelectedProduct(product);
