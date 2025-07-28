@@ -19,9 +19,9 @@ export const IconData = [
   },
   {
     id: 4,
-    name: "Evil Rabbit",
+    name: "Junping Bullfighting",
     password: "4",
-    staffImage: "/staff/evil-rabbit.png",
+    staffImage: "/staff/junping-bullfighting.png",
   },
   {
     id: 5,
@@ -31,8 +31,8 @@ export const IconData = [
   },
   {
     id: 6,
-    name: "Michael Novotny",
+    name: "Squirrel",
     password: "6",
-    staffImage: "/staff/michael-novotny.png",
+    staffImage: "/staff/squirrel.png",
   },
 ];
