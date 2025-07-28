@@ -1,8 +1,8 @@
 import ProductList from "@/app/components/ProductList";
-import { fetchProductDatas, updateProduct, updateBuyProduct } from "@/app/lib/api";
+import { fetchProductDatas, updateBuyProduct } from "@/app/lib/api";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import type { CartItem, Product } from "@/app/types/type";
+import type { CartItem } from "@/app/types/type";
 import { revalidatePath } from "next/cache";
 
 export default async function ProductListPage() {

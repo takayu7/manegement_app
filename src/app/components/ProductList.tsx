@@ -31,7 +31,7 @@ export const ProductList: React.FC<ProductListProps> = ({
     "7": "/product/image1.jpg",
   };
 
-  // 商品をカートに追加
+  // 商品をカートに追加ボタン
   const handleAdd = () => {
     if (!selectedProduct || buyProduct <= 0) return;
 
@@ -56,13 +56,18 @@ export const ProductList: React.FC<ProductListProps> = ({
     });
   };
 
-  // カート商品を購入
+  // カート商品の購入ボタン
   const handleBuy = (cart: CartItem[]) => {
     startTransition(() => {
       onSave(cart);
     });
     setCartItems([]);
     setIsCartOpen(false);
+  };
+
+  //削除ボタン
+  const handleDelete = (id: string) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
   useEffect(() => {
@@ -160,7 +165,9 @@ export const ProductList: React.FC<ProductListProps> = ({
                     </button>
                     <button
                       className="btn btn-outline btn-error"
-                      onClick={() => setBuyProduct(buyProduct - 1)}
+                      onClick={() =>
+                        setBuyProduct(buyProduct > 0 ? buyProduct - 1 : 0)
+                      }
                     >
                       <Minus />
                     </button>
@@ -174,7 +181,9 @@ export const ProductList: React.FC<ProductListProps> = ({
                   className="btn btn-outline btn-success btn-lg absolute bottom-7 right-10"
                   onClick={() => {
                     handleAdd();
+            
                   }}
+                  disabled={buyProduct < 1}
                 >
                   <ShoppingCart className="mr-0.5" />
                   cart
@@ -198,6 +207,7 @@ export const ProductList: React.FC<ProductListProps> = ({
           cartItems={cartItems}
           onClose={() => setIsCartOpen(false)}
           onSave={handleBuy}
+          onDelete={handleDelete}
         />
       )}
     </>
