@@ -1,18 +1,44 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { jpMoneyChange, categories } from "@/app/lib/utils";
-import { Product } from "@/app/types/type";
+import { Product, Category } from "@/app/types/type";
+import { ProductDetailDialog } from "@/app/components/ProductDetailDialog";
+
+export type SalesData = { name: string; category:number; cost: number; price: number; count: number; order: number; countPercent: number }
+
+  // 商品の現状利益状態
+  export const salesCheck = (data: {
+    price: number;
+    order: number;
+    count: number;
+    cost: number;
+  }) => {
+    return data.price * (data.order - data.count) - data.cost * data.order;
+  };
 
 export default function Parameter({
   productDataList,
+  categoryList,
 }: {
   productDataList: Product[];
+  categoryList: Category[];
 }) {
+  const [selectedProduct, setSelectedProduct] = useState<SalesData>({
+    name: "",
+    category: 1,
+    count: 0,
+    cost: 0,
+    order: 0,
+    price: 0,
+    countPercent: 0,
+  });
+
   const salesData = productDataList.reduce((acc, product) => {
-    const { name, cost, price, count, order } = product;
+    const { name, category, cost, price, count, order } = product;
     const countPercent = Math.ceil(100 * (count / order));
     acc.push({
       name: name,
+      category: category,
       cost: cost,
       price: price,
       count: count,
@@ -20,7 +46,7 @@ export default function Parameter({
       countPercent: countPercent,
     });
     return acc;
-  }, [] as { name: string; cost: number; price: number; count: number; order: number; countPercent: number }[]);
+  }, [] as SalesData[]);
 
   const totalSales = productDataList.reduce(
     (total, product) =>
@@ -48,14 +74,7 @@ export default function Parameter({
     {}
   );
 
-  const salesCheck = (data: {
-    price: number;
-    order: number;
-    count: number;
-    cost: number;
-  }) => {
-    return data.price * (data.order - data.count) - data.cost * data.order;
-  };
+
 
   const bgColor = (countPercent: number) => {
     if (countPercent >= 1 && countPercent <= 20) {
@@ -70,11 +89,19 @@ export default function Parameter({
     <>
       <ul className="flex flex-wrap items-center justify-center gap-3">
         {salesData.map((data, index) => (
-          <li
+          <button
             key={index}
-            className={`flex items-center gap-4  rounded-lg p-4 shadow-md ${bgColor(
+            className={`btn flex items-center gap-4 h-32  rounded-lg p-4 shadow-md ${bgColor(
               data.countPercent
             )}`}
+            onClick={() => {
+              setSelectedProduct(data);
+              (
+                document.getElementById(
+                  "ProductDetailDialog"
+                ) as HTMLDialogElement
+              )?.showModal();
+            }}
           >
             <div className="w-40">
               <span>{data.name}</span>
@@ -104,7 +131,7 @@ export default function Parameter({
             >
               {data.countPercent}%
             </div>
-          </li>
+          </button>
         ))}
       </ul>
       <ul className="flex items-center flex-wrap justify-between gap-1 mt-5">
@@ -127,6 +154,10 @@ export default function Parameter({
       >
         Cost of goods sold: {jpMoneyChange(totalSales)}
       </div>
+      <ProductDetailDialog
+        product={selectedProduct}
+        categoryList={categoryList}
+      />
     </>
   );
 }
