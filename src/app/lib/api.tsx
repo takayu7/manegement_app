@@ -1,5 +1,12 @@
 import postgres from "postgres";
-import { User, Product, Category, Supplier, Todo, CartItem } from "@/app/types/type";
+import {
+  User,
+  Product,
+  Category,
+  Supplier,
+  Todo,
+  CartItem,
+} from "@/app/types/type";
 
 const sql = postgres(process.env.POSTGRES_URL!);
 
@@ -202,17 +209,17 @@ export async function updateProduct(product: Product) {
 // 商品データの購入処理
 export async function updateBuyProduct(cart: CartItem[]) {
   try {
-const results: Product[] = [];
-for (const item of cart) {
-  const data = await sql<Product[]>`
+    const results: Product[] = [];
+    for (const item of cart) {
+      const data = await sql<Product[]>`
     UPDATE product
     SET count = count - ${item.buyCount}
     WHERE id = ${item.id}
     RETURNING *;
   `;
-  results.push(...data);
-}
-return results;
+      results.push(...data);
+    }
+    return results;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to update product.");
@@ -242,14 +249,14 @@ export async function fetchTodo() {
   try {
     const data = await sql<Todo[]>`
       SELECT
-        todo.id AS id,
-        todoid,
+        todo.userId AS userId,
+        todo.todoId,
         users.name,
         users.icon,
-        todo,
-        deadline,
-        checked
-      FROM todo INNER JOIN users ON todo.id = users.id
+        todo.todo,
+        todo.deadline,
+        todo.checked
+      FROM todo INNER JOIN users ON todo.userId = users.id
       ORDER BY deadline;
     `;
 
@@ -266,8 +273,8 @@ export async function fetchTodo() {
 export async function createTodo(todo: Todo) {
   try {
     const data = await sql<Todo[]>`
-      INSERT INTO todo (id,todo, deadline, checked)
-      VALUES (${todo.id}, ${todo.todo}, ${todo.deadline}, ${todo.checked})
+      INSERT INTO todo (userId,todo, deadline, checked)
+      VALUES (${todo.userid}, ${todo.todo}, ${todo.deadline}, ${todo.checked})
       RETURNING *;
     `;
 
@@ -290,7 +297,7 @@ export async function updateTodo(todo: Todo) {
         deadline = ${todo.deadline},
         checked = ${todo.checked}
       WHERE
-        id = ${todo.id}
+        todoId = ${todo.todoid}
       RETURNING *;
     `;
 
@@ -308,7 +315,7 @@ export async function deleteTodo(todoId: string) {
   try {
     const data = await sql<Todo[]>`
       DELETE FROM todo
-      WHERE id = ${todoId}
+      WHERE todoId = ${todoId}
       RETURNING *;
     `;
 
