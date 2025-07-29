@@ -6,6 +6,7 @@ import {
   Supplier,
   Todo,
   CartItem,
+  Sort
 } from "@/app/types/type";
 
 const sql = postgres(process.env.POSTGRES_URL!);
@@ -145,10 +146,29 @@ export async function deleteSupplierList(id: number) {
 }
 
 // 商品データの取得
-export async function fetchProductDatas() {
+export async function fetchProductDatas(sort: Sort | null = null) {
+    // 許可された値のみを使用
+  const allowedSortFields = ["name","category","supplier","count","cost","price","order"] as const;
+  const allowedSortOrders = ['ASC', 'DESC'] as const;
+
+  // デフォルト値
+  let sortField = 'name';
+  let sortOrder = 'ASC';
+
+    // バリデーション
+  if (sort) {
+    if (allowedSortFields.includes(sort.sort as any)) {
+      sortField = sort.sort;
+    }
+    if (allowedSortOrders.includes(sort.line as any)) {
+      sortOrder = sort.line;
+    }
+  }
+
   try {
     const data = await sql<Product[]>`
-    SELECT * FROM product ORDER BY name
+      SELECT * FROM product
+      ORDER BY ${sql.unsafe(sortField)} ${sql.unsafe(sortOrder)}
     `;
 
     console.log("data:", data);
@@ -186,7 +206,7 @@ export async function updateProduct(product: Product) {
       SET
         name = ${product.name},
         category = ${product.category},
-        supplier = ${product.supplier}, 
+        supplier = ${product.supplier},
         count = ${product.count},
         cost = ${product.cost},
         price = ${product.price},

@@ -45,3 +45,17 @@ export type CartItem = {
   buyCount: number;
   price: number;
 };
+
+export type Sort =
+  | {
+      sort:
+        | "name"
+        | "category"
+        | "supplier"
+        | "count"
+        | "cost"
+        | "price"
+        | "order"
+        | "explanation";
+      line: "asc" | "desc";
+    }
