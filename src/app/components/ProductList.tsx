@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { Sofa, ShoppingCart, CircleX, Plus, Minus } from "lucide-react";
 import { Product, CartItem } from "@/app/types/type";
 import { CartDialog } from "@/app/components/CartDialog";
+import { Player } from "@lottiefiles/react-lottie-player";
 
 export interface ProductListProps {
   productDataList: Product[];
@@ -17,9 +18,16 @@ export const ProductList: React.FC<ProductListProps> = ({
 }) => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [productDatas, setProductDatas] = useState<Product[]>(productDataList);
-  const [buyProduct, setBuyProduct] = useState(0);
+  const [buyProductId, setBuyProductId] = useState<{ [id: string]: number }>(
+    {}
+  );
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [showThanks, setShowThanks] = useState(false);
+
+  const buyProduct = selectedProduct
+    ? buyProductId[selectedProduct.id] || 0
+    : 0;
 
   const CategoryImages: Record<string, string> = {
     "1": "/product/image2.jpg",
@@ -35,21 +43,40 @@ export const ProductList: React.FC<ProductListProps> = ({
   const handleAdd = () => {
     if (!selectedProduct || buyProduct <= 0) return;
 
-    const newItem: CartItem = {
-      id: selectedProduct.id,
-      name: selectedProduct.name,
-      buyCount: buyProduct,
-      price: selectedProduct.price,
-    };
+    const existingItem = cartItems.findIndex(
+      (item) => selectedProduct.id === item.id
+    );
 
-    setCartItems((prev) => {
-      return [...prev, newItem];
-    });
+    if (existingItem >= 0) {
+      const updateCartItems = [...cartItems];
+      updateCartItems[existingItem] = {
+        ...updateCartItems[existingItem],
+        buyCount: updateCartItems[existingItem].buyCount + buyProduct,
+      };
+      setCartItems(updateCartItems);
+    } else {
+      const newItem: CartItem = {
+        id: selectedProduct.id,
+        name: selectedProduct.name,
+        buyCount: buyProduct,
+        price: selectedProduct.price,
+        count: selectedProduct.count,
+      };
+      setCartItems((prev) => {
+        return [...prev, newItem];
+      });
+    }
 
-    setBuyProduct(0);
+    //初期化
+    setBuyProductId((prev) => ({
+      ...prev,
+      [selectedProduct.id]: 0,
+    }));
+
+    //カードを閉じる
     setSelectedProduct(null);
 
-    toast.success("Added to cart", {
+    toast.error("Added to cart", {
       position: "bottom-right",
       autoClose: 4000,
       theme: "colored",
@@ -61,6 +88,8 @@ export const ProductList: React.FC<ProductListProps> = ({
     startTransition(() => {
       onSave(cart);
     });
+    setShowThanks(true);
+    setTimeout(() => setShowThanks(false), 4000);
     setCartItems([]);
     setIsCartOpen(false);
   };
@@ -76,6 +105,16 @@ export const ProductList: React.FC<ProductListProps> = ({
 
   return (
     <>
+      {showThanks && (
+        <div className="fixed inset-0 z-50 pointer-events-none">
+          <Player
+            autoplay
+            loop={false}
+            src="/lottie/Thanks.json"
+            style={{ height: "100vh", width: "100vw" }}
+          />
+        </div>
+      )}
       <main>
         <h1 className="mb-10 text-xl md:text-4xl font-bold">
           <Sofa className="inline-block mr-2.5 size-10" />
@@ -103,7 +142,7 @@ export const ProductList: React.FC<ProductListProps> = ({
                 </h2>
                 <div className="card-actions justify-center">
                   <button
-                    className="btn btn-success btn-dash btn-wide mt-1.5 "
+                    className="btn bg-white btn-dash btn-wide mt-1.5 text-blue-800 hover:bg-blue-900 hover:text-white "
                     onClick={() => setSelectedProduct(product)}
                   >
                     details
@@ -113,13 +152,16 @@ export const ProductList: React.FC<ProductListProps> = ({
             </div>
           ))}
         </div>
+        {/* カートボタン */}
         <div className="indicator fixed top-35 right-30">
-          <span className="indicator-item badge badge-primary">
-            {cartItems.length}
-          </span>
+          {cartItems.length > 0 && (
+            <span className="indicator-item badge badge-primary bg-blue-900 rounded-full ">
+              {cartItems.length}
+            </span>
+          )}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="btn btn-lg btn-accent"
+            className="btn btn-xl btn-error text-white btn-circle"
           >
             <ShoppingCart />
           </button>
@@ -140,36 +182,56 @@ export const ProductList: React.FC<ProductListProps> = ({
                   alt={selectedProduct.name}
                   width={250}
                   height={100}
-                  className="rounded-xl"
+                  className="rounded-xl "
                 />
               </div>
 
-              <div className="flex flex-col">
+              <div className="flex flex-col ">
                 <div className="mb-5">
                   <h2 className="text-2xl font-bold">{selectedProduct.name}</h2>
                   <p className="mt-4 text-sm">{selectedProduct.explanation}</p>
                 </div>
                 <div className="mb-5">
                   <p className="mt-2">price：{selectedProduct.price}</p>
-                  <p className="mt-2">stock：{selectedProduct.count}</p>
+                  <p className="mt-2">
+                    stock：
+                    {selectedProduct.count > 0 ? (
+                      selectedProduct.count
+                    ) : (
+                      <span className="text-red-600">sold out</span>
+                    )}
+                  </p>
                 </div>
                 <div className="flex items-end">
                   <label className="mt-2">buy :</label>
                   <label>{buyProduct}</label>
                   <div className="flex items-center gap-4 ml-6">
                     <button
-                      className="btn btn-outline btn-success"
-                      onClick={() => setBuyProduct(buyProduct + 1)}
-                    >
-                      <Plus />
-                    </button>
-                    <button
                       className="btn btn-outline btn-error"
-                      onClick={() =>
-                        setBuyProduct(buyProduct > 0 ? buyProduct - 1 : 0)
-                      }
+                      onClick={() => {
+                        setBuyProductId((prev) => ({
+                          ...prev,
+                          [selectedProduct.id]: buyProduct - 1,
+                        }));
+                      }}
+                      disabled={buyProduct <= 0}
                     >
                       <Minus />
+                    </button>
+                    <button
+                      className="btn btn-outline btn-success"
+                      onClick={() => {
+                        setBuyProductId((prev) => ({
+                          ...prev,
+                          [selectedProduct.id]: buyProduct + 1,
+                        }));
+                      }}
+                      disabled={
+                        selectedProduct.count <= 0 ||
+                        selectedProduct.count <= buyProduct
+                      }
+                    >
+                      <Plus />
                     </button>
                   </div>
                 </div>
@@ -178,11 +240,8 @@ export const ProductList: React.FC<ProductListProps> = ({
               <div className="flex items-end">
                 <button
                   type="submit"
-                  className="btn btn-outline btn-success btn-lg absolute bottom-7 right-10"
-                  onClick={() => {
-                    handleAdd();
-            
-                  }}
+                  className="btn btn-outline btn-error btn-lg absolute bottom-7 right-10 hover:text-white"
+                  onClick={handleAdd}
                   disabled={buyProduct < 1}
                 >
                   <ShoppingCart className="mr-0.5" />
@@ -208,6 +267,7 @@ export const ProductList: React.FC<ProductListProps> = ({
           onClose={() => setIsCartOpen(false)}
           onSave={handleBuy}
           onDelete={handleDelete}
+
         />
       )}
     </>

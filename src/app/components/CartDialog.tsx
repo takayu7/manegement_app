@@ -4,6 +4,9 @@ import { jpMoneyChange } from "@/app/lib/utils";
 import { Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import { CartItem, Product } from "@/app/types/type";
+import { Plus, Minus, ShoppingBag } from "lucide-react";
+import { useEffect, useState } from "react";
+
 // import React, { useState, useTransition } from "react";
 
 interface CartDialogProps {
@@ -20,70 +23,133 @@ export const CartDialog: React.FC<CartDialogProps> = ({
   onSave,
   onDelete,
 }) => {
-  // const [deleteCartItem, setDeleteCartItem] = useState<string | null>(null);
-  // const [itemsInCart, setItemsInCart] = useState(0);
-  // const [isPending, startTransition] = useTransition();
+  const [items, setItems] = useState<CartItem[]>([]);
 
   //カート内商品の合計金額
-  const total = cartItems.reduce(
+  const total = items.reduce(
     (sum, item) => sum + item.price * item.buyCount,
     0
   );
 
   //購入ボタン
   const handleBuy = (cart: CartItem[]) => {
-    if (cartItems.length === 0) return;
+    if (items.length === 0) return;
 
     onSave(cart);
 
     //トースト
-    toast.success("Thank you for your purchase!!", {
+    toast.error("Thank you for your purchase!!", {
       position: "bottom-right",
       autoClose: 4000, //4秒
       theme: "colored",
     });
   };
 
+  useEffect(() => {
+    setItems(cartItems);
+  }, [cartItems]);
+
+  //購入数変更ボタン（プラス）
+  const handleIncrease = (id: string) => {
+    setItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, buyCount: item.buyCount + 1 } : item
+      )
+    );
+  };
+
+  //購入数変更ボタン（マイナス）
+  const handleDecrease = (id: string) => {
+    setItems((prev) =>
+      prev
+        .map((item) =>
+          item.id === id ? { ...item, buyCount: item.buyCount - 1 } : item
+        )
+        .filter((item) => item.buyCount > 0)//数量が0の場合は削除
+    );
+  };
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center">
-      <div className="bg-white p-6 rounded-xl shadow-lg w-[500px] ">
-        <h2 className="text-2xl font-bold mb-4 flex justify-center">Cart</h2>
-        {cartItems.length === 0 ? (
-          <p>Your cart is empty :( </p> //カートが空の場合
-        ) : (
-          <ul className="space-y-4 text-lg">
-            {cartItems.map((item) => (
-              <li key={item.id} className="flex justify-between items-center">
-                <label>{item.name}</label>
-                <p>
-                  ¥{item.price} × {item.buyCount}set = ¥
-                  {item.buyCount * item.price}
-                </p>
-                {/* <p>{jpMoneyChange(item.price)} × {item.buyCount}set = {jpMoneyChange(item.price * item.buyCount)}</p> */}
-                <button
-                  type="submit"
-                  className="btn btn-ghost rounded-lg"
-                  onClick={() => onDelete(item.id)}
+    <>
+      <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center">
+        <div className="bg-white p-8 rounded-2xl w-full max-w-[600px] ">
+          <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
+            Cart
+          </h2>
+          {items.length === 0 ? (
+            <p className="text-center text-gray-500 italic">
+              Your cart is empty :(
+            </p> //カートが空の場合
+          ) : (
+            <ul className="space-y-4 text-base text-gray-800">
+              {items.map((item) => (
+                <li
+                  key={item.id}
+                  className="flex items-center justify-between bg-pink-100 rounded-xl p-3 shadow-sm"
                 >
-                  <Trash2 />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
-        <p className="mt-8 font-bold flex justify-end">
-          Total:{jpMoneyChange(total)}
-        </p>
-        <div className="flex justify-center gap-3">
-          <button className="btn btn-success mt-4" onClick={() => handleBuy(cartItems)} disabled={cartItems.length === 0}>
-            Buy
-          </button>
-          <button className="btn btn-error mt-4" onClick={onClose}>
-            Cancel
-          </button>
+                  <div className="flex flex-col">
+                    <p className="font-semibold text-lg">{item.name}</p>
+                    <p className="text-sm text-gray-600 flex ">
+                      {jpMoneyChange(item.price)}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 ml-6">
+                      <button
+                        className="btn btn-sm btn-outline"
+                        onClick={() => handleDecrease(item.id)}
+                      >
+                        <Minus />
+                      </button>
+                      <label>{item.buyCount}</label>
+                      <button
+                        className="btn btn-sm btn-outline"
+                        onClick={() => handleIncrease(item.id)}
+                        disabled={item.count <= item.buyCount}
+                      >
+                        <Plus />
+                      </button>
+                    </div>
+
+                    <p> items</p>
+                    <p className="text-blue-900 font-bold text-lg">
+                      {jpMoneyChange(item.price * item.buyCount)}
+                    </p>
+                    <button
+                      type="button"
+                      className="btn btn-ghost hover:text-red-700"
+                      onClick={() => onDelete(item.id)}
+                    >
+                      <Trash2 />
+                    </button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="mt-8 font-bold flex justify-end text-xl text-gray-800">
+            Total:{jpMoneyChange(total)}
+          </p>
+
+          <div className="flex justify-center gap-4 mt-6">
+            <button
+              className="btn btn-error btn-lg px-6 py-2 text-white font-semibold rounded-lg"
+              onClick={() => handleBuy(items)}
+              disabled={items.length === 0}
+            >
+              <ShoppingBag />
+              Buy
+            </button>
+            <button
+              className="btn bg-blue-900 btn-lg px-6 py-2 text-white font-semibold rounded-lg"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
