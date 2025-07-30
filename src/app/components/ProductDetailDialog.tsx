@@ -4,7 +4,8 @@ import React, { useState, useEffect } from "react";
 import { Category } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
 import { SalesData } from "@/app/components/Parameter";
-import { salesCheck } from "@/app/components/Parameter"
+import { salesCheck } from "@/app/components/Parameter";
+import { Player } from "@lottiefiles/react-lottie-player";
 
 export interface EditDialogProps {
   product: SalesData;
@@ -42,6 +43,23 @@ export const ProductDetailDialog: React.FC<EditDialogProps> = ({
     e.stopPropagation();
   };
 
+  // 損益分岐点までの個数の割合を求める
+  const breakEvenPointPercent=(editProduct:SalesData) =>{
+    return ((editProduct.order - editProduct.count) / ((editProduct.cost * editProduct.order) / editProduct.price)) * 100;
+  }
+
+  // 損益分岐までの達成度をイラストで表示
+  const progressImageShow = (editProduct:SalesData) => {
+    if (breakEvenPointPercent(editProduct) < 30) {
+      return "/lottie/bad.json";
+    }else if (breakEvenPointPercent(editProduct) < 99) {
+      return "/lottie/middle.json";
+
+    }else {
+      return "/lottie/success.json";
+    }
+  };
+
   return (
     <dialog
       id="ProductDetailDialog"
@@ -49,10 +67,10 @@ export const ProductDetailDialog: React.FC<EditDialogProps> = ({
       onClick={handleDialogClick}
     >
       <div
-        className="modal-box max-w-5xl p-10 lg:w-1/2"
+        className="modal-box flex max-w-5xl p-10 lg:w-2/3"
         onClick={handleBoxClick}
       >
-        <ul className="text-xl grid grid-cols-2 font-medium space-y-3 mb-5">
+        <ul className="text-xl grid grid-cols-2 w-2/3 font-medium space-y-3 mb-5">
           {/* 商品名 */}
           <li className="flex flex-col gap-1 md:items-center md:gap-4 md:flex-row">
             <label className="w-30">name :</label>
@@ -109,7 +127,7 @@ export const ProductDetailDialog: React.FC<EditDialogProps> = ({
               {Math.floor((1 - editProduct.cost / editProduct.price) * 100)}%
             </label>
           </li>
-           {/* 現状利益 */}
+          {/* 現状利益 */}
           <li className="flex items-center gap-4">
             <label className="w-30">totalProfit：</label>
             <label className="text-lg">
@@ -118,12 +136,28 @@ export const ProductDetailDialog: React.FC<EditDialogProps> = ({
           </li>
           {/* 何個売れば利益でるか */}
           <li className="flex items-center gap-4">
-            <label className="w-30">Break-even：</label>
+            <label className="w-36">Break-even：</label>
             <label className="text-lg">
-              {Math.floor((editProduct.cost * editProduct.order) / editProduct.price)}set
+              {Math.floor(
+                (editProduct.cost * editProduct.order) / editProduct.price
+              )}
+              set
             </label>
           </li>
         </ul>
+        <div className="flex flex-col items-center justify-center">
+          <Player
+          autoplay
+          loop
+          src={progressImageShow(editProduct)}
+          style={{ height: "300px", width: "300px" }}
+        />
+          <progress
+            className={`progress bg-gray-300 w-56 ${breakEvenPointPercent(editProduct) < 100 ? "progress-error" : "progress-success"}`}
+            value={breakEvenPointPercent(editProduct)}
+            max="100"
+          ></progress>
+        </div>
       </div>
     </dialog>
   );

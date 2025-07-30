@@ -32,6 +32,7 @@ const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({ onSave }) => {
       .finally(() => setLoading(false));
   }, [userId]);
 
+  // 購入商品のテストデータ
   const testData: BuyProductList[] = [
     {
       id: "a11111",
@@ -70,7 +71,7 @@ const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({ onSave }) => {
         history.map((item) => (
           <div key={item.buyGroupId} className="bg-gray-50 rounded-lg p-4 mb-2">
             {item.productList.map((product, index) => (
-              <>
+              <React.Fragment key={index}>
                 <div>
                   {index === 0 && product.buyDate
                     ? product.buyDate
@@ -85,7 +86,7 @@ const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({ onSave }) => {
                     : null}
                 </div>
                 <ul
-                  key={product.id}
+                  key={`ul-${product.id || index}`}
                   className=" grid grid-cols-4 gap-2 border-b-2 border-gray-300"
                 >
                   <li>{product.name}</li>
@@ -93,7 +94,7 @@ const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({ onSave }) => {
                   <li>{product.count} set</li>
                   <li>{jpMoneyChange(product.price * product.count)}</li>
                 </ul>
-              </>
+              </React.Fragment>
             ))}
             <div className="font-bold text-end">
               {jpMoneyChange(totalCost(item.productList))}

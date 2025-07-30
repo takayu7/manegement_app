@@ -47,18 +47,6 @@ export const OrderDialog: React.FC<EditDialogProps> = ({ product, onSave }) => {
             </div>
             <div className="flex items-center gap-4 mt-3 md:mt-0">
               <button
-                className="btn btn-outline btn-success btn-sm"
-                onClick={() => {
-                  setEditProduct({
-                    ...editProduct,
-                    count: editProduct.count + 1,
-                    order: editProduct.order + 1,
-                  });
-                }}
-              >
-                <Plus />
-              </button>
-              <button
                 className="btn btn-outline btn-error btn-sm"
                 onClick={() => {
                   if (stock < editProduct.count) {
@@ -71,6 +59,18 @@ export const OrderDialog: React.FC<EditDialogProps> = ({ product, onSave }) => {
                 }}
               >
                 <Minus />
+              </button>
+              <button
+                className="btn btn-outline btn-success btn-sm"
+                onClick={() => {
+                  setEditProduct({
+                    ...editProduct,
+                    count: editProduct.count + 1,
+                    order: editProduct.order + 1,
+                  });
+                }}
+              >
+                <Plus />
               </button>
             </div>
           </li>

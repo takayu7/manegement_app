@@ -4,17 +4,25 @@ import { jpMoneyChange, categories } from "@/app/lib/utils";
 import { Product, Category } from "@/app/types/type";
 import { ProductDetailDialog } from "@/app/components/ProductDetailDialog";
 
-export type SalesData = { name: string; category:number; cost: number; price: number; count: number; order: number; countPercent: number }
+export type SalesData = {
+  name: string;
+  category: number;
+  cost: number;
+  price: number;
+  count: number;
+  order: number;
+  countPercent: number;
+};
 
-  // 商品の現状利益状態
-  export const salesCheck = (data: {
-    price: number;
-    order: number;
-    count: number;
-    cost: number;
-  }) => {
-    return data.price * (data.order - data.count) - data.cost * data.order;
-  };
+// 商品の現状利益状態
+export const salesCheck = (data: {
+  price: number;
+  order: number;
+  count: number;
+  cost: number;
+}) => {
+  return data.price * (data.order - data.count) - data.cost * data.order;
+};
 
 export default function Parameter({
   productDataList,
@@ -35,7 +43,8 @@ export default function Parameter({
 
   const salesData = productDataList.reduce((acc, product) => {
     const { name, category, cost, price, count, order } = product;
-    const countPercent = Math.ceil(100 * (count / order));
+    // orderが0の場合はcountPercentを0にする
+    const countPercent = order === 0 ? 0 : Math.ceil(100 * (count / order));
     acc.push({
       name: name,
       category: category,
@@ -74,8 +83,6 @@ export default function Parameter({
     {}
   );
 
-
-
   const bgColor = (countPercent: number) => {
     if (countPercent >= 1 && countPercent <= 20) {
       return "bg-rose-200";
@@ -88,51 +95,57 @@ export default function Parameter({
   return (
     <>
       <ul className="flex flex-wrap items-center justify-center gap-3">
-        {salesData.map((data, index) => (
-          <button
-            key={index}
-            className={`btn flex items-center gap-4 h-32  rounded-lg p-4 shadow-md ${bgColor(
-              data.countPercent
-            )}`}
-            onClick={() => {
-              setSelectedProduct(data);
-              (
-                document.getElementById(
-                  "ProductDetailDialog"
-                ) as HTMLDialogElement
-              )?.showModal();
-            }}
-          >
-            <div className="w-40">
-              <span>{data.name}</span>
-              <span
-                className={`${
-                  salesCheck(data) < 0 ? "text-error" : "text-success"
-                }`}
-              >
-                {jpMoneyChange(salesCheck(data))}
-              </span>
-              {data.countPercent == 0 && (
-                <span className="text-sm">sold out</span>
-              )}
-            </div>
-            <div
-              className={`radial-progress w-24 h-24 ${
-                data.countPercent <= 20 ? "text-error" : "text-success"
-              }`}
-              style={
-                {
-                  "--value": data.countPercent,
-                  "--size": data.countPercent === 0 ? "0px" : "96px",
-                } as React.CSSProperties
-              }
-              aria-valuenow={data.countPercent}
-              role="progressbar"
+        {salesData.map((data, index) => {
+          // NaN対策: countPercentがNaNなら0にする
+          const safeCountPercent = isNaN(data.countPercent)
+            ? 0
+            : data.countPercent;
+          return (
+            <button
+              key={index}
+              className={`btn flex items-center gap-4 h-32  rounded-lg p-4 shadow-md ${bgColor(
+                safeCountPercent
+              )}`}
+              onClick={() => {
+                setSelectedProduct(data);
+                (
+                  document.getElementById(
+                    "ProductDetailDialog"
+                  ) as HTMLDialogElement
+                )?.showModal();
+              }}
             >
-              {data.countPercent}%
-            </div>
-          </button>
-        ))}
+              <div className="w-40">
+                <span>{data.name}</span>
+                <span
+                  className={`${
+                    salesCheck(data) < 0 ? "text-error" : "text-success"
+                  }`}
+                >
+                  {jpMoneyChange(salesCheck(data))}
+                </span>
+                {safeCountPercent == 0 && (
+                  <span className="text-sm">sold out</span>
+                )}
+              </div>
+              <div
+                className={`radial-progress w-24 h-24 ${
+                  safeCountPercent <= 20 ? "text-error" : "text-success"
+                }`}
+                style={
+                  {
+                    "--value": String(safeCountPercent),
+                    "--size": safeCountPercent <= 0 ? "0px" : "96px",
+                  } as React.CSSProperties
+                }
+                aria-valuenow={safeCountPercent}
+                role="progressbar"
+              >
+                {safeCountPercent}%
+              </div>
+            </button>
+          );
+        })}
       </ul>
       <ul className="flex items-center flex-wrap justify-between gap-1 mt-5">
         {Object.entries(categoryProfitMap).map(([category, profit]) => (
