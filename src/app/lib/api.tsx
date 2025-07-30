@@ -8,7 +8,9 @@ import {
   CartItem,
   Sort,
   PurchaseHistory,
+  BuyProductList,
 } from "@/app/types/type";
+import { generateCustomId } from "@/app/lib/utils";
 
 const sql = postgres(process.env.POSTGRES_URL!);
 
@@ -270,6 +272,24 @@ export async function deleteProduct(productId: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to delete product.");
+  }
+}
+// 購入履歴の登録
+export async function createPurchaseHistory(buyProductList: BuyProductList[]) {
+  try {
+    const groupId = generateCustomId();
+
+    for (const item of buyProductList) {
+      await sql`
+        INSERT INTO purchase_history (id, userid, count, buy_date, buy_group_id)
+        VALUES (${item.id}, ${item.userid}, ${item.count}, NOW(), ${groupId})
+        RETURNING *;
+      `;
+    }
+
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to create product.");
   }
 }
 

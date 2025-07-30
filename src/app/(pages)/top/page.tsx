@@ -3,8 +3,8 @@ import React, { Suspense } from "react";
 import { TopTodoMessage } from "@/app/components/TopTodoMessage";
 import { CountDown } from "@/app/components/CountDown";
 import Parameter from "@/app/components/Parameter";
-import { fetchTodo, fetchProductDatas, fetchCategoryList } from "@/app/lib/api";
-import { Todo, Product, Category } from "@/app/types/type";
+import { fetchTodo, fetchProductDatas, fetchCategoryList, createPurchaseHistory } from "@/app/lib/api";
+import { Todo, Product, Category ,BuyProductList } from "@/app/types/type";
 import ProductBuyHistory from "@/app/components/ProductBuyHistory";
 
 export default async function Page() {
@@ -12,6 +12,12 @@ export default async function Page() {
   const todoDataList: Todo[] = await fetchTodo();
   const productDataList: Product[] = await fetchProductDatas();
   const categoryList: Category[] = await fetchCategoryList();
+
+  const handleSave = async (product: BuyProductList[]) => {
+    "use server";
+    await createPurchaseHistory(product);
+  };
+
 
   return (
     <>
@@ -21,7 +27,7 @@ export default async function Page() {
           <CountDown />
         </div>
         <div>
-          <ProductBuyHistory />
+          <ProductBuyHistory onSave={handleSave} />
         </div>
         <div>
           <Suspense fallback={<Loading />}>

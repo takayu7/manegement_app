@@ -121,3 +121,14 @@ export function todoBgColor(deadline: Date | null, checked: Date | null) {
   }
   return "";
 }
+
+// 年下2桁+月日+ランダム3桁の9桁IDを生成
+export function generateCustomId(): string {
+  const now = new Date();
+  const year = String(now.getFullYear()).slice(-2);
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  const date = `${month}${day}`;
+  const random = String(Math.floor(Math.random() * 1000)).padStart(3, "0");
+  return `${year}${date}${random}`;
+}

@@ -36,13 +36,13 @@ export const TopTodoMessage: React.FC<TopTodoMessageProps> = ({
           autoplay
           loop
           src="/lottie/PcCat.json"
-          style={{ height: "300px", width: "300px" }}
+          style={{ height: "250px", width: "250px" }}
         />
         <div>
           {(() => {
             const filteredTodos = todoDataList.filter(
               (todo: Todo) =>
-                todo.id === userId && compareDeadline(todo.deadline) === 1
+                todo.userid === userId && compareDeadline(todo.deadline) === 1
             );
             if (filteredTodos.length === 0) {
               return (

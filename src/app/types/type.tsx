@@ -60,7 +60,7 @@ export type Sort = {
   line: "asc" | "desc";
 };
 
-export type buyProductList = {
+export type BuyProductList = {
   id: string;
   userid: string;
   name: string;
@@ -72,10 +72,10 @@ export type buyProductList = {
 
 export type PurchaseHistory = {
   buyGroupId: number;
-  productList : buyProductList;
+  productList : BuyProductList;
 };
 
 export type PurchaseHistoryList = {
   buyGroupId: number;
-  productList : buyProductList[];
+  productList : BuyProductList[];
 };

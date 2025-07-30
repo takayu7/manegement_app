@@ -11,6 +11,11 @@ export const CountDown = () => {
     return () => clearInterval(timer);
   }, []);
 
+    if (!now) {
+    // クライアントで初回レンダリングまで何も表示しない
+    return null;
+  }
+
   //現在の時間を取得する
   const month = now.getMonth() + 1;
   const date = now.getDate();
@@ -57,32 +62,34 @@ export const CountDown = () => {
                 height:
                   typeof window !== "undefined" && window.innerWidth < 1024
                     ? "0px"
-                    : "200px",
+                    : "170px",
                 width:
                   typeof window !== "undefined" && window.innerWidth < 1024
                     ? "0px"
-                    : "200px",
+                    : "170px",
               }}
             />
           </div>
           <div className="flex flex-col md:pt-10">
-            <span className="countdown font-mono text-5xl">
+            <span className="countdown font-mono text-4xl">
               <span
                 style={{ "--value": String(month) } as React.CSSProperties}
+                className="text-indigo-700"
               />
             </span>
             month
           </div>
           <div className="flex flex-col md:pt-10">
-            <span className="countdown font-mono text-5xl">
+            <span className="countdown font-mono text-4xl">
               <span
                 style={{ "--value": String(date) } as React.CSSProperties}
+                className="text-indigo-700"
               />
             </span>
             day
           </div>
           <div className="flex flex-col md:pt-10">
-            <span className="countdown font-mono text-5xl">
+            <span className="countdown font-mono text-4xl">
               <span
                 style={{ "--value": String(hours) } as React.CSSProperties}
               />
@@ -90,7 +97,7 @@ export const CountDown = () => {
             hours
           </div>
           <div className="flex flex-col md:pt-10">
-            <span className="countdown font-mono text-5xl">
+            <span className="countdown font-mono text-4xl">
               <span
                 style={{ "--value": String(minutes) } as React.CSSProperties}
               />
@@ -98,7 +105,7 @@ export const CountDown = () => {
             min
           </div>
           <div className="flex flex-col md:pt-10">
-            <span className="countdown font-mono text-5xl">
+            <span className="countdown font-mono text-4xl">
               <span
                 style={{ "--value": String(seconds) } as React.CSSProperties}
               />
