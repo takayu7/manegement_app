@@ -44,18 +44,18 @@ export type CartItem = {
   name: string;
   buyCount: number;
   price: number;
+  count: number;
 };
 
-export type Sort =
-  | {
-      sort:
-        | "name"
-        | "category"
-        | "supplier"
-        | "count"
-        | "cost"
-        | "price"
-        | "order"
-        | "explanation";
-      line: "asc" | "desc";
-    }
+export type Sort = {
+  sort:
+    | "name"
+    | "category"
+    | "supplier"
+    | "count"
+    | "cost"
+    | "price"
+    | "order"
+    | "explanation";
+  line: "asc" | "desc";
+};
