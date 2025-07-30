@@ -59,3 +59,23 @@ export type Sort = {
     | "explanation";
   line: "asc" | "desc";
 };
+
+export type buyProductList = {
+  id: string;
+  userid: string;
+  name: string;
+  category: number;
+  price: number;
+  count: number;
+  buyDate: Date | null;
+}
+
+export type PurchaseHistory = {
+  buyGroupId: number;
+  productList : buyProductList;
+};
+
+export type PurchaseHistoryList = {
+  buyGroupId: number;
+  productList : buyProductList[];
+};

@@ -6,7 +6,8 @@ import {
   Supplier,
   Todo,
   CartItem,
-  Sort
+  Sort,
+  PurchaseHistory,
 } from "@/app/types/type";
 
 const sql = postgres(process.env.POSTGRES_URL!);
@@ -147,15 +148,23 @@ export async function deleteSupplierList(id: number) {
 
 // 商品データの取得
 export async function fetchProductDatas(sort: Sort | null = null) {
-    // 許可された値のみを使用
-  const allowedSortFields = ["name","category","supplier","count","cost","price","order"] as const;
-  const allowedSortOrders = ['ASC', 'DESC'] as const;
+  // 許可された値のみを使用
+  const allowedSortFields = [
+    "name",
+    "category",
+    "supplier",
+    "count",
+    "cost",
+    "price",
+    "order",
+  ] as const;
+  const allowedSortOrders = ["ASC", "DESC"] as const;
 
   // デフォルト値
-  let sortField = 'name';
-  let sortOrder = 'ASC';
+  let sortField = "name";
+  let sortOrder = "ASC";
 
-    // バリデーション
+  // バリデーション
   if (sort) {
     if (allowedSortFields.includes(sort.sort as any)) {
       sortField = sort.sort;
@@ -261,6 +270,64 @@ export async function deleteProduct(productId: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to delete product.");
+  }
+}
+
+// 購入履歴の取得
+export async function fetchPurchaseHistory(userid: string) {
+  try {
+    const data = await sql<any[]>`
+      SELECT
+        ph.id,
+        ph.userid,
+        product.name,
+        product.category,
+        product.price,
+        ph.count,
+        ph.buy_date AS buy_date,
+        ph.buy_group_id AS buy_group_id
+      FROM purchase_history ph
+      INNER JOIN product ON ph.id = product.id
+      WHERE ph.userid = ${userid}
+      ORDER BY buy_date DESC`;
+
+    // スネークケース→キャメルケース変換（1件ずつ）
+    const result: PurchaseHistory[] = data.map((item) => ({
+      buyGroupId: item.buy_group_id,
+      productList: {
+        id: item.id,
+        userid: item.userid,
+        name: item.name,
+        category: item.category,
+        price: item.price,
+        count: item.count,
+        buyDate: item.buy_date ? new Date(item.buy_date) : null,
+      },
+    }));
+
+    // buyGroupIdごとにまとめる
+    const groupMap = new Map<number, PurchaseHistory["productList"][]>();
+    result.forEach((item) => {
+      const groupId = item.buyGroupId;
+      if (!groupMap.has(groupId)) {
+        groupMap.set(groupId, []);
+      }
+      groupMap.get(groupId)!.push(item.productList);
+    });
+
+    const resultGrouped = Array.from(groupMap.entries()).map(
+      ([buyGroupId, productList]) => ({
+        buyGroupId,
+        productList,
+      })
+    );
+
+    console.log("purchaseHistory:", resultGrouped);
+
+    return resultGrouped;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch purchase history.");
   }
 }
 
