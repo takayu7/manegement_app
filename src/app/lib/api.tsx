@@ -21,8 +21,6 @@ export async function fetchUserDatas() {
   try {
     const data = await sql<User[]>`SELECT * FROM users`;
 
-    console.log("user:", data);
-
     return data;
   } catch (error) {
     console.error("Database Error:", error);
@@ -37,8 +35,6 @@ export async function createUser(user: User) {
       VALUES (${user.id}, ${user.name}, ${user.password}, ${user.icon})
       RETURNING *;
     `;
-
-    console.log("data:", data);
 
     return data;
   } catch (error) {
@@ -56,8 +52,6 @@ export async function deleteUser(userId: string) {
       RETURNING *;
     `;
 
-    console.log("data:", data);
-
     return data;
   } catch (error) {
     console.error("Database Error:", error);
@@ -70,8 +64,6 @@ export async function fetchCategoryList() {
   try {
     const data = await sql<Category[]>`SELECT * FROM categorylist ORDER BY id`;
 
-    console.log("categoryList:", data);
-
     return data;
   } catch (error) {
     console.error("Database Error:", error);
@@ -83,8 +75,6 @@ export async function fetchCategoryList() {
 export async function fetchSupplierList() {
   try {
     const data = await sql<Supplier[]>`SELECT * FROM supplierlist ORDER BY id`;
-
-    console.log("supplierList:", data);
 
     return data;
   } catch (error) {
@@ -101,8 +91,6 @@ export async function createSupplier(supplier: Supplier) {
       VALUES (${supplier.id}, ${supplier.name})
       RETURNING *;
     `;
-
-    console.log("data:", data);
 
     return data;
   } catch (error) {
@@ -123,8 +111,6 @@ export async function updateSupplierList(supplier: Supplier) {
       RETURNING *;
     `;
 
-    console.log("data:", data);
-
     return data;
   } catch (error) {
     console.error("Database Error:", error);
@@ -140,8 +126,6 @@ export async function deleteSupplierList(id: number) {
       WHERE id = ${id}
       RETURNING *;
     `;
-
-    console.log("data:", data);
 
     return data;
   } catch (error) {
@@ -184,8 +168,6 @@ export async function fetchProductDatas(sort: Sort | null = null) {
       ORDER BY ${sql.unsafe(sortField)} ${sql.unsafe(sortOrder)}
     `;
 
-    console.log("data:", data);
-
     return data;
   } catch (error) {
     console.error("Database Error:", error);
@@ -201,8 +183,6 @@ export async function createProduct(product: Product) {
       VALUES (${product.id}, ${product.name}, ${product.category}, ${product.supplier}, ${product.count}, ${product.cost}, ${product.price}, ${product.order}, ${product.explanation})
       RETURNING *;
     `;
-
-    console.log("data:", data);
 
     return data;
   } catch (error) {
@@ -229,8 +209,6 @@ export async function updateProduct(product: Product) {
         id = ${product.id}
       RETURNING *;
     `;
-
-    console.log("data:", data);
 
     return data;
   } catch (error) {
@@ -267,8 +245,6 @@ export async function deleteProduct(productId: string) {
       WHERE id = ${productId}
       RETURNING *;
     `;
-
-    console.log("data:", data);
 
     return data;
   } catch (error) {
@@ -354,8 +330,6 @@ export async function fetchPurchaseHistory(userid: string) {
       })
     );
 
-    console.log("purchaseHistory:", resultGrouped);
-
     return resultGrouped;
   } catch (error) {
     console.error("Database Error:", error);
@@ -379,8 +353,6 @@ export async function fetchTodo() {
       ORDER BY deadline;
     `;
 
-    console.log("todo:", data);
-
     return data;
   } catch (error) {
     console.error("Database Error:", error);
@@ -396,8 +368,6 @@ export async function createTodo(todo: Todo) {
       VALUES (${todo.userid}, ${todo.todo}, ${todo.deadline}, ${todo.checked})
       RETURNING *;
     `;
-
-    console.log("data:", data);
 
     return data;
   } catch (error) {
@@ -420,8 +390,6 @@ export async function updateTodo(todo: Todo) {
       RETURNING *;
     `;
 
-    console.log("data:", data);
-
     return data;
   } catch (error) {
     console.error("Database Error:", error);
@@ -437,8 +405,6 @@ export async function deleteTodo(todoId: string) {
       WHERE todoId = ${todoId}
       RETURNING *;
     `;
-
-    console.log("data:", data);
 
     return data;
   } catch (error) {

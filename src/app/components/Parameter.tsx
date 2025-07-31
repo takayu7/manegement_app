@@ -50,14 +50,10 @@ export default function Parameter({
     count = Number.isFinite(count) ? count : 0;
     order = Number.isFinite(order) ? order : 0;
 
-    console.log("count:", count);
-    console.log("order:", order);
-
     const countPercent =
       Number.isFinite(order) && Number.isFinite(count) && order > 0
         ? Math.ceil(100 * (count / order))
         : 0;
-    console.log("countPercent", countPercent)
 
     // すべての数値フィールドをチェックしてNaNを0に変換
     const safeValue = (value: number) => (Number.isFinite(value) ? value : 0);
