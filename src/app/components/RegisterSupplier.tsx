@@ -44,10 +44,6 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
     return newId;
   }
 
-  // useEffect(() => {
-  //   automaticNumbering();
-  // }, []);
-
   //addボタン
   const handleAdd = async (newId: number) => {
     const result = confirm("Would you like to register?");
