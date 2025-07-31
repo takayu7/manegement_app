@@ -4,7 +4,7 @@ import { Download, ListRestart, ListPlus } from "lucide-react";
 import { Category, Product, Supplier } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
 import { Player } from "@lottiefiles/react-lottie-player";
-import { PurchaseCheckDialog } from "@/app/components/PurchaseCheckDialog";
+// import { PurchaseCheckDialog } from "@/app/components/PurchaseCheckDialog";
 // import { categories } from "../lib/utils";
 
 export interface PurchaseProductProps {

@@ -9,6 +9,8 @@ import {
   Sort,
   PurchaseHistory,
   BuyProductList,
+  SortType,
+  LineType,
 } from "@/app/types/type";
 import { generateCustomId } from "@/app/lib/utils";
 
@@ -160,18 +162,18 @@ export async function fetchProductDatas(sort: Sort | null = null) {
     "price",
     "order",
   ] as const;
-  const allowedSortOrders = ["ASC", "DESC"] as const;
+  const allowedSortOrders = ["asc", "desc"] as const;
 
   // デフォルト値
   let sortField = "name";
-  let sortOrder = "ASC";
+  let sortOrder = "asc";
 
   // バリデーション
   if (sort) {
-    if (allowedSortFields.includes(sort.sort as any)) {
+    if (allowedSortFields.includes(sort.sort as SortType)) {
       sortField = sort.sort;
     }
-    if (allowedSortOrders.includes(sort.line as any)) {
+    if (allowedSortOrders.includes(sort.line as LineType)) {
       sortOrder = sort.line;
     }
   }
@@ -296,7 +298,17 @@ export async function createPurchaseHistory(buyProductList: BuyProductList[]) {
 // 購入履歴の取得
 export async function fetchPurchaseHistory(userid: string) {
   try {
-    const data = await sql<any[]>`
+    type apiPurchaseHistory = {
+      id: string;
+      userid: string;
+      name: string;
+      category: number;
+      price: number;
+      count: number;
+      buy_date: Date | null;
+      buy_group_id: number;
+    };
+    const data = await sql<apiPurchaseHistory[]>`
       SELECT
         ph.id,
         ph.userid,

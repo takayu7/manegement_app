@@ -1,6 +1,6 @@
 "use client";
-import React, { useEffect, useState, useTransition } from "react";
-import { List, ListPlus } from "lucide-react";
+import React, { useState, useTransition } from "react";
+import { ListPlus } from "lucide-react";
 import { Supplier } from "@/app/types/type";
 
 export interface RegisterSupplierProps {

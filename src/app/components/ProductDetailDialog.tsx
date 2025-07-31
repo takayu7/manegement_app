@@ -67,17 +67,17 @@ export const ProductDetailDialog: React.FC<EditDialogProps> = ({
       onClick={handleDialogClick}
     >
       <div
-        className="modal-box flex max-w-5xl p-10 lg:w-2/3"
+        className="modal-box flex flex-col max-w-5xl w-11/12 p-10 lg:w-2/3 md:flex-row"
         onClick={handleBoxClick}
       >
-        <ul className="text-xl grid grid-cols-2 w-2/3 font-medium space-y-3 mb-5">
+        <ul className="text-xl grid grid-cols-1 lg:grid-cols-2 md:w-2/3 font-medium space-y-3 mb-5">
           {/* 商品名 */}
-          <li className="flex flex-col gap-1 md:items-center md:gap-4 md:flex-row">
+          <li className="flex gap-1 md:items-center md:gap-4">
             <label className="w-30">name :</label>
             <label className="text-lg">{editProduct.name || "No Name"}</label>
           </li>
           {/* カテゴリ */}
-          <li className="flex flex-col gap-1 md:items-center md:gap-4 md:flex-row">
+          <li className="flex  gap-1 md:items-center md:gap-4 ">
             <label className="w-30">category :</label>
             <label className="text-lg">
               {categoryList.find(

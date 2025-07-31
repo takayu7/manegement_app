@@ -47,17 +47,19 @@ export type CartItem = {
   count: number;
 };
 
-export type Sort = {
-  sort:
-    | "name"
+export type SortType = | "name"
     | "category"
     | "supplier"
     | "count"
     | "cost"
     | "price"
     | "order"
-    | "explanation";
-  line: "asc" | "desc";
+
+export type LineType = "asc" | "desc";
+
+export type Sort = {
+  sort: SortType;
+  line: LineType;
 };
 
 export type BuyProductList = {

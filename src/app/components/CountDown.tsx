@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 import { Player } from "@lottiefiles/react-lottie-player";
 
 export const CountDown = () => {
-  const [now, setNow] = useState(new Date());
+  const [now, setNow] = useState<Date | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
+    setNow(new Date());
     const timer = setInterval(() => setNow(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-    if (!now) {
-    // クライアントで初回レンダリングまで何も表示しない
+  if (!isMounted || !now) {
     return null;
   }
 
