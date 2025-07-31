@@ -42,6 +42,7 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
   }
   useEffect(() => {
     automaticNumbering();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   //addボタン
