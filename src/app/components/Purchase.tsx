@@ -1,11 +1,10 @@
 "use client";
 import React, { useState, useTransition } from "react";
-import { Download, ListRestart, ListPlus } from "lucide-react";
+import { Download, ListRestart, ListCheck } from "lucide-react";
 import { Category, Product, Supplier } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
 import { Player } from "@lottiefiles/react-lottie-player";
-// import { PurchaseCheckDialog } from "@/app/components/PurchaseCheckDialog";
-// import { categories } from "../lib/utils";
+import { PurchaseCheckDialog } from "@/app/components/CheckPurchaseDialog";
 
 export interface PurchaseProductProps {
   categoryList: Category[];
@@ -25,8 +24,6 @@ const defaultData: Product = {
   explanation: "",
 };
 
-// const [isInputChecked, setIsInputChecked] = useState(true);
-
 export const Purchase: React.FC<PurchaseProductProps> = ({
   categoryList,
   supplierList,
@@ -35,6 +32,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
   const [addProduct, setAddProduct] = useState<Product>(defaultData);
   const [isPending, startTransition] = useTransition();
   const [showAirplane, setShowAirplane] = useState(false);
+  const [isCheckOpen, setIsCheckOpen] = useState(false);
 
   // 合計金額
   const total = addProduct.cost * addProduct.count;
@@ -59,22 +57,28 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
     return randomLetter + randomNumber;
   }
 
-  //addボタン
-  const handleAdd = () => {
-    // const newId = id(latestId);
+  //checkボタン
+  const handleCheck = () => {
     const newId = id();
     const productWithId = { ...addProduct, id: newId };
     setAddProduct(productWithId);
+    setIsCheckOpen(true);
 
     console.log(productWithId);
-    startTransition(() => {
-      onSave(productWithId);
-    });
+  };
 
+  //addボタン(ダイアログ)
+  const handleAdd = () => {
+
+    startTransition(() => {
+      onSave(addProduct);
+    });
+    setIsCheckOpen(false);
     setShowAirplane(true);
-    setTimeout(() => setShowAirplane(false), 5500);
+    setTimeout(() => setShowAirplane(false), 3000);
+
     setAddProduct(defaultData);
-    alert(JSON.stringify(productWithId, null, 2));
+    // alert(JSON.stringify(productWithId, null, 2));
   };
 
   //resetボタン
@@ -114,7 +118,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
                 setAddProduct({ ...addProduct, name: e.target.value })
               }
               placeholder="name"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg input-success"
+              className="input rounded-sm mx-5 border-2 p-1 text-lg input-secondary"
             />
           </li>
 
@@ -134,7 +138,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
                   category: Number(e.target.value),
                 })
               }
-              className="select rounded-sm mx-5 border-2 p-1 text-lg select-success"
+              className="select rounded-sm mx-5 border-2 p-1 text-lg select-secondary"
             >
               {categoryList.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -156,7 +160,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
                 setAddProduct({ ...addProduct, explanation: e.target.value })
               }
               placeholder="explanation"
-              className="rounded-sm mx-5 border-2 p-1 text-lg textarea textarea-success"
+              className="rounded-sm mx-5 border-2 p-1 text-lg textarea textarea-secondary"
             />
           </li>
 
@@ -178,7 +182,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
                 }
               }}
               placeholder="count"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg input-success"
+              className="input rounded-sm mx-5 border-2 p-1 text-lg input-secondary"
             />
           </li>
 
@@ -204,7 +208,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
                         supplier: Number(e.target.value),
                       })
                     }
-                    className="ml-5 mr-2 radio radio-success"
+                    className="ml-5 mr-2 radio radio-secondary"
                   />
                   <span className="text-sm">{supplier.name}</span>
                 </label>
@@ -230,7 +234,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
                 }
               }}
               placeholder="cost"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg input-success"
+              className="input rounded-sm mx-5 border-2 p-1 text-lg input-secondary"
             />
           </li>
 
@@ -252,7 +256,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
                 }
               }}
               placeholder="price"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg input-success"
+              className="input rounded-sm mx-5 border-2 p-1 text-lg input-secondary"
             ></input>
             {/* <span className="">
             {formatCurrency(addProduct.price)}
@@ -270,21 +274,21 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
         <div className="flex flex-col items-center lg:flex-row gap-3 lg:justify-end">
           <button
             type="button"
-            className="btn btn-outline btn-success btn-xl btn-wide"
-            onClick={handleAdd}
+            className="btn bg-pink-400 text-white btn-xl btn-wide hover:bg-pink-500 "
+            onClick={handleCheck}
             disabled={!isAllFilled}
           >
-            <ListPlus />
-            add
+            <ListCheck />
+            check
             {isPending && (
-              <span className="loading loading-dots loading-xl text-success ">
+              <span className="loading loading-dots loading-xl text-secondary ">
                 loading
               </span>
             )}
           </button>
           <button
             type="reset"
-            className="btn btn-outline btn-xl btn-wide"
+            className="btn bg-blue-900 text-white btn-xl btn-wide hover:bg-blue-800"
             onClick={handleReset}
           >
             <ListRestart />
@@ -292,14 +296,15 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
           </button>
         </div>
       </main>
-      {/* <PurchaseCheckDialog
-        product={addProduct}
-        categoryList={categoryList}
-        supplierList={supplierList}
-        onSave={(product: Product) => {
-          handleSave(product);
-        }}
-      /> */}
+      {isCheckOpen && (
+        <PurchaseCheckDialog
+          product={addProduct}
+          categoryList={categoryList}
+          supplierList={supplierList}
+          onSave={handleAdd}
+          onClose={() => setIsCheckOpen(false)}
+        />
+      )}
     </>
   );
 };
