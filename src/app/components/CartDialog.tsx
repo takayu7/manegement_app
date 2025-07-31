@@ -139,7 +139,7 @@ export const CartDialog: React.FC<CartDialogProps> = ({
 
           <div className="flex justify-center gap-4 mt-6">
             <button
-              className="btn btn-secondary btn-lg px-6 py-2 text-white font-semibold rounded-lg"
+              className="btn bg-pink-400 text-white hover:bg-pink-500 btn-lg px-6 py-2 font-semibold rounded-lg"
               onClick={() => handleBuy(items)}
               disabled={items.length === 0}
             >
@@ -147,7 +147,7 @@ export const CartDialog: React.FC<CartDialogProps> = ({
               Buy
             </button>
             <button
-              className="btn bg-blue-900 btn-lg px-6 py-2 text-white font-semibold rounded-lg"
+              className="btn bg-blue-900 hover:bg-blue-800 btn-lg px-6 py-2 text-white font-semibold rounded-lg"
               onClick={onClose}
             >
               Cancel
