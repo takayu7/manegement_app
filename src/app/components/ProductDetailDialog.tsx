@@ -44,18 +44,21 @@ export const ProductDetailDialog: React.FC<EditDialogProps> = ({
   };
 
   // 損益分岐点までの個数の割合を求める
-  const breakEvenPointPercent=(editProduct:SalesData) =>{
-    return ((editProduct.order - editProduct.count) / ((editProduct.cost * editProduct.order) / editProduct.price)) * 100;
-  }
+  const breakEvenPointPercent = (editProduct: SalesData) => {
+    return (
+      ((editProduct.order - editProduct.count) /
+        ((editProduct.cost * editProduct.order) / editProduct.price)) *
+      100
+    );
+  };
 
   // 損益分岐までの達成度をイラストで表示
-  const progressImageShow = (editProduct:SalesData) => {
+  const progressImageShow = (editProduct: SalesData) => {
     if (breakEvenPointPercent(editProduct) < 30) {
       return "/lottie/bad.json";
-    }else if (breakEvenPointPercent(editProduct) < 99) {
+    } else if (breakEvenPointPercent(editProduct) < 99) {
       return "/lottie/middle.json";
-
-    }else {
+    } else {
       return "/lottie/success.json";
     }
   };
@@ -147,16 +150,25 @@ export const ProductDetailDialog: React.FC<EditDialogProps> = ({
         </ul>
         <div className="flex flex-col items-center justify-center">
           <Player
-          autoplay
-          loop
-          src={progressImageShow(editProduct)}
-          style={{ height: "300px", width: "300px" }}
-        />
-          <progress
-            className={`progress bg-gray-300 w-56 ${breakEvenPointPercent(editProduct) < 100 ? "progress-error" : "progress-success"}`}
-            value={breakEvenPointPercent(editProduct)}
-            max="100"
-          ></progress>
+            autoplay
+            loop
+            src={progressImageShow(editProduct)}
+            style={{ height: "250px", width: "250px" }}
+          />
+          {(() => {
+            let percent = breakEvenPointPercent(editProduct);
+            percent = Number.isFinite(percent) ? percent : 0;
+            percent = Math.max(0, Math.min(100, percent));
+            return (
+              <progress
+                className={`progress bg-gray-300 w-56 ${
+                  percent < 100 ? "progress-error" : "progress-success"
+                }`}
+                value={percent}
+                max="100"
+              ></progress>
+            );
+          })()}
         </div>
       </div>
     </dialog>

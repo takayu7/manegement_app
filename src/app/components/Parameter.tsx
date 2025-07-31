@@ -42,17 +42,34 @@ export default function Parameter({
   });
 
   const salesData = productDataList.reduce((acc, product) => {
-    const { name, category, cost, price, count, order } = product;
-    // orderが0の場合はcountPercentを0にする
-    const countPercent = order === 0 ? 0 : Math.ceil(100 * (count / order));
+    const { name, category, cost, price } = product;
+    let count = product.count;
+    let order = product.order;
+
+    // 未定義やnullやNaNやInfinityを0に矯正
+    count = Number.isFinite(count) ? count : 0;
+    order = Number.isFinite(order) ? order : 0;
+
+    console.log("count:", count);
+    console.log("order:", order);
+
+    const countPercent =
+      Number.isFinite(order) && Number.isFinite(count) && order > 0
+        ? Math.ceil(100 * (count / order))
+        : 0;
+    console.log("countPercent", countPercent)
+
+    // すべての数値フィールドをチェックしてNaNを0に変換
+    const safeValue = (value: number) => (Number.isFinite(value) ? value : 0);
+
     acc.push({
-      name: name,
+      name: name || "",
       category: category,
-      cost: cost,
-      price: price,
-      count: count,
-      order: order,
-      countPercent: countPercent,
+      cost: safeValue(cost),
+      price: safeValue(price),
+      count: safeValue(count),
+      order: safeValue(order),
+      countPercent: safeValue(countPercent),
     });
     return acc;
   }, [] as SalesData[]);
