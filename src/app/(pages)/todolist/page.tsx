@@ -1,12 +1,22 @@
-import { fetchTodo } from "@/app/lib/api";
-// import { createTodo, updateTodo , deleteTodo} from "@/app/lib/api";
+import { createTodo, deleteTodo, fetchTodo, updateTodo } from "@/app/lib/api";
 import { Todo } from "@/app/types/type";
-import { todoBgColor} from "@/app/lib/utils";
+import { revalidatePath } from "next/cache";
+//import { todoBgColor } from "@/app/lib/utils";
+import { RegisterTodoList } from "@/app/components/RegisterTodoList";
+import { ShowTodoList } from "@/app/components/ShowTodoList";
 // import { revalidatePath } from "next/cache";
 
 export default async function Page() {
+  const todoDataList = await fetchTodo();
+  const handleSave = async (todo: Todo) => {
+    "use server";
+    console.log("supplier:", todo);
+    await createTodo(todo);
+    // ページを再取得
+    revalidatePath("/setting");
+  };
   // データの取得
-  const userTodoList = await fetchTodo();
+  //const userTodoList = await fetchTodo();
 
   // // 登録
   // const handleCreate = async (todo: Todo) => {
@@ -14,41 +24,29 @@ export default async function Page() {
   //   await createTodo(todo);
   //   revalidatePath("/todolist");
   // };
-  // // 更新
-  // const handleSave = async (todo: Todo) => {
-  //   "use server";
-  //   await updateTodo(todo);
-  //   revalidatePath("/todolist");
-  // };
-  // // 削除
-  // const handleDelete = async (todoId: string) => {
-  //   "use server";
-  //   await deleteTodo(todoId);
-  //   revalidatePath("/todolist");
-  // };
+  // 更新
+  const handleUpdate = async (todo: Todo) => {
+    "use server";
+    await updateTodo(todo);
+    revalidatePath("/todolist");
+  };
+  // 削除
+  const handleDelete = async (todoId: string) => {
+    "use server";
+    await deleteTodo(todoId);
+    revalidatePath("/todolist");
+  };
 
   return (
     <>
       <div className="space-y-6">
-        <h1 className="text-xl">Todo List</h1>
-        <ul>
-          {userTodoList.map((todo: Todo, index: number) => (
-            <li
-              key={index}
-              className={`space-x-3 ${todoBgColor(todo.deadline, todo.checked)}`}
-            >
-              <span>{todo.name}</span>
-              <span>{todo.icon}</span>
-              <span>{todo.todo}</span>
-              <span>
-                {todo.deadline && new Date(todo.deadline).toLocaleDateString()}
-              </span>
-              <span>
-                {todo.checked && new Date(todo.checked).toLocaleDateString()}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <h1 className="text-xl md:text-4xl font-bold">Todo List</h1>
+        <RegisterTodoList onSave={handleSave} />
+        <ShowTodoList
+          todoDataList={todoDataList}
+          onSave={handleUpdate}
+          onDelete={handleDelete}
+        />
       </div>
     </>
   );
