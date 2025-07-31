@@ -1,9 +1,9 @@
 import { fetchPurchaseHistory } from "@/app/lib/api";
 import { NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
-// Next.jsのRoute Handlerの型に合わせて修正
 export async function GET(
-  req: Request,
+  req: NextRequest,
   context: { params: { userId: string } }
 ) {
   const data = await fetchPurchaseHistory(context.params.userId);
