@@ -71,7 +71,7 @@ const formatCurrency = (amount: number) => {
 };
 
 export const jpMoneyChange = (price: number) => {
-  return <div>{formatCurrency(price)}</div>;
+  return formatCurrency(price);
 };
 
 //userIconIDを元にアイコンを返す
