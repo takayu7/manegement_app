@@ -25,6 +25,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showThanks, setShowThanks] = useState(false);
 
+
   const buyProduct = selectedProduct
     ? buyProductId[selectedProduct.id] || 0
     : 0;
@@ -43,6 +44,7 @@ export const ProductList: React.FC<ProductListProps> = ({
   const handleAdd = () => {
     if (!selectedProduct || buyProduct <= 0) return;
 
+    //重複アイテム
     const existingItem = cartItems.findIndex(
       (item) => selectedProduct.id === item.id
     );
@@ -115,13 +117,14 @@ export const ProductList: React.FC<ProductListProps> = ({
           />
         </div>
       )}
-      <main>
-        <h1 className="mb-10 text-xl md:text-4xl font-bold">
+     
+      <main className="">
+        <h1 className="mb-10 text-xl md:text-4xl font-bold ">
           <Sofa className="inline-block mr-2.5 size-10" />
           Product list
         </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 ">
+        <div className="grid gap-4  lg:gap-6 lg:grid-cols-3 ">
           {productDatas.map((product) => (
             <div
               key={product.id}
@@ -153,7 +156,7 @@ export const ProductList: React.FC<ProductListProps> = ({
           ))}
         </div>
         {/* カートボタン */}
-        <div className="indicator fixed top-35 right-30">
+        <div className="indicator fixed top-49 right-12 lg:top-35 lg:right-30">
           {cartItems.length > 0 && (
             <span className="indicator-item badge badge-primary bg-blue-900 rounded-full ">
               {cartItems.length}
@@ -161,7 +164,7 @@ export const ProductList: React.FC<ProductListProps> = ({
           )}
           <button
             onClick={() => setIsCartOpen(true)}
-            className="btn btn-xl btn-error text-white btn-circle"
+            className="btn btn-lg lg:btn-xl btn-error text-white btn-circle"
           >
             <ShoppingCart />
           </button>
@@ -171,11 +174,11 @@ export const ProductList: React.FC<ProductListProps> = ({
       {selectedProduct && (
         <>
           <div
-            className="fixed inset-0 bg-gray-200/80 bg-opacity-50 z-40"
+            className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center"
             onClick={() => setSelectedProduct(null)}
           />
           <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="bg-white w-200 p-10 flex flex-row rounded-2xl relative">
+            <div className="bg-white w-[100%] lg:w-[700px] p-6 lg:p-8 flex flex-col lg:flex-row rounded-2xl relative">
               <div className="flex-shrink-0 inline-block mr-5">
                 <Image
                   src={CategoryImages[selectedProduct.category]}
@@ -240,7 +243,7 @@ export const ProductList: React.FC<ProductListProps> = ({
               <div className="flex items-end">
                 <button
                   type="submit"
-                  className="btn btn-outline btn-error btn-lg absolute bottom-7 right-10 hover:text-white"
+                  className="btn btn-outline btn-secondary btn-lg absolute bottom-7 right-10 hover:text-white"
                   onClick={handleAdd}
                   disabled={buyProduct < 1}
                 >

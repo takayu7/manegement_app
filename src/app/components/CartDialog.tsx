@@ -60,19 +60,20 @@ export const CartDialog: React.FC<CartDialogProps> = ({
 
   //購入数変更ボタン（マイナス）
   const handleDecrease = (id: string) => {
-    setItems((prev) =>
-      prev
-        .map((item) =>
-          item.id === id ? { ...item, buyCount: item.buyCount - 1 } : item
-        )
-        .filter((item) => item.buyCount > 0)//数量が0の場合は削除
+    setItems(
+      (prev) =>
+        prev
+          .map((item) =>
+            item.id === id ? { ...item, buyCount: item.buyCount - 1 } : item
+          )
+          .filter((item) => item.buyCount > 0) //数量が0の場合は削除
     );
   };
 
   return (
     <>
       <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center">
-        <div className="bg-white p-8 rounded-2xl w-full max-w-[600px] ">
+        <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[600px] relative">
           <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
             Cart
           </h2>
@@ -85,45 +86,49 @@ export const CartDialog: React.FC<CartDialogProps> = ({
               {items.map((item) => (
                 <li
                   key={item.id}
-                  className="flex items-center justify-between bg-pink-100 rounded-xl p-3 shadow-sm"
+                  className="flex flex-col lg:flex-row items-center justify-between bg-pink-100 rounded-xl p-2 lg:p-3 shadow-sm relative gap-2"
                 >
-                  <div className="flex flex-col">
-                    <p className="font-semibold text-lg">{item.name}</p>
-                    <p className="text-sm text-gray-600 flex ">
-                      {jpMoneyChange(item.price)}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-4 ml-6">
-                      <button
-                        className="btn btn-sm btn-outline"
-                        onClick={() => handleDecrease(item.id)}
-                      >
-                        <Minus />
-                      </button>
-                      <label>{item.buyCount}</label>
-                      <button
-                        className="btn btn-sm btn-outline"
-                        onClick={() => handleIncrease(item.id)}
-                        disabled={item.count <= item.buyCount}
-                      >
-                        <Plus />
-                      </button>
+                  
+                    <div className="flex flex-row lg:flex-col items-center">
+                      <p className="font-semibold text-lg">{item.name}</p>
+                      <p className=" text-gray-600">
+                        {jpMoneyChange(item.price)}
+                      </p>
                     </div>
 
-                    <p> items</p>
-                    <p className="text-blue-900 font-bold text-lg">
-                      {jpMoneyChange(item.price * item.buyCount)}
-                    </p>
-                    <button
-                      type="button"
-                      className="btn btn-ghost hover:text-red-700"
-                      onClick={() => onDelete(item.id)}
-                    >
-                      <Trash2 />
-                    </button>
-                  </div>
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center gap-3">
+                        <button
+                          className="btn btn-sm lg:btn-md btn-outline btn-circle"
+                          onClick={() => handleDecrease(item.id)}
+                        >
+                          <Minus />
+                        </button>
+                        <label>{item.buyCount}</label>
+                        <button
+                          className="btn btn-sm lg:btn-md btn-outline btn-circle"
+                          onClick={() => handleIncrease(item.id)}
+                          disabled={item.count <= item.buyCount}
+                        >
+                          <Plus />
+                        </button>
+                      </div>
+                      <p> items</p>
+                    </div>
+
+                    <div className="flex items-center gap-2 lg:gap-4">
+                      
+                      <p className="text-blue-900 font-bold text-lg flex justify-center">
+                        {jpMoneyChange(item.price * item.buyCount)}
+                      </p>
+                      <button
+                        type="button"
+                        className="btn btn-ghost btn-error btn-circle hover:text-white"
+                        onClick={() => onDelete(item.id)}
+                      >
+                        <Trash2 />
+                      </button>
+                    </div>
                 </li>
               ))}
             </ul>
@@ -134,7 +139,7 @@ export const CartDialog: React.FC<CartDialogProps> = ({
 
           <div className="flex justify-center gap-4 mt-6">
             <button
-              className="btn btn-error btn-lg px-6 py-2 text-white font-semibold rounded-lg"
+              className="btn btn-secondary btn-lg px-6 py-2 text-white font-semibold rounded-lg"
               onClick={() => handleBuy(items)}
               disabled={items.length === 0}
             >
