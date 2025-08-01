@@ -53,8 +53,8 @@ export const CountDown = () => {
 
   return (
     <>
-      <div className="px-5 rounded-md border space-y-3 border-gray-300 shadow-md py-5 lg:px-10 lg:space-y-0">
-        <div className="grid grid-flow-col gap-3 text-center auto-cols-max lg:-mb-5 lg:gap-5">
+      <div className="px-5 rounded-md border space-y-1 border-gray-300 shadow-md py-5 lg:px-10 lg:space-y-0">
+        <div className="grid grid-flow-col gap-3 text-center auto-cols-max lg:gap-5">
           <div className="flex flex-col">
             <Player
               autoplay

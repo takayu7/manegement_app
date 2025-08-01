@@ -81,3 +81,12 @@ export type PurchaseHistoryList = {
   buyGroupId: number;
   productList : BuyProductList[];
 };
+
+export type UserBuyParameterType = {
+  id: number;
+  userid: string;
+  name: string;
+  icon: number;
+  price: number;
+  count: number;
+};

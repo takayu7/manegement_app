@@ -11,6 +11,7 @@ import {
   BuyProductList,
   SortType,
   LineType,
+  UserBuyParameterType
 } from "@/app/types/type";
 import { generateCustomId } from "@/app/lib/utils";
 
@@ -331,6 +332,29 @@ export async function fetchPurchaseHistory(userid: string) {
     );
 
     return resultGrouped;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch purchase history.");
+  }
+}
+
+// 購入履歴の取得_すべて
+export async function fetchBuyAllHistory() {
+  try {
+    const data = await sql<UserBuyParameterType[]>`
+      SELECT
+        ph.id,
+        ph.userid,
+        users.name,
+        users.icon,
+        product.price,
+        ph.count
+      FROM purchase_history ph
+      INNER JOIN product ON ph.id = product.id
+      INNER JOIN users ON ph.userid = users.id
+    `;
+
+    return data;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch purchase history.");

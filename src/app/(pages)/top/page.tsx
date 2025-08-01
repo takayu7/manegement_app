@@ -3,15 +3,17 @@ import React, { Suspense } from "react";
 import { TopTodoMessage } from "@/app/components/TopTodoMessage";
 import { CountDown } from "@/app/components/CountDown";
 import Parameter from "@/app/components/Parameter";
-import { fetchTodo, fetchProductDatas, fetchCategoryList, createPurchaseHistory } from "@/app/lib/api";
-import { Todo, Product, Category ,BuyProductList } from "@/app/types/type";
+import { fetchTodo, fetchProductDatas, fetchCategoryList, createPurchaseHistory, fetchBuyAllHistory } from "@/app/lib/api";
+import { Todo, Product, Category , BuyProductList, UserBuyParameterType} from "@/app/types/type";
 import ProductBuyHistory from "@/app/components/ProductBuyHistory";
+import { UserBuyParameter } from "@/app/components/UserBuyParameter";
 
 export default async function Page() {
   //DBからデータを取得
   const todoDataList: Todo[] = await fetchTodo();
   const productDataList: Product[] = await fetchProductDatas();
   const categoryList: Category[] = await fetchCategoryList();
+  const historyList: UserBuyParameterType[] = await fetchBuyAllHistory();
 
   const handleSave = async (product: BuyProductList[]) => {
     "use server";
@@ -28,6 +30,7 @@ export default async function Page() {
         </div>
         <div>
           <ProductBuyHistory onSave={handleSave} />
+          <UserBuyParameter buyProductList={historyList} />
         </div>
         <div>
           <Suspense fallback={<Loading />}>

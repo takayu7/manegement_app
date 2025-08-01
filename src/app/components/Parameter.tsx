@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState , useMemo} from "react";
 import { jpMoneyChange, categories } from "@/app/lib/utils";
 import { Product, Category } from "@/app/types/type";
 import { ProductDetailDialog } from "@/app/components/ProductDetailDialog";
@@ -41,34 +41,36 @@ export default function Parameter({
     countPercent: 0,
   });
 
-  const salesData = productDataList.reduce((acc, product) => {
-    const { name, category, cost, price } = product;
-    let count = product.count;
-    let order = product.order;
+  const salesData = useMemo(() => {
+    return productDataList.reduce((acc, product) => {
+      const { name, category, cost, price } = product;
+      let count = product.count;
+      let order = product.order;
 
-    // 未定義やnullやNaNやInfinityを0に矯正
-    count = Number.isFinite(count) ? count : 0;
-    order = Number.isFinite(order) ? order : 0;
+      // 未定義やnullやNaNやInfinityを0に矯正
+      count = Number.isFinite(count) ? count : 0;
+      order = Number.isFinite(order) ? order : 0;
 
-    const countPercent =
-      Number.isFinite(order) && Number.isFinite(count) && order > 0
-        ? Math.ceil(100 * (count / order))
-        : 0;
+      const countPercent =
+        Number.isFinite(order) && Number.isFinite(count) && order > 0
+          ? Math.ceil(100 * (count / order))
+          : 0;
 
-    // すべての数値フィールドをチェックしてNaNを0に変換
-    const safeValue = (value: number) => (Number.isFinite(value) ? value : 0);
+      // すべての数値フィールドをチェックしてNaNを0に変換
+      const safeValue = (value: number) => (Number.isFinite(value) ? value : 0);
 
-    acc.push({
-      name: name || "",
-      category: category,
-      cost: safeValue(cost),
-      price: safeValue(price),
-      count: safeValue(count),
-      order: safeValue(order),
-      countPercent: safeValue(countPercent),
-    });
-    return acc;
-  }, [] as SalesData[]);
+      acc.push({
+        name: name || "",
+        category: category,
+        cost: safeValue(cost),
+        price: safeValue(price),
+        count: safeValue(count),
+        order: safeValue(order),
+        countPercent: safeValue(countPercent),
+      });
+      return acc;
+    }, [] as SalesData[]);
+  }, [productDataList]);
 
   const totalSales = productDataList.reduce(
     (total, product) =>
@@ -128,7 +130,7 @@ export default function Parameter({
                 )?.showModal();
               }}
             >
-              <div className="w-40">
+              <div className="w-40 pl-3 flex flex-col items-start">
                 <span>{data.name}</span>
                 <span
                   className={`${
