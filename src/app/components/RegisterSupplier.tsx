@@ -82,7 +82,7 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
               setAddSupplier({ ...addSupplier, name: e.target.value })
             }
             placeholder="input"
-            className="input input-bordered text-black w-[310px]"
+            className="input input-bordered text-black md:w-[310px]"
           />
         </div>
         {/* Submit Button */}

@@ -49,7 +49,7 @@ export function ShowSupplierIfomation() {
 
   return (
     <>
-      <ul className="p-7 ml-30 flex flex-col text-black gap-3 bg-[#FAFAFA] rounded-[16px] ">
+      <ul className="p-7 w-60 mt-10 md:mt-0 md:ml-30 flex flex-col text-black gap-3 bg-[#FAFAFA] rounded-[16px] ">
         {supplierData.map((data, index) => (
           <li key={index}>
             <div className="flex flex-row justify-between">

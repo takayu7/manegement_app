@@ -18,11 +18,11 @@ export const CollapseSupplier = () => {
     <>
       <div className="bg-base-100 border-base-300 collapse border">
         <input type="checkbox" className="peer" />
-        <div className="collapse-title bg-[#6E6B41] text-[30px] text-primary-content text-center peer-checked:bg-[#3F9877] peer-checked:text-secondary-content">
+        <div className="px-[16px] collapse-title bg-[#6E6B41] text-[30px] text-primary-content  text-center peer-checked:bg-[#3F9877] peer-checked:text-secondary-content">
           Supplier
         </div>
         <div
-          className="collapse-content flex flex-row bg-[#6E6B41]
+          className="collapse-content flex flex-col md:flex-row bg-[#6E6B41]
          text-primary-content peer-checked:bg-[#3F9877] peer-checked:text-secondary-content"
         >
           {/* Supplier登録 */}
