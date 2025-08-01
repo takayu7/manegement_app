@@ -14,11 +14,23 @@ export interface PurchaseCheckDialogProps {
 
 export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
   product,
+  categoryList,
+  supplierList,
   onSave,
   onClose,
 }) => {
   const handleAdd = (product: Product) => {
     onSave(product);
+  };
+
+  const categoryName = (num: number) => {
+    const category = categoryList.find((cat) => cat.id === num);
+    return category ? category.name : "Unknown";
+  };
+
+  const supplierName = (num: number) => {
+    const supplier = supplierList.find((sup) => sup.id === num);
+    return supplier ? supplier.name : "Unkown";
   };
 
   return (
@@ -31,15 +43,15 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
           {/* 商品名 */}
           <li className="flex lg:flex-row ">
             <label className=" font-semibold text-gray-700 w-40">name：</label>
-            <p className="font-bold text-blue-900 underline">{product.name}</p>
+            <p className="font-bold text-blue-900">{product.name}</p>
           </li>
           {/* カテゴリ */}
           <li className="flex lg:flex-row ">
             <label className=" font-semibold text-gray-700 w-40">
               category:
             </label>
-            <p className="font-bold text-blue-900 underline">
-              {product.category}
+            <p className="font-bold text-blue-900">
+              {categoryName(product.category)}
             </p>
           </li>
           {/* 商品説明 */}
@@ -47,39 +59,31 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
             <label className=" font-semibold text-gray-700 w-40">
               explanation:
             </label>
-            <p className="font-bold text-blue-900 underline">
-              {product.explanation}
-            </p>
+            <p className="font-bold text-blue-900">{product.explanation}</p>
           </li>
           {/* 仕入れ数 */}
           <li className="flex lg:flex-row ">
             <label className=" font-semibold text-gray-700 w-40">cost:</label>
-            <p className="font-bold text-blue-900 underline">{product.cost}</p>
+            <p className="font-bold text-blue-900">{product.cost}</p>
           </li>
           {/* 仕入れ先 */}
           <li className="flex lg:flex-row ">
             <label className=" font-semibold text-gray-700 w-40">
               supplier:
             </label>
-            <p className="font-bold text-blue-900 underline">
-              {product.supplier}
-            </p>
+            <p className="font-bold text-blue-900">{supplierName(product.supplier)}</p>
           </li>
 
           {/* 原価 */}
           <li className="flex lg:flex-row ">
             <label className=" font-semibold text-gray-700 w-40">count:</label>
-            <p className="font-bold text-blue-900 underline">{product.count}</p>
+            <p className="font-bold text-blue-900">{product.count}</p>
           </li>
           {/* 販売価格 */}
           <li className="flex lg:flex-row ">
             <label className=" font-semibold text-gray-700 w-40">price:</label>
-            <p className="font-bold text-blue-900 underline">{product.price}</p>
+            <p className="font-bold text-blue-900">{product.price}</p>
           </li>
-          {/* <li className="flex lg:flex-row ">
-            <label className=" font-semibold text-gray-700 w-40">order:</label>
-            <p className="font-bold text-blue-900 underline">{product.order}</p>
-          </li> */}
         </ul>
 
         <div className="flex flex-col lg:flex-row items-center gap-2">
