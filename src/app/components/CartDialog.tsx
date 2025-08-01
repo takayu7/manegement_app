@@ -57,7 +57,7 @@ export const CartDialog: React.FC<CartDialogProps> = ({
       name: item.name,
       // category: item.category,
       price: item.price,
-      count: item.count,
+      count: item.buyCount,
       buyDate: null,
     }));
     console.log(result);

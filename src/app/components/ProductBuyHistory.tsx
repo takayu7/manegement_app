@@ -4,6 +4,7 @@ import { BuyProductList, PurchaseHistoryList } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
 import { useSessionStorage } from "@/app/hooks/useSessionStorage";
 import { Player } from "@lottiefiles/react-lottie-player";
+import { Stamp, Calendar } from "lucide-react";
 
 // 合計金額を計算する関数
 const totalCost = (productList: BuyProductList[]) =>
@@ -13,7 +14,7 @@ export interface ProductBuyHistoryProps {
   onSave: (buyProductList: BuyProductList[]) => void;
 }
 
-const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({  }) => {
+const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({}) => {
   // 購入履歴情報
   const [history, setHistory] = useState<PurchaseHistoryList[]>([]);
   // ローディング状態
@@ -34,7 +35,12 @@ const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({  }) => {
 
   return (
     <div className="p-4 bg-gray-100 rounded-lg">
-      <h3 className={`${loading ? "text-red" : ""}`}>ProductBuyHistory</h3>
+      <div className="flex">
+        <h3 className="text-2xl font-bold mb-4 text-center text-gray-800">
+          OrderHistory
+          <Stamp className="inline-block ml-1 size-8.5" />
+        </h3>
+      </div>
       {loading ? (
         <Player
           autoplay
@@ -47,34 +53,45 @@ const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({  }) => {
         />
       ) : history.length > 0 ? (
         history.map((item) => (
-          <div key={item.buyGroupId} className="bg-gray-50 rounded-lg p-4 mb-2">
+          <div
+            key={item.buyGroupId}
+            className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-4 shadow-sm"
+          >
             {item.productList.map((product, index) => (
               <React.Fragment key={index}>
-                <div>
-                  {index === 0 && product.buyDate
-                    ? product.buyDate
-                        .toLocaleString("ja-JP", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                        })
-                        .split("-")
-                        .join("/")
-                        .slice(0, 10)
-                    : null}
-                </div>
+                {index === 0 && product.buyDate && (
+                  <div className="flex items-center gap-2 mb-1 text-gray-800">
+                    <Calendar className="size-4.5" />
+
+                    {product.buyDate
+                      .toLocaleString("ja-JP", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
+                      .split("-")
+                      .join(".")
+                      .slice(0, 10)}
+                  </div>
+                )}
                 <ul
                   key={`ul-${product.id || index}`}
-                  className=" grid grid-cols-4 gap-2 border-b-2 border-gray-300"
+                  className="grid grid-cols-4 bg-white  rounded-lg px-3 py-2"
                 >
-                  <li>{product.name}</li>
-                  <li>{jpMoneyChange(product.price)}</li>
-                  <li>{product.count} set</li>
-                  <li>{jpMoneyChange(product.price * product.count)}</li>
+                  <li className="font-semibold text-gray-900">
+                    {product.name}
+                  </li>
+                  <li className=" text-gray-700">
+                    {jpMoneyChange(product.price)}
+                  </li>
+                  <li className="flex">{product.count} set</li>
+                  <li className="text-right  text-yellow-600 font-bold">
+                    {jpMoneyChange(product.price * product.count)}
+                  </li>
                 </ul>
               </React.Fragment>
             ))}
-            <div className="font-bold text-end">
+            <div className="mt-3 border-t pt-2 border-yellow-300 text-right text-orange-800 font-bold text-lg">
               {jpMoneyChange(totalCost(item.productList))}
             </div>
           </div>
@@ -82,7 +99,6 @@ const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({  }) => {
       ) : (
         <p>No Purchase History</p>
       )}
-     
     </div>
   );
 };

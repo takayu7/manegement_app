@@ -4,6 +4,7 @@ import { BuyProductList, PurchaseHistoryList } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
 import { useSessionStorage } from "@/app/hooks/useSessionStorage";
 import { Player } from "@lottiefiles/react-lottie-player";
+import { Stamp, X, Calendar } from "lucide-react";
 
 // 合計金額を計算する関数
 const totalCost = (productList: BuyProductList[]) =>
@@ -11,10 +12,10 @@ const totalCost = (productList: BuyProductList[]) =>
 
 export interface OrderHistoryDialogProps {
   onSave: (buyProductList: BuyProductList[]) => void;
-  onClose: ()=>void;
+  onClose: () => void;
 }
 
-const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({  onClose }) => {
+const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({ onClose }) => {
   // 購入履歴情報
   const [history, setHistory] = useState<PurchaseHistoryList[]>([]);
   // ローディング状態
@@ -33,86 +34,86 @@ const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({  onClose }) => 
       .finally(() => setLoading(false));
   }, [userId]);
 
-  //購入商品のテストデータ
-  // const testData: BuyProductList[] = [
-  //   {
-  //     id: "a11111",
-  //     userid: userId,
-  //     name: "cap",
-  //     // category: 3,
-  //     price: 80,
-  //     count: 2,
-  //     buyDate: new Date(),
-  //   },
-  //   {
-  //     id: "a11112",
-  //     userid: userId,
-  //     name: "boots",
-  //     // category: 7,
-  //     price: 500,
-  //     count: 1,
-  //     buyDate: new Date(),
-  //   },
-  // ];
-
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center overflow-auto">
-      <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[600px] relative ">
-      <h3 className={`${loading ? "text-red" : ""}`}>ProductBuyHistory</h3>
-      {loading ? (
-        <Player
-          autoplay
-          loop
-          src="/lottie/Loading.json"
-          style={{
-            height: "100px",
-            width: "100px",
-          }}
-        />
-      ) : history.length > 0 ? (
-        history.map((item) => (
-          <div key={item.buyGroupId} className="bg-gray-50 rounded-lg p-4 mb-2">
-            {item.productList.map((product, index) => (
-              <React.Fragment key={index}>
-                <div>
-                  {index === 0 && product.buyDate
-                    ? product.buyDate
+    <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center">
+      <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[600px] relative h-2/3 overflow-auto">
+        {/* ヘッダー */}
+        <div className="flex">
+          <h3 className="text-3xl font-bold mb-6 text-center text-gray-800">
+            OrderHistory
+            <Stamp className="inline-block ml-1 size-8.5" />
+          </h3>
+        </div>
+        {/* アニメーション */}
+        {loading ? (
+          <Player
+            autoplay
+            loop
+            src="/lottie/Loading.json"
+            style={{
+              height: "100px",
+              width: "100px",
+            }}
+          />
+        ) : history.length > 0 ? (
+          history.map((item) => (
+            <div
+              key={item.buyGroupId}
+              className="bg-pink-50 border border-pink-200 rounded-xl p-5 mb-5 shadow-sm"
+            >
+              {item.productList.map((product, index) => (
+                <React.Fragment key={index}>
+                  {index === 0 && product.buyDate && (
+                    <div className="flex items-center gap-2 mb-2 text-gray-800">
+                      <Calendar className="size-5" />
+
+                      {product.buyDate
                         .toLocaleString("ja-JP", {
                           year: "numeric",
                           month: "2-digit",
                           day: "2-digit",
                         })
                         .split("-")
-                        .join("/")
-                        .slice(0, 10)
-                    : null}
-                </div>
-                <ul
-                  key={`ul-${product.id || index}`}
-                  className=" grid grid-cols-4 gap-2 border-b-2 border-gray-300"
-                >
-                  <li>{product.name}</li>
-                  <li>{jpMoneyChange(product.price)}</li>
-                  <li>{product.count} set</li>
-                  <li>{jpMoneyChange(product.price * product.count)}</li>
-                </ul>
-              </React.Fragment>
-            ))}
-            <div className="font-bold text-end">
-              {jpMoneyChange(totalCost(item.productList))}
+                        .join(".")
+                        .slice(0, 10)}
+                    </div>
+                  )}
+                  <ul
+                    key={`ul-${product.id || index}`}
+                    className="grid grid-cols-4 bg-white  rounded-lg px-4 py-3"
+                  >
+                    <li className="font-semibold text-gray-900">
+                      {product.name}
+                    </li>
+                    <li className=" text-gray-700">
+                      {jpMoneyChange(product.price)}
+                    </li>
+                    <li className="flex">{product.count} set</li>
+                    <li className="text-right  text-pink-600 font-bold">
+                      {jpMoneyChange(product.price * product.count)}
+                    </li>
+                  </ul>
+                </React.Fragment>
+              ))}
+
+              <div className="mt-4 border-t pt-3 border-pink-200 text-right text-pink-900 font-bold text-lg ">
+                {jpMoneyChange(totalCost(item.productList))}
+              </div>
             </div>
-          </div>
-        ))
-      ) : (
-        <p>No Purchase History</p>
-      )}
-      {/* <button className="btn btn-info mt-4" onClick={() => onSave(testData)}>
-        BuyTestData
-      </button> */}
-      <button className="btn btn-info mt-4" onClick={onClose}>
-close
-      </button>
-    </div>
+          ))
+        ) : (
+          <p className="text-center text-gray-500 italic">
+            No Purchase History
+          </p>
+        )}
+
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-4 btn text-white btn-sm btn-circle bg-blue-900 hover:bg-blue-800"
+        >
+          <X className="size-5" />
+        </button>
+      </div>
     </div>
   );
 };
