@@ -8,20 +8,14 @@ export interface RegisterTodoProps {
   onSave: (todo: Todo) => void;
 }
 
-const getToday = new Date();
-const y = getToday.getFullYear();
-const m = getToday.getMonth() + 1;
-const d = getToday.getDate();
-const today =
-  y + "-" + m.toString().padStart(2, "0") + "-" + d.toString().padStart(2, "0");
 const defaultData: Todo = {
   userid: "",
   todoid: 0,
   name: "",
   icon: 0,
   todo: "",
-  deadline: getToday,
-  checked: getToday,
+  deadline: null,
+  checked: null,
 };
 
 export const RegisterTodoList: React.FC<RegisterTodoProps> = ({ onSave }) => {
@@ -43,7 +37,11 @@ export const RegisterTodoList: React.FC<RegisterTodoProps> = ({ onSave }) => {
   //ユーザーがlimit timeの値を変更した際に、その値を取得する処理
   const limitTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newLimiTime = e.target.value;
-    setAddTodo({ ...addTodo, deadline: new Date(newLimiTime) });
+    if (newLimiTime === "") {
+      setAddTodo({ ...addTodo, deadline: null });
+    } else {
+      setAddTodo({ ...addTodo, deadline: new Date(newLimiTime) });
+    }
   };
 
   //addボタン
@@ -101,7 +99,6 @@ export const RegisterTodoList: React.FC<RegisterTodoProps> = ({ onSave }) => {
         <input
           className="border-1 border-gray-400 p-2 rounded"
           type="date"
-          defaultValue={today}
           onChange={limitTimeChange}
           placeholder="limit date"
         />

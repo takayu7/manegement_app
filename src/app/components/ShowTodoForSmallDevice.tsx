@@ -68,7 +68,7 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
     fetchTodoData();
     const result = await response.json();
     if (result.success) {
-      console.log("Edit successful！");
+      console.log("Edit successful!");
     } else {
       console.log("Edit failed...");
     }
@@ -119,7 +119,7 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
                 console.log(todoData);
               }}
             >
-              元に戻す
+              Undo
             </button>
           ) : (
             <button
@@ -129,7 +129,7 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
                 console.log(todoData);
               }}
             >
-              チェックがつていないTodoリストのみを表示
+              Show only unchecked Todo items
             </button>
           )}
           {todoData.map((todo, index) => (

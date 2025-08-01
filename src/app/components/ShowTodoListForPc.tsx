@@ -119,7 +119,7 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
                 console.log(todoData);
               }}
             >
-              元に戻す
+              Undo
             </button>
           ) : (
             <button
@@ -129,7 +129,7 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
                 console.log(todoData);
               }}
             >
-              チェックがついていないTodoリストのみを表示
+              Show only unchecked Todo items
             </button>
           )}
           <table className="table">
