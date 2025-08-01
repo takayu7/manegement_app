@@ -82,7 +82,7 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
             name="name"
             value={addUser.name}
             onChange={(e) => setAddUser({ ...addUser, name: e.target.value })}
-            placeholder="input"
+            placeholder="name"
             className="input input-bordered text-black"
           />
         </div>

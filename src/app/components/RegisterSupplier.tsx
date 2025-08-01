@@ -81,7 +81,7 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
             onChange={(e) =>
               setAddSupplier({ ...addSupplier, name: e.target.value })
             }
-            placeholder="input"
+            placeholder="name"
             className="input input-bordered text-black md:w-[310px]"
           />
         </div>
