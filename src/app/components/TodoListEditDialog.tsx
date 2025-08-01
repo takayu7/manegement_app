@@ -9,7 +9,7 @@ export interface EditDialogProps {
   onSave: (todo: Todo) => void;
 }
 
-const defaultData: Todo = {
+const defaultTodoData: Todo = {
   userid: "",
   name: "",
   todoid: 1,
@@ -23,7 +23,7 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
   todo,
   onSave,
 }) => {
-  const [editTodo, setEditTodo] = useState<Todo>(defaultData);
+  const [editTodo, setEditTodo] = useState<Todo>(defaultTodoData);
   const [userData, setUserData] = useState<User[]>([]);
 
   //ユーザー情報の取得
@@ -46,7 +46,7 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
     d.toString().padStart(2, "0");
 
   useEffect(() => {
-    setEditTodo(todo ? { ...todo } : defaultData);
+    setEditTodo(todo ? { ...todo } : defaultTodoData);
     fetchUserData();
   }, [todo]);
 
@@ -60,18 +60,14 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
             <select
               id="name"
               name="name"
-              defaultValue={editTodo.userid}
+              value={editTodo.name}
               onChange={(e) =>
                 setEditTodo({ ...editTodo, name: e.target.value })
               }
               className="select rounded-sm border-2 p-1 text-lg md:mx-5 "
             >
               {userData.map((user) => (
-                <option
-                  key={user.id}
-                  value={user.name}
-                  selected={user.id == editTodo.userid}
-                >
+                <option key={user.id} value={user.name}>
                   {user.name}
                 </option>
               ))}
@@ -100,7 +96,7 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
             <input
               type="date"
               name="deadline"
-              defaultValue={deadline}
+              value={deadline}
               onChange={(e) =>
                 setEditTodo({ ...editTodo, deadline: new Date(e.target.value) })
               }

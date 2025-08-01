@@ -3,7 +3,8 @@ import { Todo } from "@/app/types/type";
 import { revalidatePath } from "next/cache";
 //import { todoBgColor } from "@/app/lib/utils";
 import { RegisterTodoList } from "@/app/components/RegisterTodoList";
-import { ShowTodoList } from "@/app/components/ShowTodoList";
+import { ShowTodoListForPc } from "@/app/components/ShowTodoListForPc";
+import { ShowTodoForSmallDevice } from "@/app/components/ShowTodoForSmallDevice";
 // import { revalidatePath } from "next/cache";
 
 export default async function Page() {
@@ -13,7 +14,7 @@ export default async function Page() {
     console.log("supplier:", todo);
     await createTodo(todo);
     // ページを再取得
-    revalidatePath("/setting");
+    //revalidatePath("/setting");
   };
   // データの取得
   //const userTodoList = await fetchTodo();
@@ -42,11 +43,20 @@ export default async function Page() {
       <div className="space-y-6">
         <h1 className="text-xl md:text-4xl font-bold">Todo List</h1>
         <RegisterTodoList onSave={handleSave} />
-        <ShowTodoList
-          todoDataList={todoDataList}
-          onSave={handleUpdate}
-          onDelete={handleDelete}
-        />
+        <div>
+          <ShowTodoListForPc
+            todoDataList={todoDataList}
+            onSave={handleUpdate}
+            onDelete={handleDelete}
+          />
+        </div>
+        <div>
+          <ShowTodoForSmallDevice
+            todoDataList={todoDataList}
+            onSave={handleUpdate}
+            onDelete={handleDelete}
+          />
+        </div>
       </div>
     </>
   );
