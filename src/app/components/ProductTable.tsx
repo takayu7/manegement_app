@@ -81,7 +81,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
             {headerNames.map((headerName, index) => (
               <th
                 key={index}
-                className={` ${index > 7 ? "text-center px-1" : ""}`}
+                className={` ${index > 7 ? "lg:text-center lg:px-1" : ""}`}
               >
                 {headerName}
               </th>
@@ -101,7 +101,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
               <td>{jpMoneyChange(product.price)}</td>
               <td>{jpMoneyChange(product.cost * product.count)}</td>
               <td>{jpMoneyChange(product.price * product.count)}</td>
-              <td className="px-1 text-center">
+              <td className="px-1 lg:text-center">
                 <button
                   onClick={() => {
                     setSelectedProduct(product);
@@ -116,7 +116,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   <SquarePen />
                 </button>
               </td>
-              <td className="px-1 text-center">
+              <td className="px-1 lg:text-center">
                 <button
                   onClick={() => {
                     setSelectedProduct(product);
@@ -131,7 +131,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   <Trash2 />
                 </button>
               </td>
-              <td className="px-1 text-center">
+              <td className="px-1 lg:text-center">
                 <button
                   onClick={() => {
                     setSelectedProduct(product);
@@ -146,7 +146,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                   <SquarePlus />
                 </button>
               </td>
-              <td className="px-1 text-center">
+              <td className="px-1 lg:text-center">
                 <button
                   onClick={() => {
                     setSelectedProduct(product);

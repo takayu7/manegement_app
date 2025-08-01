@@ -12,7 +12,7 @@ const LoginDialog = dynamic(() => import("./components/loginDialog"), {
 
 export default function Page() {
   return (
-    <main className="flex min-h-screen flex-col bg-stone-300">
+    <main className="flex min-h-screen flex-col">
       <div className="flex items-center justify-center relative">
         <div className="absolute w-full h-full z-0">
           <Image
@@ -23,7 +23,7 @@ export default function Page() {
           />
         </div>
         <div className="relative z-10 flex items-center justify-center min-h-screen">
-          <h1 className="text-[#FAFAFA] text-[100px] font-serif font-bold mb-[200px]">
+          <h1 className="text-[#FAFAFA] px-5 text-[40px] text-center font-serif font-bold mb-[200px] lg:text-[100px]">
             Welcome To Select Shop!!
           </h1>
           <button
