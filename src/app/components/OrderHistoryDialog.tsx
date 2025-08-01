@@ -9,11 +9,12 @@ import { Player } from "@lottiefiles/react-lottie-player";
 const totalCost = (productList: BuyProductList[]) =>
   productList.reduce((total, item) => total + item.price * item.count, 0);
 
-export interface ProductBuyHistoryProps {
+export interface OrderHistoryDialogProps {
   onSave: (buyProductList: BuyProductList[]) => void;
+  onClose: ()=>void;
 }
 
-const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({  }) => {
+const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({  onClose }) => {
   // 購入履歴情報
   const [history, setHistory] = useState<PurchaseHistoryList[]>([]);
   // ローディング状態
@@ -32,8 +33,31 @@ const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({  }) => {
       .finally(() => setLoading(false));
   }, [userId]);
 
+  //購入商品のテストデータ
+  // const testData: BuyProductList[] = [
+  //   {
+  //     id: "a11111",
+  //     userid: userId,
+  //     name: "cap",
+  //     // category: 3,
+  //     price: 80,
+  //     count: 2,
+  //     buyDate: new Date(),
+  //   },
+  //   {
+  //     id: "a11112",
+  //     userid: userId,
+  //     name: "boots",
+  //     // category: 7,
+  //     price: 500,
+  //     count: 1,
+  //     buyDate: new Date(),
+  //   },
+  // ];
+
   return (
-    <div className="p-4 bg-gray-100 rounded-lg">
+    <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center overflow-auto">
+      <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[600px] relative ">
       <h3 className={`${loading ? "text-red" : ""}`}>ProductBuyHistory</h3>
       {loading ? (
         <Player
@@ -82,9 +106,15 @@ const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({  }) => {
       ) : (
         <p>No Purchase History</p>
       )}
-     
+      {/* <button className="btn btn-info mt-4" onClick={() => onSave(testData)}>
+        BuyTestData
+      </button> */}
+      <button className="btn btn-info mt-4" onClick={onClose}>
+close
+      </button>
+    </div>
     </div>
   );
 };
 
-export default ProductBuyHistory;
+export default OrderHistoryDialog;

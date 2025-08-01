@@ -66,7 +66,6 @@ export type BuyProductList = {
   id: string;
   userid: string;
   name: string;
-  category: number;
   price: number;
   count: number;
   buyDate: Date | null;

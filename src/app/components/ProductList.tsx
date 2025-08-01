@@ -2,14 +2,22 @@
 import React, { startTransition, useEffect, useState } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
-import { Sofa, ShoppingCart, CircleX, Plus, Minus } from "lucide-react";
-import { Product, CartItem } from "@/app/types/type";
+import {
+  Sofa,
+  ShoppingCart,
+  CircleX,
+  Plus,
+  Minus,
+  ScrollText,
+} from "lucide-react";
+import { Product, CartItem, BuyProductList } from "@/app/types/type";
 import { CartDialog } from "@/app/components/CartDialog";
+import OrderHistoryDialog from "@/app/components/OrderHistoryDialog";
 import { Player } from "@lottiefiles/react-lottie-player";
 
 export interface ProductListProps {
   productDataList: Product[];
-  onSave: (cart: CartItem[]) => void;
+  onSave: (cart: CartItem[], product: BuyProductList[]) => void;
 }
 
 export const ProductList: React.FC<ProductListProps> = ({
@@ -23,8 +31,12 @@ export const ProductList: React.FC<ProductListProps> = ({
   );
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
   const [showThanks, setShowThanks] = useState(false);
 
+  // const [orderHistoryList, setOrderHistoryList] = useState<BuyProductList[]>(
+  //   []
+  // );
 
   const buyProduct = selectedProduct
     ? buyProductId[selectedProduct.id] || 0
@@ -86,9 +98,10 @@ export const ProductList: React.FC<ProductListProps> = ({
   };
 
   // カート商品の購入ボタン
-  const handleBuy = (cart: CartItem[]) => {
+  const handleBuy = (cart: CartItem[], product: BuyProductList[]) => {
     startTransition(() => {
-      onSave(cart);
+      console.log(product);
+      onSave(cart, product);
     });
     setShowThanks(true);
     setTimeout(() => setShowThanks(false), 4000);
@@ -99,6 +112,11 @@ export const ProductList: React.FC<ProductListProps> = ({
   //削除ボタン
   const handleDelete = (id: string) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleSave = (buyProductList: BuyProductList[]) => {
+    console.log(buyProductList);
+    setIsOrderHistoryOpen(false);
   };
 
   useEffect(() => {
@@ -117,7 +135,7 @@ export const ProductList: React.FC<ProductListProps> = ({
           />
         </div>
       )}
-     
+
       <main className="">
         <h1 className="mb-10 text-xl md:text-4xl font-bold ">
           <Sofa className="inline-block mr-2.5 size-10" />
@@ -167,6 +185,16 @@ export const ProductList: React.FC<ProductListProps> = ({
             className="btn btn-lg lg:btn-xl btn-error text-white btn-circle"
           >
             <ShoppingCart />
+          </button>
+        </div>
+
+        {/* 購入履歴ボタン */}
+        <div className="indicator fixed top-67 right-12 lg:top-53 lg:right-30">
+          <button
+            onClick={() => setIsOrderHistoryOpen(true)}
+            className="btn btn-lg lg:btn-xl btn-error text-white btn-circle"
+          >
+            <ScrollText />
           </button>
         </div>
       </main>
@@ -270,7 +298,13 @@ export const ProductList: React.FC<ProductListProps> = ({
           onClose={() => setIsCartOpen(false)}
           onSave={handleBuy}
           onDelete={handleDelete}
+        />
+      )}
 
+      {isOrderHistoryOpen && (
+        <OrderHistoryDialog
+          onSave={handleSave}
+          onClose={() => setIsOrderHistoryOpen(false)}
         />
       )}
     </>
