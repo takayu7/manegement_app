@@ -29,7 +29,9 @@ export default async function Page() {
           <CountDown />
         </div>
         <div>
-          <ProductBuyHistory onSave={handleSave} />
+          <div className="h-50 bg-gray-100 border border-gray-300 rounded-md overflow-y-auto">
+            <ProductBuyHistory onSave={handleSave} />
+          </div>
           <UserBuyParameter buyProductList={historyList} />
         </div>
         <div>

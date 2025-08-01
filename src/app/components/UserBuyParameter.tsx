@@ -52,7 +52,8 @@ export const UserBuyParameter: React.FC<UserBuyParameterProps> = ({
   return (
     <>
       {buyProductDatas.map((product, index) => (
-        <div key={index} className="flex items-center gap-3 p-3">
+        <div key={index} className="flex flex-col items-center gap-3 p-3 lg:flex-row">
+          <div key={index} className="flex items-center gap-3 p-3">
           <Image
             src={`${SelectStaffIcon((product.icon || 0).toString())}`}
             alt="スタッフアイコン"
@@ -62,6 +63,7 @@ export const UserBuyParameter: React.FC<UserBuyParameterProps> = ({
           />
           <h3 className="w-32">{product.name}</h3>
           <p className="w-20">{jpMoneyChange(product.totalPrice)}</p>
+          </div>
           <progress
             className="progress progress-accent w-full"
             value={((product.totalPrice || 1) / totalSales) * 100}
