@@ -3,6 +3,7 @@
 // import React, { useState } from "react";
 import { Category, Product, Supplier } from "@/app/types/type";
 import { ListPlus, Undo2 } from "lucide-react";
+import { Player } from "@lottiefiles/react-lottie-player";
 
 export interface PurchaseCheckDialogProps {
   product: Product;
@@ -35,7 +36,9 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center">
+     
       <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[600px] relative">
+        
         <h2 className="text-3xl font-bold mb-3 text-center text-gray-800">
           Check
         </h2>
@@ -71,7 +74,9 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
             <label className=" font-semibold text-gray-700 w-40">
               supplier:
             </label>
-            <p className="font-bold text-blue-900">{supplierName(product.supplier)}</p>
+            <p className="font-bold text-blue-900">
+              {supplierName(product.supplier)}
+            </p>
           </li>
 
           {/* 原価 */}
@@ -86,7 +91,15 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
           </li>
         </ul>
 
-        <div className="flex flex-col lg:flex-row items-center gap-2">
+        <div className="flex flex-col lg:flex-row items-center gap-2 relative">
+          <div className="absolute -top-64 lg:-top-82 left-30 flex justify-center w-full">
+         <Player
+        autoplay
+        loop
+        src="/lottie/WalkingElephant.json"
+        style={{ height: "250px", width: "250px" }}
+      />
+      </div>
           <button
             type="submit"
             className="btn bg-pink-400 text-white hover:bg-pink-500 btn-wide btn-lg"
