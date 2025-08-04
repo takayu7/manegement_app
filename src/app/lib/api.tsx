@@ -11,7 +11,7 @@ import {
   BuyProductList,
   SortType,
   LineType,
-  UserBuyParameterType
+  UserBuyParameterType,
 } from "@/app/types/type";
 import { generateCustomId } from "@/app/lib/utils";
 
@@ -28,6 +28,19 @@ export async function fetchUserDatas() {
     throw new Error("Failed to fetch user data.");
   }
 }
+
+//ユーザーデータをIDを基に取得
+export async function fetchUserDatasById(userId: string) {
+  try {
+    const data = await sql<User[]>`SELECT * FROM users WHERE id = ${userId}`;
+
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch user data.");
+  }
+}
+
 // ユーザーデータの登録
 export async function createUser(user: User) {
   try {
@@ -265,7 +278,6 @@ export async function createPurchaseHistory(buyProductList: BuyProductList[]) {
         RETURNING *;
       `;
     }
-
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to create product.");
@@ -406,6 +418,7 @@ export async function updateTodo(todo: Todo) {
     const data = await sql<Todo[]>`
       UPDATE todo
       SET
+        userid = ${todo.userid},
         todo = ${todo.todo},
         deadline = ${todo.deadline},
         checked = ${todo.checked}
