@@ -41,7 +41,7 @@ const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({ onClose }) => {
         <div className="flex">
           <h3 className="text-3xl font-bold mb-6 text-center text-gray-800">
             OrderHistory
-            <Stamp className="inline-block ml-1 size-8.5" />
+            <Stamp className="inline-block ml-1 size-8" />
           </h3>
         </div>
         {/* アニメーション */}
@@ -80,7 +80,7 @@ const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({ onClose }) => {
                   )}
                   <ul
                     key={`ul-${product.id || index}`}
-                    className="grid grid-cols-4 bg-white  rounded-lg px-4 py-3"
+                    className="flex flex-col lg:grid lg:grid-cols-4 bg-white px-4 py-3 border border-dashed border-pink-200"
                   >
                     <li className="font-semibold text-gray-900">
                       {product.name}

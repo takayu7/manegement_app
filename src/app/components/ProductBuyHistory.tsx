@@ -38,7 +38,7 @@ const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({}) => {
       <div className="flex">
         <h3 className="text-2xl font-bold mb-4 text-center text-gray-800">
           OrderHistory
-          <Stamp className="inline-block ml-1 size-8.5" />
+          <Stamp className="inline-block ml-1 size-8" />
         </h3>
       </div>
       {loading ? (
@@ -76,7 +76,7 @@ const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({}) => {
                 )}
                 <ul
                   key={`ul-${product.id || index}`}
-                  className="grid grid-cols-4 bg-white  rounded-lg px-3 py-2"
+                  className="flex flex-col lg:grid lg:grid-cols-4 bg-white  px-3 py-2 border border-yellow-100 border-dashed"
                 >
                   <li className="font-semibold text-gray-900">
                     {product.name}

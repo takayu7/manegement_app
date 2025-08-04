@@ -107,7 +107,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
 
         {/* 商品名 */}
         <ul className="text-xl space-y-8 mb-8 lg:space-y-12 lg:mb-15">
-          <li className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
+          <li className="flex flex-col gap-1 lg:flex-row lg:gap-4">
             <label className=" font-semibold text-gray-700 w-43">name :</label>
             <input
               id="name"
@@ -122,7 +122,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
           </li>
 
           {/* カテゴリ */}
-          <li className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
+          <li className="flex flex-col gap-1 lg:flex-row lg:gap-4">
             <label className="font-semibold text-gray-700 w-43">
               category :
             </label>
@@ -148,7 +148,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
           </li>
 
           {/* 商品説明 */}
-          <li className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
+          <li className="flex flex-col gap-1 lg:flex-row lg:gap-4">
             <label className="font-semibold text-gray-700 w-43">
               explanation :
             </label>
@@ -164,7 +164,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
           </li>
 
           {/* 仕入れ数 */}
-          <li className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
+          <li className="flex flex-col gap-1 lg:flex-row lg:gap-4">
             <label className="font-semibold text-gray-700 w-43">count :</label>
             <input
               name="count"
@@ -215,7 +215,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
           </li>
 
           {/* 原価 */}
-          <li className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
+          <li className="flex flex-col gap-1 lg:flex-row lg:gap-4">
             <label className="font-semibold text-gray-700 w-43">cost：</label>
             <input
               id="cost"
@@ -237,7 +237,7 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
           </li>
 
           {/* 販売価格 */}
-          <li className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
+          <li className="flex flex-col gap-1 lg:flex-row lg:gap-4">
             <label className="font-semibold text-gray-700 w-43">price：</label>
             <input
               id="price"
