@@ -49,16 +49,24 @@ export function ShowSupplierIfomation() {
 
   return (
     <>
-      <ul className="p-7 w-60 mt-10 md:mt-0 md:ml-30 flex flex-col text-black gap-3 bg-[#FAFAFA] rounded-[16px] ">
-        {supplierData.map((data, index) => (
-          <li key={index}>
-            <div className="flex flex-row justify-between">
-              ID：{data.id}　name：{data.name}
-              <Trash2 onClick={() => showDeleteConfirmation(String(data.id))} />
-            </div>
-            <hr className="border-gray-400" />
-          </li>
-        ))}
+      <ul className="p-7 mt-10 md:mt-0 md:ml-30 flex flex-col text-black gap-3 bg-[#FAFAFA] rounded-[16px]">
+        {supplierData.length != 0 ? (
+          <div className="flex flex-col gap-3 rounded-[16px]">
+            {supplierData.map((data, index) => (
+              <li key={index}>
+                <div className="flex flex-row justify-between">
+                  ID：{data.id}　name：{data.name}
+                  <Trash2
+                    onClick={() => showDeleteConfirmation(String(data.id))}
+                  />
+                </div>
+                <hr className="border-gray-400" />
+              </li>
+            ))}
+          </div>
+        ) : (
+          <li className="p-3">No Data...</li>
+        )}
       </ul>
     </>
   );

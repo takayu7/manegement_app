@@ -49,17 +49,23 @@ export function ShowUserInfomation() {
 
   return (
     <>
-      <ul className="p-7 mt-10 md:mt-0 md:ml-30 flex flex-col text-black gap-3 bg-[#FAFAFA] rounded-[16px] ">
-        {userData.map((data, index) => (
-          <li key={index}>
-            <div className="flex flex-row justify-between">
-              ID：{data.id}　name：{data.name}
-              <Trash2 onClick={() => showDeleteConfirmation(data.id)} />
-            </div>
-            <hr className="border-gray-400" />
-          </li>
-        ))}
-      </ul>
+      {userData.length != 0 ? (
+        <ul className="p-7 mt-10 md:mt-0 md:ml-30 flex flex-col text-black gap-3 bg-[#FAFAFA] rounded-[16px] ">
+          {userData.map((data, index) => (
+            <li key={index}>
+              <div className="flex flex-row justify-between">
+                ID：{data.id}　name：{data.name}
+                <Trash2 onClick={() => showDeleteConfirmation(data.id)} />
+              </div>
+              <hr className="border-gray-400" />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <ul className="h-10 p-7 pt-2 md:ml-30 text-black gap-3 bg-[#FAFAFA] rounded-[16px] ">
+          <li>No Data...</li>
+        </ul>
+      )}
     </>
   );
 }
