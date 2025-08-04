@@ -22,7 +22,7 @@ export const CollapseUser = () => {
           User
         </div>
         <div
-          className="collapse-content flex flex-col md:flex-row bg-[#6E6B41]
+          className="collapse-content flex flex-col lg:flex-row bg-[#6E6B41]
          text-primary-content peer-checked:bg-[#3F9877] peer-checked:text-secondary-content"
         >
           {/* User登録 */}

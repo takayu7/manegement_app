@@ -104,7 +104,7 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
         {/* Icon */}
         <div className="flex flex-col">
           <p>Please select one icon</p>
-          <div className="flex flex-row  flex-wrap">
+          <div className="flex flex-row  flex-wrap md:w-[400px] ">
             {IconData.map((icon) => (
               <label key={icon.id} className="mr-[20px]">
                 <input
@@ -125,7 +125,7 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
                   alt={icon.name}
                   width={100}
                   height={100}
-                  className="w-[60px] h-[60px] md:w-[100px] md:h-[100px]"
+                  className="w-[60px] h-[60px] lg:w-[100px] lg:h-[100px]"
                 />
               </label>
             ))}
