@@ -50,20 +50,28 @@ export function ShowUserInfomation() {
   return (
     <>
       {userData.length != 0 ? (
-        <ul className="p-7 mt-10 lg:mt-0 lg:ml-30 flex flex-col text-black gap-3 bg-[#FAFAFA] rounded-[16px] ">
+        <ul className="table p-7 mt-10 lg:mt-0 lg:ml-30 flex flex-col text-black gap-3 bg-[#FAFAFA] rounded-[16px] ">
           {userData.map((data, index) => (
             <li key={index}>
               <div className="flex flex-row justify-between">
-                ID：{data.id}　name：{data.name}
-                <Trash2 onClick={() => showDeleteConfirmation(data.id)} />
+                <div>
+                  <div>＜ID：{data.id}＞</div>
+                  <div>{data.name}</div>
+                </div>
+                <Trash2
+                  className="mt-2 ml-1"
+                  onClick={() => showDeleteConfirmation(data.id)}
+                />
               </div>
-              <hr className="border-gray-400" />
+              <hr className="border-gray-400 mb-3" />
             </li>
           ))}
         </ul>
       ) : (
-        <ul className="h-10 p-7 pt-2 lg:ml-30 text-black gap-3 bg-[#FAFAFA] rounded-[16px] ">
-          <li>No Data...</li>
+        <ul className="table h-10 p-7 pt-2 lg:ml-30 text-black gap-3 bg-[#FAFAFA] rounded-[16px] ">
+          <li className="text-center mb-[-100px] md:mt-5 md:mb-0">
+            No Data...
+          </li>
         </ul>
       )}
     </>

@@ -132,7 +132,7 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
           </div>
         </div>
         {/* Submit Button */}
-        <div className="mt-6">
+        <div className="mt-6 mb-5">
           <button
             type="submit"
             className="btn btn-primary"

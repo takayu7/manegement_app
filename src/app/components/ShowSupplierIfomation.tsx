@@ -49,14 +49,18 @@ export function ShowSupplierIfomation() {
 
   return (
     <>
-      <ul className="p-7 mt-10 md:mt-0 md:ml-30 flex flex-col text-black gap-3 bg-[#FAFAFA] rounded-[16px]">
+      <ul className="table p-7 mt-10 md:mt-0 md:ml-30 flex flex-col text-black gap-3 bg-[#FAFAFA] rounded-[16px]">
         {supplierData.length != 0 ? (
           <div className="flex flex-col gap-3 rounded-[16px]">
             {supplierData.map((data, index) => (
               <li key={index}>
                 <div className="flex flex-row justify-between">
-                  ID：{data.id}　name：{data.name}
+                  <div>
+                    <div>＜ID：{data.id}＞</div>
+                    <div>{data.name}</div>
+                  </div>
                   <Trash2
+                    className="mt-2 ml-1"
                     onClick={() => showDeleteConfirmation(String(data.id))}
                   />
                 </div>
@@ -65,7 +69,7 @@ export function ShowSupplierIfomation() {
             ))}
           </div>
         ) : (
-          <li className="p-3">No Data...</li>
+          <li className="text-center mt-1.5 md:mt-3">No Data...</li>
         )}
       </ul>
     </>
