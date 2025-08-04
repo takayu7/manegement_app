@@ -1,6 +1,5 @@
 //ファイル名: PurchaseCheckDialog.tsx
 "use client";
-// import React, { useState } from "react";
 import { Category, Product, Supplier } from "@/app/types/type";
 import { ListPlus, Undo2 } from "lucide-react";
 import { Player } from "@lottiefiles/react-lottie-player";
@@ -36,8 +35,8 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center">
-     
-      <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[600px] relative">
+
+      <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[600px] relative h-110 overflow-y-auto">
         
         <h2 className="text-3xl font-bold mb-3 text-center text-gray-800">
           Check
@@ -97,7 +96,11 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
         autoplay
         loop
         src="/lottie/WalkingElephant.json"
-        style={{ height: "250px", width: "250px" }}
+        style={{position: "relative",
+          top:"135%",
+          left: "10%",
+          height: "150px",
+          width: "150px",}}
       />
       </div>
           <button
