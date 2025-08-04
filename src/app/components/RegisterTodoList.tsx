@@ -73,7 +73,7 @@ export const RegisterTodoList: React.FC<RegisterTodoProps> = ({ onSave }) => {
       <div className="flex flex-col">
         name：
         <select
-          className="border-1 border-gray-400 p-2 rounded w-50 lg:w-40"
+          className="border-1 border-gray-400 p-2 rounded h-[41.6px] w-50 lg:w-40"
           onChange={(e) => setAddTodo({ ...addTodo, userid: e.target.value })}
         >
           <option value="">Please select</option>

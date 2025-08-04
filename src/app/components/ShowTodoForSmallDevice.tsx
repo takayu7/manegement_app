@@ -33,7 +33,7 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
     console.log(todo);
   }
 
-  //チェックボックスの状態管理
+  //チェックボックスの状態管理（チェックを入れたときの処理）
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
     setCheckItem(
@@ -41,6 +41,16 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
         ? [...checkItem, value]
         : checkItem.filter((item) => item != value)
     );
+  };
+
+  //チェックボックスの状態管理（レンダリングしたときの処理）
+  const setingCheckedItem = () => {
+    const checkedTodoId = todoData
+      .filter((todo) => todo.checked !== null)
+      .map((checkedTodo) => {
+        return String(checkedTodo.todoid);
+      });
+    setCheckItem(checkedTodoId);
   };
 
   // チェックボックスにチェックが入っているToDoリストの絞り込み
@@ -104,7 +114,9 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
   useEffect(() => {
     handleResize();
     fetchTodoData();
+    setingCheckedItem();
     setTodoData(todoDataList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [todoDataList]);
 
   return (
@@ -113,13 +125,13 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
         <div>
           {IsShowingCheckedTodo ? (
             <button
-              className="btn btn-primary bg-white text-black"
+              className="btn btn-primary bg-white text-black w-70"
               onClick={() => {
                 filterCheckedTodo();
                 console.log(todoData);
               }}
             >
-              Undo
+              All
             </button>
           ) : (
             <button
@@ -129,13 +141,13 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
                 console.log(todoData);
               }}
             >
-              Show only unchecked Todo items
+              Not Checked
             </button>
           )}
           {todoData.map((todo, index) => (
             <table
               key={index}
-              className={`m-3 w-20 border border-gray-800 ${
+              className={`table m-3 w-20 border border-gray-800 ${
                 checkItem.includes(String(todo.todoid))
                   ? "bg-gray-400"
                   : (String(todo.deadline) === toDate(new Date()) &&
@@ -177,7 +189,7 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
                         className="mt-[10px] ml-[10px] mb-[10px] w-auto h-auto rounded-lg shadow-md"
                       />
                       {/* 名前 */}
-                      <div className="absolute text-white left-25 bottom-7">
+                      <div className="absolute text-white left-30 bottom-7">
                         {todo.name}
                       </div>
                     </div>
@@ -214,7 +226,7 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
                       }}
                       className="btn btn-ghost rounded-lg"
                     >
-                      　Edit
+                      Edit
                       <SquarePen />
                     </button>
                   </td>

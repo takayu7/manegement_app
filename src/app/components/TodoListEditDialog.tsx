@@ -14,7 +14,7 @@ const defaultTodoData: Todo = {
   name: "",
   todoid: 1,
   todo: "",
-  deadline: new Date(),
+  deadline: null,
   icon: 0,
   checked: null,
 };
@@ -32,6 +32,17 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
     const users = await data.json();
     setUserData(users);
     console.log(users);
+  }
+
+  //Idを基にユーザー情報の取得
+  async function fetchUserDatasById(userId: string) {
+    const data = await fetch("/api/oneUser", {
+      method: "POST",
+      headers: { "Context-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    });
+    const oneUser = await data.json();
+    return oneUser;
   }
 
   const getToday = new Date(editTodo.deadline || "");
@@ -60,14 +71,18 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
             <select
               id="name"
               name="name"
-              value={editTodo.name}
-              onChange={(e) =>
-                setEditTodo({ ...editTodo, name: e.target.value })
-              }
+              value={editTodo.userid}
+              onChange={(e) => {
+                console.log(e.target.value);
+                setEditTodo({
+                  ...editTodo,
+                  userid: e.target.value,
+                });
+              }}
               className="select rounded-sm border-2 p-1 text-lg md:mx-5 "
             >
               {userData.map((user) => (
-                <option key={user.id} value={user.name}>
+                <option key={user.id} value={user.id}>
                   {user.name}
                 </option>
               ))}
@@ -110,8 +125,16 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
             <button
               type="submit"
               className="btn btn-outline btn-success md:btn-wide"
-              onClick={() => {
-                onSave(editTodo);
+              onClick={async () => {
+                const oneUser = await fetchUserDatasById(editTodo.userid);
+                console.log(oneUser);
+                const newTodo: Todo = {
+                  ...editTodo,
+                  name: oneUser[0].name,
+                  icon: oneUser[0].icon,
+                };
+                console.log(newTodo);
+                onSave(newTodo);
               }}
             >
               <ListPlus />

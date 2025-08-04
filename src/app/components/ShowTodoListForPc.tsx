@@ -33,7 +33,7 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
     console.log(todo);
   }
 
-  //チェックボックスの状態管理
+  //チェックボックスの状態管理（チェックを入れたときの処理）
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
     setCheckItem(
@@ -41,6 +41,16 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
         ? [...checkItem, value]
         : checkItem.filter((item) => item != value)
     );
+  };
+
+  //チェックボックスの状態管理（レンダリングしたときの処理）
+  const setingCheckedItem = () => {
+    const checkedTodoId = todoData
+      .filter((todo) => todo.checked !== null)
+      .map((checkedTodo) => {
+        return String(checkedTodo.todoid);
+      });
+    setCheckItem(checkedTodoId);
   };
 
   // チェックボックスにチェックが入っているToDoリストの絞り込み
@@ -104,7 +114,8 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
   useEffect(() => {
     handleResize();
     fetchTodoData();
-    //setTodoData(todoDataList);
+    setingCheckedItem();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [todoDataList]);
 
   return (
@@ -113,23 +124,23 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
         <div>
           {IsShowingCheckedTodo ? (
             <button
-              className="btn btn-primary bg-white text-black"
+              className="btn btn-primary bg-white text-black w-30"
               onClick={() => {
                 filterCheckedTodo();
                 console.log(todoData);
               }}
             >
-              Undo
+              All
             </button>
           ) : (
             <button
-              className="btn btn-primary bg-white text-black"
+              className="btn btn-primary bg-white text-black w-30"
               onClick={() => {
                 filterCheckedTodo();
                 console.log(todoData);
               }}
             >
-              Show only unchecked Todo items
+              Not Checked
             </button>
           )}
           <table className="table">
@@ -156,7 +167,7 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
                 <tr
                   key={index}
                   className={`${
-                    checkItem.includes(String(todo.todoid))
+                    todo.checked !== null
                       ? "bg-gray-400"
                       : (String(todo.deadline) === toDate(new Date()) &&
                           "bg-green-300") ||
