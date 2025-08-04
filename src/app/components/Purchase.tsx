@@ -69,7 +69,6 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
 
   //addボタン(ダイアログ)
   const handleAdd = () => {
-
     startTransition(() => {
       onSave(addProduct);
     });
@@ -187,13 +186,12 @@ export const Purchase: React.FC<PurchaseProductProps> = ({
           </li>
 
           {/* 仕入れ先 */}
-          <li className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
+          <li className="flex flex-col gap-1 lg:flex-row lg:gap-4">
             <label className=" font-semibold text-gray-700 w-43">
               supplier：
             </label>
             <div
-              className="flex gap-4 flex-col lg:flex-row
-          "
+              className="flex gap-4 flex-col"
             >
               {supplierList.map((supplier) => (
                 <label key={supplier.id} className="flex items-center">
