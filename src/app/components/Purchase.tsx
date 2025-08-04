@@ -1,16 +1,10 @@
 "use client";
-import React, { useState, useTransition } from "react";
+import React, { useState, useEffect, useTransition } from "react";
 import { Download, ListRestart, ListCheck } from "lucide-react";
 import { Category, Product, Supplier } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { PurchaseCheckDialog } from "@/app/components/CheckPurchaseDialog";
-
-export interface PurchaseProductProps {
-  categoryList: Category[];
-  supplierList: Supplier[];
-  onSave: (product: Product) => void;
-}
 
 const defaultData: Product = {
   id: "",
@@ -24,15 +18,45 @@ const defaultData: Product = {
   explanation: "",
 };
 
-export const Purchase: React.FC<PurchaseProductProps> = ({
-  categoryList,
-  supplierList,
-  onSave,
-}) => {
+export const Purchase = () => {
   const [addProduct, setAddProduct] = useState<Product>(defaultData);
   const [isPending, startTransition] = useTransition();
   const [showAirplane, setShowAirplane] = useState(false);
   const [isCheckOpen, setIsCheckOpen] = useState(false);
+  const [categoryList, setCategoryList] = useState<Category[]>([]);
+  const [supplierList, setSupplierList] = useState<Supplier[]>([]);
+
+  //仕入れ情報の取得
+  async function fetchSuppliers() {
+    const data = await fetch("/api/suppliers");
+    const suppliers = await data.json();
+    setSupplierList(suppliers);
+  }
+  //カテゴリ情報の取得
+  async function fetchCategory() {
+    const data = await fetch("/api/categories");
+    const categories = await data.json();
+    setCategoryList(categories);
+  }
+
+  useEffect(() => {
+    fetchSuppliers();
+    fetchCategory();
+  }, []);
+
+  const onSave = async (product: Product) => {
+    console.log("product:", product);
+    const response = await fetch("/api/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+      cache: "no-store",
+    });
+    const responseText = await response.text();
+    console.log("Response text:", responseText);
+  };
 
   // 合計金額
   const total = addProduct.cost * addProduct.count;

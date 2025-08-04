@@ -15,17 +15,9 @@ import { CartDialog } from "@/app/components/CartDialog";
 import OrderHistoryDialog from "@/app/components/OrderHistoryDialog";
 import { Player } from "@lottiefiles/react-lottie-player";
 
-export interface ProductListProps {
-  productDataList: Product[];
-  onSave: (cart: CartItem[], product: BuyProductList[]) => void;
-}
-
-export const ProductList: React.FC<ProductListProps> = ({
-  productDataList,
-  onSave,
-}) => {
+export const ProductList = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [productDatas, setProductDatas] = useState<Product[]>(productDataList);
+  const [productDatas, setProductDatas] = useState<Product[]>([]);
   const [buyProductId, setBuyProductId] = useState<{ [id: string]: number }>(
     {}
   );
@@ -33,10 +25,44 @@ export const ProductList: React.FC<ProductListProps> = ({
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
   const [showThanks, setShowThanks] = useState(false);
+  // ローディング状態
+  const [loading, setLoading] = useState(true);
 
-  // const [orderHistoryList, setOrderHistoryList] = useState<BuyProductList[]>(
-  //   []
-  // );
+  // 商品データの取得
+  useEffect(() => {
+    fetch(`/api/products`)
+      .then((res) => res.json())
+      .then((data) => setProductDatas(data))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const onSave = async (cart: CartItem[], product: BuyProductList[]) => {
+    // 購入履歴の登録
+    await fetch("/api/userBuyHistory", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(product),
+      cache: "no-store",
+    });
+
+    // 商品情報の更新
+    const resProducts = await fetch("/api/userBuyHistory", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(cart),
+      cache: "no-store",
+    });
+    const responseText = await resProducts.text();
+    console.log("Response text:", responseText);
+    // 商品一覧を再取得してstateを更新
+    const updated = await fetch("/api/products");
+    const updatedData = await updated.json();
+    setProductDatas(updatedData);
+  };
 
   const buyProduct = selectedProduct
     ? buyProductId[selectedProduct.id] || 0
@@ -119,10 +145,6 @@ export const ProductList: React.FC<ProductListProps> = ({
     setIsOrderHistoryOpen(false);
   };
 
-  useEffect(() => {
-    setProductDatas(productDataList);
-  }, [productDataList]);
-
   return (
     <>
       {showThanks && (
@@ -143,35 +165,52 @@ export const ProductList: React.FC<ProductListProps> = ({
         </h1>
 
         <div className="grid gap-4  lg:gap-6 lg:grid-cols-3 ">
-          {productDatas.map((product) => (
-            <div
-              key={product.id}
-              className="card-body flex flex-col justify-between rounded-xl bg-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-300 h-full"
-            >
-              <figure className="flex justify-center items-center h-[200px]">
-                <Image
-                  src={CategoryImages[product.category]}
-                  alt={product.name}
-                  width={220}
-                  height={100}
-                  className="rounded-xl"
-                />
-              </figure>
-              <div className="p-0">
-                <h2 className="card-title text-xl flex justify-center mt-1 text-gray-600">
-                  {product.name}
-                </h2>
-                <div className="card-actions justify-center">
-                  <button
-                    className="btn bg-white btn-dash btn-wide mt-1.5 text-blue-800 hover:bg-blue-900 hover:text-white "
-                    onClick={() => setSelectedProduct(product)}
-                  >
-                    details
-                  </button>
+          {/* アニメーション */}
+          {loading ? (
+            <Player
+              autoplay
+              loop
+              src="/lottie/Loading.json"
+              style={{
+                height: "100px",
+                width: "100px",
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            />
+          ) : (
+            productDatas.map((product) => (
+              <div
+                key={product.id}
+                className="card-body flex flex-col justify-between rounded-xl bg-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-300 h-full"
+              >
+                <figure className="flex justify-center items-center h-[200px]">
+                  <Image
+                    src={CategoryImages[product.category]}
+                    alt={product.name}
+                    width={220}
+                    height={100}
+                    className="rounded-xl"
+                  />
+                </figure>
+                <div className="p-0">
+                  <h2 className="card-title text-xl flex justify-center mt-1 text-gray-600">
+                    {product.name}
+                  </h2>
+                  <div className="card-actions justify-center">
+                    <button
+                      className="btn bg-white btn-dash btn-wide mt-1.5 text-blue-800 hover:bg-blue-900 hover:text-white "
+                      onClick={() => setSelectedProduct(product)}
+                    >
+                      details
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
         {/* カートボタン */}
         <div className="indicator fixed top-49 right-12 lg:top-35 lg:right-30">
@@ -293,7 +332,7 @@ export const ProductList: React.FC<ProductListProps> = ({
       )}
       {isCartOpen && (
         <CartDialog
-          product={productDataList}
+          product={productDatas}
           cartItems={cartItems}
           onClose={() => setIsCartOpen(false)}
           onSave={handleBuy}

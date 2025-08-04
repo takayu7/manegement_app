@@ -1,5 +1,5 @@
 "use client";
-import React, { useState , useMemo} from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { jpMoneyChange, categories } from "@/app/lib/utils";
 import { Product, Category } from "@/app/types/type";
 import { ProductDetailDialog } from "@/app/components/ProductDetailDialog";
@@ -24,13 +24,7 @@ export const salesCheck = (data: {
   return data.price * (data.order - data.count) - data.cost * data.order;
 };
 
-export default function Parameter({
-  productDataList,
-  categoryList,
-}: {
-  productDataList: Product[];
-  categoryList: Category[];
-}) {
+export default function Parameter() {
   const [selectedProduct, setSelectedProduct] = useState<SalesData>({
     name: "",
     category: 1,
@@ -40,6 +34,26 @@ export default function Parameter({
     price: 0,
     countPercent: 0,
   });
+  const [productDataList, setProductDataList] = useState<Product[]>([]);
+  const [categoryList, setCategoryList] = useState<Category[]>([]);
+
+  //商品情報の取得
+  async function fetchProducts() {
+    const data = await fetch("/api/products");
+    const products = await data.json();
+    setProductDataList(products);
+  }
+  //カテゴリ情報の取得
+  async function fetchCategory() {
+    const data = await fetch("/api/categories");
+    const categories = await data.json();
+    setCategoryList(categories);
+  }
+
+  useEffect(() => {
+    fetchProducts();
+    fetchCategory();
+  }, []);
 
   const salesData = useMemo(() => {
     return productDataList.reduce((acc, product) => {

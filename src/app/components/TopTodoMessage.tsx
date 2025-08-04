@@ -4,14 +4,26 @@ import { Todo } from "@/app/types/type";
 import { compareDeadline, todoBgColor } from "@/app/lib/utils";
 import { Player } from "@lottiefiles/react-lottie-player";
 
-export interface TopTodoMessageProps {
-  todoDataList: Todo[];
+export const TopTodoMessage = () => {
+  const [userId, setUserId] = useState<string>("0");
+  const [todoDataList, setTodoDataList] = useState<Todo[]>([]);
+
+  //TODO情報の取得
+async function fetchTodo() {
+  const data = await fetch("/api/todo");
+  const todos = await data.json();
+  // deadlineをDate型に変換
+  const todosWithDate = todos.map((todo: Todo) => ({
+    ...todo,
+    deadline: todo.deadline ? new Date(todo.deadline) : null,
+  }));
+  setTodoDataList(todosWithDate);
+  console.log(todosWithDate);
 }
 
-export const TopTodoMessage: React.FC<TopTodoMessageProps> = ({
-  todoDataList,
-}) => {
-  const [userId, setUserId] = useState<string>("0");
+  useEffect(() => {
+    fetchTodo();
+  }, []);
 
   // セッションストレージからユーザーIDを取得して状態を更新する関数
   const updateHeaderInfo = useCallback(() => {

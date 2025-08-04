@@ -10,11 +10,7 @@ import { Stamp, Calendar } from "lucide-react";
 const totalCost = (productList: BuyProductList[]) =>
   productList.reduce((total, item) => total + item.price * item.count, 0);
 
-export interface ProductBuyHistoryProps {
-  onSave: (buyProductList: BuyProductList[]) => void;
-}
-
-const ProductBuyHistory: React.FC<ProductBuyHistoryProps> = ({}) => {
+const ProductBuyHistory = () => {
   // 購入履歴情報
   const [history, setHistory] = useState<PurchaseHistoryList[]>([]);
   // ローディング状態
