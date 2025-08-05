@@ -29,8 +29,14 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
   async function fetchTodoData() {
     const data = await fetch("/api/todo");
     const todo = await data.json();
-    setTodoData(todo);
-    console.log(todo);
+    if (IsShowingCheckedTodo) {
+      setTodoData(
+        todo.filter((todo: { checked: null }) => todo.checked === null)
+      );
+    } else {
+      setTodoData(todo);
+      console.log(todo);
+    }
   }
 
   //チェックボックスの状態管理（チェックを入れたときの処理）
@@ -143,112 +149,118 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
               Not Checked
             </button>
           )}
-          <table className="table">
-            <thead>
-              <tr>
-                <th
-                  colSpan={3}
-                  className="text-center border-b border-gray-500"
-                >
-                  Name
-                </th>
-                <th className="text-center border-b border-gray-500">ToDo</th>
-                <th className="text-center border-b border-gray-500">
-                  Time Limit
-                </th>
-                <th className="pr-2 text-center border-b border-gray-500">
-                  Edit
-                </th>
-                <th className="text-center border-b border-gray-500">Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {todoData.map((todo, index) => (
-                <tr
-                  key={index}
-                  className={`${
-                    todo.checked !== null
-                      ? "bg-gray-400"
-                      : (String(todo.deadline) === toDate(new Date()) &&
-                          "bg-green-300") ||
-                        (String(todo.deadline) < toDate(new Date()) &&
-                          "bg-pink-200")
-                  }
+          {todoData.length !== 0 ? (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th
+                    colSpan={3}
+                    className="text-center border-b border-gray-500"
+                  >
+                    Name
+                  </th>
+                  <th className="text-center border-b border-gray-500">ToDo</th>
+                  <th className="text-center border-b border-gray-500">
+                    Time Limit
+                  </th>
+                  <th className="pr-2 text-center border-b border-gray-500">
+                    Edit
+                  </th>
+                  <th className="text-center border-b border-gray-500">
+                    Delete
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {todoData.map((todo, index) => (
+                  <tr
+                    key={index}
+                    className={`${
+                      todo.checked !== null
+                        ? "bg-gray-400"
+                        : (String(todo.deadline) === toDate(new Date()) &&
+                            "bg-green-300") ||
+                          (String(todo.deadline) < toDate(new Date()) &&
+                            "bg-pink-200")
+                    }
               `}
-                >
-                  <td className="w-0.5">
-                    <input
-                      type="checkbox"
-                      value={todo.todoid}
-                      checked={checkItem.includes(String(todo.todoid))}
-                      onChange={(e) => {
-                        handleChange(e);
-                        {
-                          if (checkItem.includes(String(todo.todoid))) {
-                            editCheckedDate(todo, null);
-                          } else {
-                            editCheckedDate(todo, new Date());
+                  >
+                    <td className="w-0.5">
+                      <input
+                        type="checkbox"
+                        value={todo.todoid}
+                        checked={checkItem.includes(String(todo.todoid))}
+                        onChange={(e) => {
+                          handleChange(e);
+                          {
+                            if (checkItem.includes(String(todo.todoid))) {
+                              editCheckedDate(todo, null);
+                            } else {
+                              editCheckedDate(todo, new Date());
+                            }
                           }
-                        }
-                      }}
-                    />
-                  </td>
-                  <td className="w-20 text-center border-b border-gray-300">
-                    <Image
-                      src={`${SelectStaffIcon(String(todo.icon))}`}
-                      alt="スタッフアイコン"
-                      width={50}
-                      height={50}
-                      className="rounded-lg shadow-md"
-                    />
-                  </td>
-                  <td className="w-[10px] border-b border-gray-300">
-                    {todo.name}
-                  </td>
-                  <td className="text-center border-b border-gray-300">
-                    {todo.todo}
-                  </td>
-                  <td className="text-center border-b border-gray-300">
-                    {todo.deadline &&
-                      new Date(todo.deadline).toLocaleDateString()}
-                  </td>
-                  <td className="w-10 border-b border-gray-300">
-                    <button
-                      onClick={() => {
-                        {
-                          console.log(selectedTodo);
+                        }}
+                      />
+                    </td>
+                    <td className="w-20 text-center border-b border-gray-300">
+                      <Image
+                        src={`${SelectStaffIcon(String(todo.icon))}`}
+                        alt="スタッフアイコン"
+                        width={50}
+                        height={50}
+                        className="rounded-lg shadow-md"
+                      />
+                    </td>
+                    <td className="border-b border-gray-300">{todo.name}</td>
+                    <td className="text-center border-b border-gray-300">
+                      {todo.todo}
+                    </td>
+                    <td className="text-center border-b border-gray-300">
+                      {todo.deadline &&
+                        new Date(todo.deadline).toLocaleDateString()}
+                    </td>
+                    <td className="w-10 border-b border-gray-300">
+                      <button
+                        onClick={() => {
+                          {
+                            console.log(selectedTodo);
+                            setSelectedTodo(todo);
+                            (
+                              document.getElementById(
+                                "TodoListEditDialog"
+                              ) as HTMLDialogElement
+                            )?.showModal();
+                          }
+                        }}
+                        className="btn btn-ghost rounded-lg"
+                      >
+                        <SquarePen />
+                      </button>
+                    </td>
+                    <td className="w-10 text-center border-b border-gray-300">
+                      <button
+                        onClick={() => {
                           setSelectedTodo(todo);
                           (
                             document.getElementById(
-                              "TodoListEditDialog"
+                              "DeleteTodoListDialog"
                             ) as HTMLDialogElement
                           )?.showModal();
-                        }
-                      }}
-                      className="btn btn-ghost rounded-lg"
-                    >
-                      <SquarePen />
-                    </button>
-                  </td>
-                  <td className="w-10 text-center border-b border-gray-300">
-                    <button
-                      onClick={() => {
-                        setSelectedTodo(todo);
-                        (
-                          document.getElementById(
-                            "DeleteTodoListDialog"
-                          ) as HTMLDialogElement
-                        )?.showModal();
-                      }}
-                      className="btn btn-ghost rounded-lg"
-                    >
-                      <Trash2 />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                        }}
+                        className="btn btn-ghost rounded-lg"
+                      >
+                        <Trash2 />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="mt-10 text-center text-orange-600 font-serif text-[50px]">
+              Please register what you need to do
+            </p>
+          )}
           {isPending && (
             <Player
               autoplay
