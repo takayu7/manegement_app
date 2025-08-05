@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-// import { Dispatch, SetStateAction } from "react";
 import { Todo, User } from "@/app/types/type";
 import { ListPlus } from "lucide-react";
 
@@ -94,6 +93,7 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
             <textarea
               id="todo"
               name="todo"
+              maxLength={100}
               value={editTodo.todo || undefined}
               required
               onChange={(e) =>
@@ -102,7 +102,7 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
                   todo: e.target.value,
                 })
               }
-              className="input rounded-sm  p-1 text-lg md:mx-5"
+              className="input rounded-sm  p-1 text-lg text-wrap md:mx-5"
             />
           </li>
           {/* TimeLimit */}

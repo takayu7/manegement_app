@@ -15,6 +15,7 @@ export interface RegisterTodoProps {
 }
 
 let IsShowingCheckedTodo = false;
+let IsShowingLoginUserTodo = false;
 export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
   todoDataList,
   onSave,
@@ -25,6 +26,7 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
   const [checkItem, setCheckItem] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isNotMobile, setIsMobile] = useState(false);
+  const storedName = sessionStorage.getItem("userName");
   //ToDoリスト情報の取得
   async function fetchTodoData() {
     const data = await fetch("/api/todo");
@@ -62,9 +64,35 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
   // チェックボックスにチェックが入っているToDoリストの絞り込み
   const filterCheckedTodo = () => {
     IsShowingCheckedTodo = !IsShowingCheckedTodo;
-    if (IsShowingCheckedTodo) {
+    if (IsShowingCheckedTodo && IsShowingLoginUserTodo) {
+      handleResize();
+      setTodoData(
+        todoData.filter(
+          (todo) => todo.checked === null && todo.name === storedName
+        )
+      );
+    } else if (IsShowingCheckedTodo) {
       handleResize();
       setTodoData(todoData.filter((todo) => todo.checked === null));
+    } else {
+      handleResize();
+      fetchTodoData();
+    }
+  };
+
+  //自分の名前とtodoリストのユーザー名が一致するtodoリストの絞り込み
+  const filterLoginUserTodo = () => {
+    IsShowingLoginUserTodo = !IsShowingLoginUserTodo;
+    if (IsShowingLoginUserTodo && IsShowingCheckedTodo) {
+      handleResize();
+      setTodoData(
+        todoData.filter(
+          (todo) => todo.name === storedName && todo.checked === null
+        )
+      );
+    } else if (IsShowingLoginUserTodo) {
+      handleResize();
+      setTodoData(todoData.filter((todo) => todo.name === storedName));
     } else {
       handleResize();
       fetchTodoData();
@@ -128,26 +156,68 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
     <>
       {isNotMobile && (
         <div>
-          {IsShowingCheckedTodo ? (
+          {IsShowingCheckedTodo && IsShowingLoginUserTodo ? (
             <button
-              className="btn btn-primary bg-white text-black w-30"
+              className="btn btn-primary bg-white text-black w-70"
               onClick={() => {
-                filterCheckedTodo();
+                IsShowingCheckedTodo = false;
+                IsShowingLoginUserTodo = false;
+                handleResize();
+                fetchTodoData();
                 console.log(todoData);
               }}
             >
               All
             </button>
           ) : (
-            <button
-              className="btn btn-primary bg-white text-black w-30"
-              onClick={() => {
-                filterCheckedTodo();
-                console.log(todoData);
-              }}
-            >
-              Not Checked
-            </button>
+            <div>
+              {/* チェックが入っているToDoリストを絞り込むボタン */}
+              {IsShowingCheckedTodo ? (
+                <button
+                  className="btn btn-primary bg-white text-black w-30"
+                  onClick={() => {
+                    IsShowingLoginUserTodo = false;
+                    filterCheckedTodo();
+                    console.log(todoData);
+                  }}
+                >
+                  All
+                </button>
+              ) : (
+                <button
+                  className="btn btn-primary bg-white text-black w-30"
+                  onClick={() => {
+                    filterCheckedTodo();
+                    console.log(todoData);
+                  }}
+                >
+                  Not Checked
+                </button>
+              )}
+              {/* ログインユーザーのToDoリストを絞り込むボタン */}
+              {IsShowingLoginUserTodo ? (
+                <button
+                  className="btn btn-primary ml-5  bg-white text-black w-30"
+                  onClick={() => {
+                    IsShowingCheckedTodo = false;
+                    filterLoginUserTodo();
+                    console.log(todoData);
+                  }}
+                >
+                  All
+                </button>
+              ) : (
+                <button
+                  className="btn btn-primary ml-5  bg-white text-black w-30"
+                  onClick={() => {
+                    filterLoginUserTodo();
+                    console.log(todoData);
+                  }}
+                >
+                  My Todo
+                </button>
+              )}
+            </div>
           )}
           {todoData.length !== 0 ? (
             <table className="table">
@@ -257,7 +327,7 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
               </tbody>
             </table>
           ) : (
-            <p className="mt-10 text-center text-orange-600 font-serif text-[50px]">
+            <p className="mt-10 text-center text-orange-600 font-serif text-[30px]">
               Please register what you need to do
             </p>
           )}

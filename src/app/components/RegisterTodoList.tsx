@@ -89,6 +89,7 @@ export const RegisterTodoList: React.FC<RegisterTodoProps> = ({ onSave }) => {
         <textarea
           className="border-1 border-gray-400 p-2 rounded h-[41.6px] lg:w-80"
           value={addTodo.todo !== null ? addTodo.todo : ""}
+          maxLength={100}
           onChange={(e) => setAddTodo({ ...addTodo, todo: e.target.value })}
           placeholder="todo"
         />

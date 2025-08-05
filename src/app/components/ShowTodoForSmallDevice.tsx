@@ -15,6 +15,7 @@ export interface RegisterTodoProps {
 }
 
 let IsShowingCheckedTodo = false;
+let IsShowingLoginUserTodo = false;
 export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
   todoDataList,
   onSave,
@@ -25,6 +26,7 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
   const [checkItem, setCheckItem] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isMobile, setIsMobile] = useState(false);
+  const storedName = sessionStorage.getItem("userName");
   //ToDoリスト情報の取得
   async function fetchTodoData() {
     const data = await fetch("/api/todo");
@@ -62,9 +64,35 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
   // チェックボックスにチェックが入っているToDoリストの絞り込み
   const filterCheckedTodo = () => {
     IsShowingCheckedTodo = !IsShowingCheckedTodo;
-    if (IsShowingCheckedTodo) {
+    if (IsShowingCheckedTodo && IsShowingLoginUserTodo) {
+      handleResize();
+      setTodoData(
+        todoData.filter(
+          (todo) => todo.checked === null && todo.name === storedName
+        )
+      );
+    } else if (IsShowingCheckedTodo) {
       handleResize();
       setTodoData(todoData.filter((todo) => todo.checked === null));
+    } else {
+      handleResize();
+      fetchTodoData();
+    }
+  };
+
+  //自分の名前とtodoリストのユーザー名が一致するtodoリストの絞り込み
+  const filterLoginUserTodo = () => {
+    IsShowingLoginUserTodo = !IsShowingLoginUserTodo;
+    if (IsShowingLoginUserTodo && IsShowingCheckedTodo) {
+      handleResize();
+      setTodoData(
+        todoData.filter(
+          (todo) => todo.name === storedName && todo.checked === null
+        )
+      );
+    } else if (IsShowingLoginUserTodo) {
+      handleResize();
+      setTodoData(todoData.filter((todo) => todo.name === storedName));
     } else {
       handleResize();
       fetchTodoData();
@@ -128,34 +156,74 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
   return (
     <>
       {isMobile && (
-        <div>
-          {IsShowingCheckedTodo ? (
+        <div className="flex flex-col">
+          {IsShowingCheckedTodo && IsShowingLoginUserTodo ? (
             <button
               className="btn btn-primary bg-white text-black w-70"
               onClick={() => {
-                filterCheckedTodo();
+                IsShowingCheckedTodo = false;
+                IsShowingLoginUserTodo = false;
                 console.log(todoData);
               }}
             >
               All
             </button>
           ) : (
-            <button
-              className="w-70 btn btn-primary bg-white text-black"
-              onClick={() => {
-                filterCheckedTodo();
-                console.log(todoData);
-              }}
-            >
-              Not Checked
-            </button>
+            <div>
+              {/* チェックが入っているToDoリストを絞り込むボタン */}
+              {IsShowingCheckedTodo ? (
+                <button
+                  className="btn btn-primary bg-white text-black w-70"
+                  onClick={() => {
+                    IsShowingLoginUserTodo = false;
+                    filterCheckedTodo();
+                    console.log(todoData);
+                  }}
+                >
+                  All
+                </button>
+              ) : (
+                <button
+                  className="w-70 btn btn-primary bg-white text-black"
+                  onClick={() => {
+                    filterCheckedTodo();
+                    console.log(todoData);
+                  }}
+                >
+                  Not Checked
+                </button>
+              )}
+              {/* ログインユーザーのToDoリストを絞り込むボタン */}
+              {IsShowingLoginUserTodo ? (
+                <button
+                  className="btn btn-primary mt-3 bg-white text-black w-70"
+                  onClick={() => {
+                    IsShowingCheckedTodo = false;
+                    filterLoginUserTodo();
+                    console.log(todoData);
+                  }}
+                >
+                  All
+                </button>
+              ) : (
+                <button
+                  className="btn btn-primary mt-3 bg-white text-black w-70"
+                  onClick={() => {
+                    filterLoginUserTodo();
+                    console.log(todoData);
+                  }}
+                >
+                  My Todo
+                </button>
+              )}
+            </div>
           )}
           {todoData.length !== 0 ? (
             <div>
               {todoData.map((todo, index) => (
                 <table
                   key={index}
-                  className={`table m-3 w-20 border border-gray-800 ${
+                  className={`table m-3 w-full border border-gray-800 ${
                     checkItem.includes(String(todo.todoid))
                       ? "bg-gray-400"
                       : (String(todo.deadline) === toDate(new Date()) &&
@@ -197,14 +265,43 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
                             className="mt-[10px] ml-[10px] mb-[10px] w-auto h-auto rounded-lg shadow-md"
                           />
                           {/* 名前 */}
-                          <div className="absolute text-white left-30 bottom-7">
+                          <div className="absolute text-white left-30 bottom-9">
                             {todo.name}
                           </div>
+                          {/* 編集ボタン */}
+                          <button
+                            onClick={() => {
+                              console.log(selectedTodo);
+                              setSelectedTodo(todo);
+                              (
+                                document.getElementById(
+                                  "TodoListEditDialog"
+                                ) as HTMLDialogElement
+                              )?.showModal();
+                            }}
+                            className="btn btn-ghost rounded-lg absolute text-white left-45 top-6"
+                          >
+                            <SquarePen />
+                          </button>
+                          {/* 削除ボタン */}
+                          <button
+                            onClick={() => {
+                              setSelectedTodo(todo);
+                              (
+                                document.getElementById(
+                                  "DeleteTodoListDialog"
+                                ) as HTMLDialogElement
+                              )?.showModal();
+                            }}
+                            className="btn btn-ghost rounded-lg absolute text-white left-55 top-6"
+                          >
+                            <Trash2 />
+                          </button>
                         </div>
                       </th>
                     </tr>
                     <tr>
-                      <th className="text-center border-r border-b border-r-gray-400 border-b-gray-800">
+                      <th className="w-10 text-center border-r border-b border-r-gray-400 border-b-gray-800">
                         Todo
                       </th>
                       <td className="text-center border-b border-b-gray-800">
@@ -220,47 +317,12 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
                           new Date(todo.deadline).toLocaleDateString()}
                       </td>
                     </tr>
-                    <tr>
-                      <td>
-                        <button
-                          onClick={() => {
-                            console.log(selectedTodo);
-                            setSelectedTodo(todo);
-                            (
-                              document.getElementById(
-                                "TodoListEditDialog"
-                              ) as HTMLDialogElement
-                            )?.showModal();
-                          }}
-                          className="btn btn-ghost rounded-lg"
-                        >
-                          Edit
-                          <SquarePen />
-                        </button>
-                      </td>
-                      <td>
-                        <button
-                          onClick={() => {
-                            setSelectedTodo(todo);
-                            (
-                              document.getElementById(
-                                "DeleteTodoListDialog"
-                              ) as HTMLDialogElement
-                            )?.showModal();
-                          }}
-                          className="btn btn-ghost rounded-lg"
-                        >
-                          Delete
-                          <Trash2 />
-                        </button>
-                      </td>
-                    </tr>
                   </tbody>
                 </table>
               ))}
             </div>
           ) : (
-            <p className="mt-10 text-center text-orange-600 font-serif text-[33px]">
+            <p className="mt-10 text-center text-orange-600 font-serif text-[20px]">
               Please register what you need to do
             </p>
           )}
