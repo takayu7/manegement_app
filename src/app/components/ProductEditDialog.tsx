@@ -1,12 +1,12 @@
 // ファイル名: EditDialog.tsx
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 // import { Dispatch, SetStateAction } from "react";
-import { Product, Category, Supplier } from "@/app/types/type";
+import { Category, Supplier } from "@/app/types/type";
 import { ListPlus } from "lucide-react";
 import { z } from "zod";
 import { MESSAGE_LIST, formatMessage } from "@/app/lib/messages";
-import { useForm, ControllerRenderProps } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 // スキーマの作成
@@ -18,10 +18,26 @@ const formSchema = z.object({
     .max(30, formatMessage(MESSAGE_LIST.E010106, "30")),
   category: z.number().min(1, MESSAGE_LIST.E010101),
   supplier: z.number(),
-  count: z.number().min(1, formatMessage(MESSAGE_LIST.E010115, "999")),
-  cost: z.number().min(1, MESSAGE_LIST.E010100),
-  order: z.number().min(1, MESSAGE_LIST.E010100),
-  price: z.number().min(1, MESSAGE_LIST.E010100),
+  count: z
+    .string()
+    .min(1, MESSAGE_LIST.E010100)
+    .max(999, formatMessage(MESSAGE_LIST.E010106, "999"))
+    .regex(/^[0-9]+$/, MESSAGE_LIST.E010110),
+  cost: z
+    .string()
+    .min(1, MESSAGE_LIST.E010100)
+    .max(10, formatMessage(MESSAGE_LIST.E010106, "10"))
+    .regex(/^[0-9]+$/, MESSAGE_LIST.E010110),
+  order: z
+    .string()
+    .min(1, MESSAGE_LIST.E010100)
+    .max(10, formatMessage(MESSAGE_LIST.E010106, "10"))
+    .regex(/^[0-9]+$/, MESSAGE_LIST.E010110),
+  price: z
+    .string()
+    .min(1, MESSAGE_LIST.E010100)
+    .max(10, formatMessage(MESSAGE_LIST.E010106, "10"))
+    .regex(/^[0-9]+$/, MESSAGE_LIST.E010110),
   explanation: z
     .string()
     .min(1, MESSAGE_LIST.E010100)
@@ -42,10 +58,10 @@ const defaultData = {
   name: "",
   category: 1,
   supplier: 1,
-  count: 0,
-  cost: 0,
-  order: 0,
-  price: 0,
+  count: "0",
+  cost: "0",
+  order: "0",
+  price: "0",
   explanation: "",
 };
 
@@ -153,24 +169,27 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
             {/* 仕入れ先 */}
             <li className="flex flex-col gap-1 md:items-center md:gap-4 md:flex-row">
               <label className="min-w-40">supplier：</label>
-              <div className="flex flex-col lg:grid grid-cols-3 gap-2 md:mx-5">
-                {supplierList.map((supplier) => (
-                  <div key={supplier.id} className="flex items-center">
-                    <input
-                      {...register("supplier", { valueAsNumber: true })}
-                      id={`supplier-${supplier.id}`}
-                      type="radio"
-                      value={supplier.id}
-                      checked={watch("supplier") === supplier.id}
-                      onChange={(e) => {
-                        form.setValue("supplier", Number(e.target.value));
-                      }}
-                      className="mr-2 radio radio-secondary"
-                    />
-                    <span className="text-sm">{supplier.name}</span>
-                  </div>
-                ))}
-              </div>
+              {typeof watch("supplier") === "undefined" ? (
+                <div>Loading...</div>
+              ) : (
+                <div className="flex flex-col lg:grid grid-cols-3 gap-2 md:mx-5">
+                  {supplierList.map((supplier) => (
+                    <div key={supplier.id} className="flex items-center">
+                      <input
+                        {...register("supplier", { valueAsNumber: true })}
+                        type="radio"
+                        value={Number(supplier.id)}
+                        checked={Number(watch("supplier")) === supplier.id}
+                        onChange={(e) => {
+                          form.setValue("supplier", Number(e.target.value));
+                        }}
+                        className="mr-2 radio radio-secondary"
+                      />
+                      <span className="text-sm">{supplier.name}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
               {errors.supplier && (
                 <p className="mt-1 text-sm text-red-600">
                   {errors.supplier.message}
@@ -181,8 +200,9 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
             <li className="flex flex-col md:items-center md:gap-4 md:flex-row">
               <label className="min-w-40">cost：</label>
               <input
-                {...register("cost", { valueAsNumber: true })}
+                {...register("cost")}
                 id="cost"
+                min={0}
                 name="cost"
                 type="text"
                 value={watch("cost")}
@@ -201,7 +221,7 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
             <li className="flex flex-col md:items-center md:gap-4 md:flex-row">
               <label className="min-w-40">price：</label>
               <input
-                {...register("price", { valueAsNumber: true })}
+                {...register("price")}
                 id="price"
                 name="price"
                 type="text"
@@ -221,7 +241,7 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
             <li className="flex flex-col md:items-center md:gap-4 md:flex-row">
               <label className="min-w-40">count：</label>
               <input
-                {...register("count", { valueAsNumber: true })}
+                {...register("count")}
                 id="count"
                 name="count"
                 type="text"
@@ -251,18 +271,40 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
                   watch("order") ? "input-secondary" : ""
                 }`}
               />
+              {errors.order && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.order.message}
+                </p>
+              )}
             </li>
           </ul>
           <div className="modal-action flex justify-center gap-2">
             <button
               type="submit"
+              onClick={() => {
+                const dialog = document.getElementById(
+                  "ProductEditDialog"
+                ) as HTMLDialogElement | null;
+                if (dialog) dialog.close();
+              }}
               disabled={!isValid || isSubmitting}
               className="btn btn-outline btn-secondary md:btn-wide"
             >
               <ListPlus />
-              OK
+              Save
             </button>
-            <button className="btn md:btn-wide">Close</button>
+            <button
+              type="button"
+              onClick={() => {
+                const dialog = document.getElementById(
+                  "ProductEditDialog"
+                ) as HTMLDialogElement | null;
+                if (dialog) dialog.close();
+              }}
+              className="btn md:btn-wide"
+            >
+              Close
+            </button>
           </div>
         </form>
       </div>

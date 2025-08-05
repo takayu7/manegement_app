@@ -2,12 +2,12 @@
 import React, { useState, useEffect, useTransition } from "react";
 import { Product, Category, Supplier } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
-import { SquarePen, SquarePlus, ShoppingCart, Trash2 } from "lucide-react";
+import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
 import { ProductEditDialog } from "@/app/components/ProductEditDialog";
 import { DeleteDialog } from "@/app/components/DeleteDialog";
 import { OrderDialog } from "@/app/components/OrderDialog";
-import { SaleDialog } from "@/app/components/SaleDialog";
 import { Player } from "@lottiefiles/react-lottie-player";
+import { ProductFormValues } from "@/app/components/ProductEditDialog";
 
 const headerNames: string[] = [
   "Name",
@@ -16,16 +16,43 @@ const headerNames: string[] = [
   "Count",
   "Cost",
   "Price",
-  "TotalCost",
-  "TotalPrice",
   "edit",
   "delete",
   "order",
-  "sale",
 ];
 
+const productStrTypeChange =(product:Product)=>{
+  const changedProduct: ProductFormValues = {
+    id: product.id,
+    name: product.name,
+    category: product.category,
+    supplier: product.supplier,
+    count: (product.count || 0).toString(), // 数値を文字列に変換
+    cost: (product.cost || 0).toString(), // 数値を文字列に変換
+    order: (product.order || 0).toString(), // 数値を文字列に変換
+    price: (product.price || 0).toString(), // 数値を文字列に変換
+    explanation: product.explanation,
+  };
+  return changedProduct;
+};
+
+const productNumTypeChange =(product:ProductFormValues)=>{
+  const changedProduct: Product = {
+    id: product.id,
+    name: product.name,
+    category: product.category,
+    supplier: product.supplier,
+    count: Number(product.count), // 数値に変換
+    cost: Number(product.cost), // 数値に変換
+    order: Number(product.order), // 数値に変換
+    price: Number(product.price), // 数値に変換
+    explanation: product.explanation,
+  };
+  return changedProduct;
+};
+
 const ProductTable = () => {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<ProductFormValues | null>(null);
   const [productDatas, setProductDatas] = useState<Product[]>([]);
   const [isPending, startTransition] = useTransition();
   const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -96,9 +123,9 @@ const ProductTable = () => {
   };
 
   // 編集ダイアログの保存処理
-  const handleSave = (product: Product) => {
+  const handleSave = (product: ProductFormValues | Product) => {
     startTransition(() => {
-      onSave(product); // サーバーアクションを呼ぶ
+      onSave(productNumTypeChange(product as ProductFormValues)); // 必ずProduct型に変換してから渡す
     });
   };
   // 削除ダイアログの保存処理
@@ -121,7 +148,7 @@ const ProductTable = () => {
   };
 
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto max-h-[400px] border rounded-lg border-gray-200 relative">
       {/* アニメーション */}
       {loading ? (
         <Player
@@ -141,11 +168,11 @@ const ProductTable = () => {
         <table className="table">
           {/* head */}
           <thead>
-            <tr className="grid grid-cols-4 lg:table-row lg:grid-cols-none">
+            <tr className="grid grid-cols-4 border-b border-gray-200 lg:table-row lg:grid-cols-none">
               {headerNames.map((headerName, index) => (
                 <th
                   key={index}
-                  className={` ${index > 7 ? "lg:text-center lg:px-1" : ""}`}
+                  className={`sticky top-0 z-10 bg-white ${index == 0 ? "col-span-4" : ""} ${index > 7 ? "lg:text-center lg:px-1" : ""}`}
                 >
                   {headerName}
                 </th>
@@ -160,7 +187,7 @@ const ProductTable = () => {
                   index % 2 == 0 && "bg-gray-100"
                 }`}
               >
-                <td>{product.name}</td>
+                <td className="col-span-4">{product.name}</td>
                 <td>{categoryTitleChange(product.category)}</td>
                 <td>{supplierTitleChange(product.supplier)}</td>
                 <td>
@@ -168,12 +195,10 @@ const ProductTable = () => {
                 </td>
                 <td>{jpMoneyChange(product.cost)}</td>
                 <td>{jpMoneyChange(product.price)}</td>
-                <td>{jpMoneyChange(product.cost * product.count)}</td>
-                <td>{jpMoneyChange(product.price * product.count)}</td>
                 <td className="px-1 lg:text-center">
                   <button
                     onClick={() => {
-                      setSelectedProduct(product);
+                      setSelectedProduct(productStrTypeChange(product));
                       (
                         document.getElementById(
                           "ProductEditDialog"
@@ -188,7 +213,7 @@ const ProductTable = () => {
                 <td className="px-1 lg:text-center">
                   <button
                     onClick={() => {
-                      setSelectedProduct(product);
+                      setSelectedProduct((productStrTypeChange(product)));
                       (
                         document.getElementById(
                           "DeleteDialog"
@@ -203,7 +228,7 @@ const ProductTable = () => {
                 <td className="px-1 lg:text-center">
                   <button
                     onClick={() => {
-                      setSelectedProduct(product);
+                      setSelectedProduct(productStrTypeChange(product));
                       (
                         document.getElementById(
                           "OrderDialog"
@@ -213,21 +238,6 @@ const ProductTable = () => {
                     className="btn btn-ghost rounded-lg"
                   >
                     <SquarePlus />
-                  </button>
-                </td>
-                <td className="px-1 lg:text-center">
-                  <button
-                    onClick={() => {
-                      setSelectedProduct(product);
-                      (
-                        document.getElementById(
-                          "SaleDialog"
-                        ) as HTMLDialogElement
-                      )?.showModal();
-                    }}
-                    className="btn btn-ghost rounded-lg"
-                  >
-                    <ShoppingCart />
                   </button>
                 </td>
               </tr>
@@ -254,7 +264,7 @@ const ProductTable = () => {
         product={selectedProduct}
         categoryList={categoryList}
         supplierList={supplierList}
-        onSave={(product: Product) => {
+        onSave={(product: ProductFormValues) => {
           handleSave(product);
         }}
       />
@@ -266,13 +276,7 @@ const ProductTable = () => {
         }}
       />
       <OrderDialog
-        product={selectedProduct}
-        onSave={(product: Product) => {
-          handleSave(product);
-        }}
-      />
-      <SaleDialog
-        product={selectedProduct}
+        product={selectedProduct ? productNumTypeChange(selectedProduct) : null}
         onSave={(product: Product) => {
           handleSave(product);
         }}
