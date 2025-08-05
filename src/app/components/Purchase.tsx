@@ -131,8 +131,8 @@ export const Purchase = () => {
 
         {/* 商品名 */}
         <ul className="text-xl space-y-8 mb-8 lg:space-y-12 lg:mb-15">
-          <li className="flex flex-col gap-1 lg:flex-row lg:gap-4">
-            <label className=" font-semibold text-gray-700 w-43">name :</label>
+          <li className="flex flex-col gap-1 lg:flex-row lg:gap-4 ">
+            <label className=" font-semibold text-gray-700 w-43 ">name :</label>
             <input
               id="name"
               name="name"
@@ -141,7 +141,7 @@ export const Purchase = () => {
                 setAddProduct({ ...addProduct, name: e.target.value })
               }
               placeholder="name"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg input-secondary"
+              className="input rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary "
             />
           </li>
 
@@ -161,7 +161,7 @@ export const Purchase = () => {
                   category: Number(e.target.value),
                 })
               }
-              className="select rounded-sm mx-5 border-2 p-1 text-lg select-secondary"
+              className="select rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary"
             >
               {categoryList.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -183,7 +183,7 @@ export const Purchase = () => {
                 setAddProduct({ ...addProduct, explanation: e.target.value })
               }
               placeholder="explanation"
-              className="rounded-sm mx-5 border-2 p-1 text-lg textarea textarea-secondary"
+              className="rounded-sm mx-5 border-2 p-1 text-lg textarea border-gray-500 focus:border-pink-500 focus:input-secondary w-120 h-50 resize"
             />
           </li>
 
@@ -205,7 +205,7 @@ export const Purchase = () => {
                 }
               }}
               placeholder="count"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg input-secondary"
+              className="input rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary"
             />
           </li>
 
@@ -214,11 +214,12 @@ export const Purchase = () => {
             <label className=" font-semibold text-gray-700 w-43">
               supplier：
             </label>
-            <div
-              className="flex gap-4 flex-col"
-            >
+            <div className="flex gap-4 flex-col">
               {supplierList.map((supplier) => (
-                <label key={supplier.id} className="flex items-center">
+                <label
+                  key={supplier.id}
+                  className="flex items-center font-bold hover:text-pink-500 hover:underline"
+                >
                   <input
                     type="radio"
                     name="supplier"
@@ -230,9 +231,9 @@ export const Purchase = () => {
                         supplier: Number(e.target.value),
                       })
                     }
-                    className="ml-5 mr-2 radio radio-secondary"
+                    className="ml-5 mr-2 radio border-gray-500 focus:radio-secondary "
                   />
-                  <span className="text-sm">{supplier.name}</span>
+                  <span className="text-lg focus:text-pink-300">{supplier.name}</span>
                 </label>
               ))}
             </div>
@@ -256,7 +257,7 @@ export const Purchase = () => {
                 }
               }}
               placeholder="cost"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg input-secondary"
+              className="input rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary"
             />
           </li>
 
@@ -278,11 +279,8 @@ export const Purchase = () => {
                 }
               }}
               placeholder="price"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg input-secondary"
+              className="input rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary"
             ></input>
-            {/* <span className="">
-            {formatCurrency(addProduct.price)}
-          </span> */}
           </li>
 
           <li className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">

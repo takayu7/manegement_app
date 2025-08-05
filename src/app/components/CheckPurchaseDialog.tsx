@@ -92,16 +92,14 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
 
         <div className="flex flex-col lg:flex-row items-center gap-2 relative">
           <div className="absolute -top-64 lg:-top-82 left-30 flex justify-center w-full">
+            <div className="relative top-40 left-0 lg:top-[200px] lg:left-[10px] w-[110px] h-[100px] lg:w-[150px] lg:h-[150px]">
          <Player
         autoplay
         loop
         src="/lottie/WalkingElephant.json"
-        style={{position: "relative",
-          top:"135%",
-          left: "10%",
-          height: "150px",
-          width: "150px",}}
+
       />
+      </div>
       </div>
           <button
             type="submit"
