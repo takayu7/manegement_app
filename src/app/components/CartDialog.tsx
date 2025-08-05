@@ -29,6 +29,24 @@ export const CartDialog: React.FC<CartDialogProps> = ({
 
   const userId = useSessionStorage("staffId", "0");
 
+  //cartItemsをitemsにセット
+  useEffect(() => {
+    setItems(cartItems);
+  }, [cartItems]);
+
+  useEffect(() => {
+    const result: BuyProductList[] = items.map((item) => ({
+      id: item.id,
+      userid: userId,
+      name: item.name,
+      price: item.price,
+      count: item.buyCount,
+      buyDate: null,
+    }));
+    console.log(result);
+    setBuyItems(result);
+  }, [userId, items]);
+
   //カート内商品の合計金額
   const total = items.reduce(
     (sum, item) => sum + item.price * item.buyCount,
@@ -48,23 +66,6 @@ export const CartDialog: React.FC<CartDialogProps> = ({
       theme: "colored",
     });
   };
-
-  useEffect(() => {
-    // const newItmesList=cartItems.map((item)=>({...item, userId:userId}))
-    const result: BuyProductList[] = cartItems.map((item) => ({
-      id: item.id,
-      userid: userId,
-      name: item.name,
-      // category: item.category,
-      price: item.price,
-      count: item.buyCount,
-      buyDate: null,
-    }));
-    console.log(result);
-    setBuyItems(result);
-
-    setItems(cartItems);
-  }, [cartItems, userId]);
 
   //購入数変更ボタン（プラス）
   const handleIncrease = (id: string) => {
