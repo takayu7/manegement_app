@@ -4,7 +4,7 @@ import { BuyProductList, PurchaseHistoryList } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
 import { useSessionStorage } from "@/app/hooks/useSessionStorage";
 import { Player } from "@lottiefiles/react-lottie-player";
-import { Stamp, X, Calendar } from "lucide-react";
+import { Stamp, CircleX, Calendar } from "lucide-react";
 
 // 合計金額を計算する関数
 const totalCost = (productList: BuyProductList[]) =>
@@ -109,9 +109,9 @@ const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({ onClose }) => {
 
         <button
           onClick={onClose}
-          className="absolute top-6 right-4 btn text-white btn-sm btn-circle bg-blue-900 hover:bg-blue-800"
+          className="fixed top-40 right-6 lg:top-38 lg:right-133 btn btn-ghost btn-circle"
         >
-          <X className="size-5" />
+          <CircleX className="size-6.5 text-blue-900" />
         </button>
       </div>
     </div>

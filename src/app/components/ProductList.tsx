@@ -185,7 +185,17 @@ export const ProductList = () => {
               <div
                 key={product.id}
                 className="card-body flex flex-col justify-between rounded-xl bg-gray-100 shadow-sm hover:shadow-xl transition-shadow duration-300 h-full"
-              >
+             
+             >
+                
+                <p className="mb-2 text-right">
+                  {product.count === 0 && (
+                    <span className="text-white font-bold text-xl bg-red-600">
+                      SOLD OUT
+                    </span>
+                  )}
+                </p>
+
                 <figure className="flex justify-center items-center h-[200px]">
                   <Image
                     src={CategoryImages[product.category]}
