@@ -91,7 +91,7 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
           {/* ToDo */}
           <li className="flex flex-col gap-1 md:items-center md:gap-4 md:flex-row">
             <label className="w-40">todo :</label>
-            <input
+            <textarea
               id="todo"
               name="todo"
               value={editTodo.todo || undefined}

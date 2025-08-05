@@ -86,9 +86,8 @@ export const RegisterTodoList: React.FC<RegisterTodoProps> = ({ onSave }) => {
       </div>
       <div className="flex flex-col">
         todo：
-        <input
-          className="border-1 border-gray-400 p-2 rounded lg:w-80"
-          type="text"
+        <textarea
+          className="border-1 border-gray-400 p-2 rounded h-[41.6px] lg:w-80"
           value={addTodo.todo !== null ? addTodo.todo : ""}
           onChange={(e) => setAddTodo({ ...addTodo, todo: e.target.value })}
           placeholder="todo"
