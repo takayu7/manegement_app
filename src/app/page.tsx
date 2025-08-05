@@ -24,10 +24,11 @@ export default function Page() {
         </div>
         <div className="relative z-10 flex items-center justify-center min-h-screen">
           <h1 className="text-[#FAFAFA] px-5 text-[40px] text-center font-serif font-bold mb-[200px] lg:text-[100px]">
-            Welcome To Select Shop!!
+            Welcome To
+            <br /> Select Shop!!
           </h1>
           <button
-            className="btn btn-outline border-4 border-neutral-200 text-neutral-100 rounded-[4px] w-[240px] h-[48px] absolute bottom-[330px] hover:text-neutral-800"
+            className="btn btn-outline border-4 border-neutral-200 text-neutral-100 rounded-[4px] w-[240px] h-[48px] absolute bottom-[330px] hover:text-neutral-800 xl:bottom-[200px]"
             onClick={() =>
               (
                 document.getElementById("loginDiaLog") as HTMLDialogElement
