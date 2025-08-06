@@ -1,14 +1,15 @@
 //ファイル名: PurchaseCheckDialog.tsx
 "use client";
-import { Category, Product, Supplier } from "@/app/types/type";
+import { Category, Supplier } from "@/app/types/type";
 import { ListPlus, Undo2 } from "lucide-react";
 import { Player } from "@lottiefiles/react-lottie-player";
+import{ProductFormValues}from "@/app/components/Purchase"
 
 export interface PurchaseCheckDialogProps {
-  product: Product;
+  product: ProductFormValues;
   categoryList: Category[];
   supplierList: Supplier[];
-  onSave: (product: Product) => void;
+  onSave: (product: ProductFormValues) => void;
   onClose: () => void;
 }
 
@@ -19,7 +20,7 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
   onSave,
   onClose,
 }) => {
-  const handleAdd = (product: Product) => {
+  const handleAdd = (product: ProductFormValues) => {
     onSave(product);
   };
 
@@ -29,7 +30,7 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
   };
 
   const supplierName = (num: number) => {
-    const supplier = supplierList.find((sup) => sup.id === num);
+    const supplier = supplierList.find((sup) => sup.id === num || Number(sup.id) ===  Number(num));
     return supplier ? supplier.name : "Unkown";
   };
 

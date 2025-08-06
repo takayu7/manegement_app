@@ -5,21 +5,75 @@ import { Category, Product, Supplier } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { PurchaseCheckDialog } from "@/app/components/CheckPurchaseDialog";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { MESSAGE_LIST, formatMessage } from "@/app/lib/messages";
 
-const defaultData: Product = {
-  id: "",
+const productNumTypeChange = (product: ProductFormValues) => {
+  const changedProduct: Product = {
+    id: product.id,
+    name: product.name,
+    category: product.category,
+    supplier: product.supplier,
+    count: Number(product.count), // 数値に変換
+    cost: Number(product.cost), // 数値に変換
+    price: Number(product.price), // 数値に変換
+    explanation: product.explanation,
+    order: Number(product.order),
+  };
+  return changedProduct;
+};
+
+//スキーマの作成
+const formSchema = z.object({
+  id: z.string(),
+  name: z
+    .string()
+    .min(1, MESSAGE_LIST.E010100)
+    .max(30, formatMessage(MESSAGE_LIST.E010106, "30")),
+  category: z.number().min(1, MESSAGE_LIST.E010101),
+  supplier: z.number(),
+  count: z
+    .string()
+    .min(1, MESSAGE_LIST.E010100)
+    .max(4, formatMessage(MESSAGE_LIST.E010106, "4"))
+    .regex(/^[0-9]+$/, MESSAGE_LIST.E010110),
+  cost: z
+    .string()
+    .min(1, MESSAGE_LIST.E010100)
+    .max(10, formatMessage(MESSAGE_LIST.E010106, "10"))
+    .regex(/^[0-9]+$/, MESSAGE_LIST.E010110),
+  price: z
+    .string()
+    .min(1, MESSAGE_LIST.E010100)
+    .max(10, formatMessage(MESSAGE_LIST.E010106, "10"))
+    .regex(/^[0-9]+$/, MESSAGE_LIST.E010110),
+  explanation: z
+    .string()
+    .min(1, MESSAGE_LIST.E010100)
+    .max(300, formatMessage(MESSAGE_LIST.E010106, "300")),
+  order: z.string(),
+});
+
+//初期値
+const defaultData = {
+  id: "a11111",
   name: "",
   category: 1,
   supplier: 1,
-  count: 0,
-  order: 0,
-  cost: 0,
-  price: 0,
+  count: "",
+  order: "",
+  cost: "",
+  price: "",
   explanation: "",
 };
 
+// 型の定義
+export type ProductFormValues = z.infer<typeof formSchema>;
+
 export const Purchase = () => {
-  const [addProduct, setAddProduct] = useState<Product>(defaultData);
+  const [addProduct, setAddProduct] = useState<ProductFormValues>(defaultData);
   const [isPending, startTransition] = useTransition();
   const [showAirplane, setShowAirplane] = useState(false);
   const [isCheckOpen, setIsCheckOpen] = useState(false);
@@ -58,18 +112,32 @@ export const Purchase = () => {
     console.log("Response text:", responseText);
   };
 
-  // 合計金額
-  const total = addProduct.cost * addProduct.count;
+  const {
+    getValues,
+    setValue,
+    register,
+    formState: { errors, isValid, isSubmitting },
+    watch,
+    reset,
+  } = useForm<ProductFormValues>({
+    resolver: zodResolver(formSchema),
+    mode: "onChange",
+    defaultValues: defaultData,
+  });
+
+  useEffect(() => {
+    reset();
+  }, [reset]);
 
   // すべての入力が完了しているか
   const isAllFilled =
-    addProduct.name !== "" &&
-    addProduct.category !== undefined &&
-    addProduct.explanation !== "" &&
-    addProduct.count > 0 &&
-    addProduct.supplier !== undefined &&
-    addProduct.cost > 0 &&
-    addProduct.price > 0;
+    watch("name") !== "" &&
+    watch("category") !== undefined &&
+    watch("explanation") !== "" &&
+    watch("count") !== "" &&
+    watch("supplier") !== undefined &&
+    watch("cost") !== "" &&
+    watch("price") !== "";
 
   // 自動採番（ID）ランダム
   function id(): string {
@@ -84,30 +152,38 @@ export const Purchase = () => {
   //checkボタン
   const handleCheck = () => {
     const newId = id();
-    const productWithId = { ...addProduct, id: newId };
+    const newProduct = watch();
+    const productWithId = { ...newProduct, id: newId };
+    console.log(productWithId);
     setAddProduct(productWithId);
     setIsCheckOpen(true);
-
-    console.log(productWithId);
   };
 
   //addボタン(ダイアログ)
-  const handleAdd = () => {
+  const handleAdd = (product: ProductFormValues) => {
     startTransition(() => {
-      onSave(addProduct);
+      onSave(productNumTypeChange(product));
     });
     setIsCheckOpen(false);
     setShowAirplane(true);
     setTimeout(() => setShowAirplane(false), 3000);
 
-    setAddProduct(defaultData);
-    // alert(JSON.stringify(productWithId, null, 2));
+    reset();
   };
 
   //resetボタン
   const handleReset = () => {
-    setAddProduct(defaultData);
+    reset();
   };
+
+  const itmeProduct = watch("count");
+
+  useEffect(() => {
+    setValue("order", itmeProduct);
+  }, [itmeProduct, setValue]);
+
+  console.log(watch());
+  console.log(isValid, isSubmitting);
 
   return (
     <>
@@ -134,15 +210,20 @@ export const Purchase = () => {
           <li className="flex flex-col gap-1 lg:flex-row lg:gap-4 ">
             <label className=" font-semibold text-gray-700 w-43 ">name :</label>
             <input
+              {...register("name")}
               id="name"
               name="name"
-              value={addProduct.name}
-              onChange={(e) =>
-                setAddProduct({ ...addProduct, name: e.target.value })
-              }
+              value={watch("name")}
               placeholder="name"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary "
+              className={`input rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary${
+                watch("name") ? "input-secondary" : ""
+              }`}
             />
+            {errors.name && (
+              <p className="mt-1 text-sm font-bold text-red-600">
+                {errors.name.message}
+              </p>
+            )}
           </li>
 
           {/* カテゴリ */}
@@ -151,17 +232,14 @@ export const Purchase = () => {
               category :
             </label>
             <select
+              {...register("category", { valueAsNumber: true })}
               id="category"
               name="category"
-              value={addProduct.category}
+              value={watch("category")}
               required
-              onChange={(e) =>
-                setAddProduct({
-                  ...addProduct,
-                  category: Number(e.target.value),
-                })
-              }
-              className="select rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary"
+              className={`select rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
+                watch("category") ? "select-secondary" : ""
+              }`}
             >
               {categoryList.map((category) => (
                 <option key={category.id} value={category.id}>
@@ -169,6 +247,11 @@ export const Purchase = () => {
                 </option>
               ))}
             </select>
+            {errors.category && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.category.message}
+              </p>
+            )}
           </li>
 
           {/* 商品説明 */}
@@ -177,36 +260,39 @@ export const Purchase = () => {
               explanation :
             </label>
             <textarea
+              {...register("explanation")}
               name="explanation"
-              value={addProduct.explanation}
-              onChange={(e) =>
-                setAddProduct({ ...addProduct, explanation: e.target.value })
-              }
+              value={watch("explanation")}
               placeholder="explanation"
-              className="rounded-sm mx-5 border-2 p-1 text-lg textarea border-gray-500 focus:border-pink-500 focus:input-secondary w-120 h-50 resize"
+              className={`rounded-sm mx-5 border-2 p-1 text-lg textarea border-gray-500 focus:border-pink-500 focus:input-secondary lg:w-120 h-50 resize ${
+                watch("explanation") ? "textarea-secondary" : ""
+              }`}
             />
+            {errors.explanation && (
+              <p className="mt-1 text-sm font-bold text-red-600 flex flex-col">
+                {errors.explanation.message}
+              </p>
+            )}
           </li>
 
-          {/* 仕入れ数 */}
+          {/* 発注数 */}
           <li className="flex flex-col gap-1 lg:flex-row lg:gap-4">
             <label className="font-semibold text-gray-700 w-43">count :</label>
             <input
+              {...register("count")}
               name="count"
               type="text"
-              value={addProduct.count === null ? "" : addProduct.count}
-              onChange={(e) => {
-                const v = e.target.value;
-                if (/^\d*$/.test(v)) {
-                  setAddProduct({
-                    ...addProduct,
-                    count: v === "" ? 0 : Number(v),
-                    order: v === "" ? 0 : Number(v),
-                  });
-                }
-              }}
+              value={watch("count")}
               placeholder="count"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary"
+              className={`input rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
+                watch("count") ? "input-secondary" : ""
+              }`}
             />
+            {errors.count && (
+              <p className="mt-1 text-sm text-red-600 font-bold">
+                {errors.count.message}
+              </p>
+            )}
           </li>
 
           {/* 仕入れ先 */}
@@ -221,72 +307,78 @@ export const Purchase = () => {
                   className="flex items-center font-bold hover:text-pink-500 hover:underline"
                 >
                   <input
+                    {...register("supplier", { valueAsNumber: true })}
+                    id={`supplier-${supplier.id}`}
                     type="radio"
                     name="supplier"
                     value={supplier.id}
-                    checked={addProduct.supplier === supplier.id}
-                    onChange={(e) =>
-                      setAddProduct({
-                        ...addProduct,
-                        supplier: Number(e.target.value),
-                      })
-                    }
                     className="ml-5 mr-2 radio border-gray-500 focus:radio-secondary "
+                    checked={Number(watch("supplier")) === Number(supplier.id)}
+                    onChange={(e) => {
+                      setValue("supplier", Number(e.target.value));
+                    }}
                   />
-                  <span className="text-lg focus:text-pink-300">{supplier.name}</span>
+                  <span className="text-lg focus:text-pink-300">
+                    {supplier.name}
+                  </span>
                 </label>
               ))}
             </div>
+            {errors.supplier && (
+              <p className="mt-1 text-sm text-red-600 font-bold">
+                {errors.supplier.message}
+              </p>
+            )}
           </li>
 
           {/* 原価 */}
           <li className="flex flex-col gap-1 lg:flex-row lg:gap-4">
             <label className="font-semibold text-gray-700 w-43">cost：</label>
             <input
+              {...register("cost")}
               id="cost"
               name="cost"
               type="text"
-              value={addProduct.cost === null ? "" : addProduct.cost}
-              onChange={(e) => {
-                const v = e.target.value;
-                if (/^\d*$/.test(v)) {
-                  setAddProduct({
-                    ...addProduct,
-                    cost: v === "" ? 0 : Number(v),
-                  });
-                }
-              }}
+              value={watch("cost")}
               placeholder="cost"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary"
+              className={`input rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
+                watch("cost") ? "input-secondary" : ""
+              }`}
             />
+            {errors.cost && (
+              <p className="mt-1 text-sm text-red-600 font-bold">
+                {errors.cost.message}
+              </p>
+            )}
           </li>
 
           {/* 販売価格 */}
           <li className="flex flex-col gap-1 lg:flex-row lg:gap-4">
             <label className="font-semibold text-gray-700 w-43">price：</label>
             <input
+              {...register("price")}
               id="price"
               name="price"
               type="text"
-              value={addProduct.price === null ? "" : addProduct.price}
-              onChange={(e) => {
-                const v = e.target.value;
-                if (/^\d*$/.test(v)) {
-                  setAddProduct({
-                    ...addProduct,
-                    price: v === "" ? 0 : Number(v),
-                  });
-                }
-              }}
+              value={watch("price")}
               placeholder="price"
-              className="input rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary"
-            ></input>
+              className={`input rounded-sm mx-5 border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary${
+                watch("price") ? "input-secondary" : ""
+              }`}
+            />
+            {errors.price && (
+              <p className="mt-1 text-sm text-red-600 font-bold">
+                {errors.price.message}
+              </p>
+            )}
           </li>
 
           <li className="flex flex-col gap-1 lg:flex-row lg:items-center lg:gap-4">
             <label className="font-semibold text-gray-700 w-43">total：</label>
             <span className="mx-10 p-1 font-bold mr-1 w-1xl text-1xl">
-              {jpMoneyChange(total)}
+              {jpMoneyChange(
+                Number(getValues("cost")) * Number(getValues("count"))
+              )}
             </span>
           </li>
         </ul>
@@ -315,6 +407,7 @@ export const Purchase = () => {
             reset
           </button>
         </div>
+        {/* </form> */}
       </main>
       {isCheckOpen && (
         <PurchaseCheckDialog
