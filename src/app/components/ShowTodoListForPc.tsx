@@ -26,7 +26,11 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
   const [checkItem, setCheckItem] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isNotMobile, setIsMobile] = useState(false);
-  const storedName = sessionStorage.getItem("userName");
+  const callLoginUsername = () => {
+    if (process.browser) {
+      return sessionStorage.getItem("userName");
+    }
+  };
   //ToDoリスト情報の取得
   async function fetchTodoData() {
     const data = await fetch("/api/todo");
@@ -68,7 +72,7 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
       handleResize();
       setTodoData(
         todoData.filter(
-          (todo) => todo.checked === null && todo.name === storedName
+          (todo) => todo.checked === null && todo.name === callLoginUsername()
         )
       );
     } else if (IsShowingCheckedTodo) {
@@ -87,12 +91,12 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
       handleResize();
       setTodoData(
         todoData.filter(
-          (todo) => todo.name === storedName && todo.checked === null
+          (todo) => todo.name === callLoginUsername() && todo.checked === null
         )
       );
     } else if (IsShowingLoginUserTodo) {
       handleResize();
-      setTodoData(todoData.filter((todo) => todo.name === storedName));
+      setTodoData(todoData.filter((todo) => todo.name === callLoginUsername()));
     } else {
       handleResize();
       fetchTodoData();
