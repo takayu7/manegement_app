@@ -109,7 +109,7 @@ const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({ onClose }) => {
 
         <button
           onClick={onClose}
-          className="fixed top-40 right-6 lg:top-38 lg:right-133 btn btn-ghost btn-circle"
+          className="fixed top-40 right-6 lg:top-35 lg:right-110 btn btn-ghost btn-circle"
         >
           <CircleX className="size-6.5 text-blue-900" />
         </button>
