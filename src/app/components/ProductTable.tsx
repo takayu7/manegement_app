@@ -172,7 +172,7 @@ const ProductTable = () => {
               {headerNames.map((headerName, index) => (
                 <th
                   key={index}
-                  className={`sticky top-0 z-10 bg-white ${index == 0 ? "col-span-4" : ""} ${index > 7 ? "lg:text-center lg:px-1" : ""}`}
+                  className={`sticky top-0 z-10 bg-white ${index == 0 ? "col-span-4" : ""} ${index > 5 ? "lg:text-center lg:px-1" : ""}`}
                 >
                   {headerName}
                 </th>

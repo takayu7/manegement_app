@@ -21,7 +21,7 @@ const formSchema = z.object({
   count: z
     .string()
     .min(1, MESSAGE_LIST.E010100)
-    .max(999, formatMessage(MESSAGE_LIST.E010106, "999"))
+    .max(4, formatMessage(MESSAGE_LIST.E010106, "4"))
     .regex(/^[0-9]+$/, MESSAGE_LIST.E010110),
   cost: z
     .string()
@@ -71,6 +71,7 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
   supplierList,
   onSave,
 }) => {
+
   //フォームの設定
   const form = useForm<z.infer<typeof formSchema>>({
     mode: "onChange",
@@ -168,28 +169,23 @@ export const ProductEditDialog: React.FC<EditDialogProps> = ({
             </li>
             {/* 仕入れ先 */}
             <li className="flex flex-col gap-1 md:items-center md:gap-4 md:flex-row">
-              <label className="min-w-40">supplier：</label>
-              {typeof watch("supplier") === "undefined" ? (
-                <div>Loading...</div>
-              ) : (
-                <div className="flex flex-col lg:grid grid-cols-3 gap-2 md:mx-5">
-                  {supplierList.map((supplier) => (
-                    <div key={supplier.id} className="flex items-center">
-                      <input
-                        {...register("supplier", { valueAsNumber: true })}
-                        type="radio"
-                        value={Number(supplier.id)}
-                        checked={Number(watch("supplier")) === supplier.id}
-                        onChange={(e) => {
-                          form.setValue("supplier", Number(e.target.value));
-                        }}
-                        className="mr-2 radio radio-secondary"
-                      />
-                      <span className="text-sm">{supplier.name}</span>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <label className="w-40">supplier :</label>
+              <select
+                {...register("supplier", { valueAsNumber: true })}
+                id="supplier"
+                name="supplier"
+                value={watch("supplier")}
+                required
+                className={`select rounded-sm border-2 p-1 text-lg md:mx-5 ${
+                  watch("supplier") ? "select-secondary" : ""
+                }`}
+              >
+                {supplierList.map((supplier) => (
+                  <option key={supplier.id} value={supplier.id}>
+                    {supplier.name}
+                  </option>
+                ))}
+              </select>
               {errors.supplier && (
                 <p className="mt-1 text-sm text-red-600">
                   {errors.supplier.message}
