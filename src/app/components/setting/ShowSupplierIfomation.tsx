@@ -4,15 +4,18 @@ import { Supplier } from "@/app/types/type";
 import { SquarePen, Trash2 } from "lucide-react";
 import { SupplierEditDialog } from "./SupplierEditDialog";
 import { Player } from "@lottiefiles/react-lottie-player";
+import { DeleteSupplierDialog } from "./DeleteSupplierDialog";
 
 export interface RegisterSupplierProps {
   supplierDataList: Supplier[];
   onSave: (supplier: Supplier) => void;
+  onDelete: (supplier: number) => void;
 }
 
 export const ShowSupplierIfomation: React.FC<RegisterSupplierProps> = ({
   supplierDataList,
   onSave,
+  onDelete,
 }) => {
   const [supplierData, setSupplierData] =
     useState<Supplier[]>(supplierDataList);
@@ -28,26 +31,26 @@ export const ShowSupplierIfomation: React.FC<RegisterSupplierProps> = ({
     console.log(suppliers);
   }
 
-  //ユーザー情報を削除する処理
-  const handleDelete = async (supplierId: string) => {
-    const response = await fetch("/api/deleteSupplier", {
-      method: "POST",
-      headers: {
-        "Context-Type": "application/json",
-      },
-      body: JSON.stringify({ supplierId }),
-    });
-    fetchSupplierData();
-    const result = await response.json();
-    if (result.success) {
-      alert("Deletion successful！");
-    } else {
-      alert("Delete failed...");
-    }
-  };
+  // //ユーザー情報を削除する処理
+  // const handleDelete = async (supplierId: string) => {
+  //   const response = await fetch("/api/deleteSupplier", {
+  //     method: "POST",
+  //     headers: {
+  //       "Context-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({ supplierId }),
+  //   });
+  //   fetchSupplierData();
+  //   const result = await response.json();
+  //   if (result.success) {
+  //     alert("Deletion successful！");
+  //   } else {
+  //     alert("Delete failed...");
+  //   }
+  // };
 
   //ユーザー情報を削除するかどうかの確認をする処理
-  const showDeleteConfirmation = async (supplierId: string) => {
+  const showDeleteConfirmation = async (supplierId: number) => {
     const approval = confirm("Do you want to delete the supplier?");
     if (approval) {
       handleDelete(supplierId);
@@ -58,6 +61,13 @@ export const ShowSupplierIfomation: React.FC<RegisterSupplierProps> = ({
   const handleSave = (supplier: Supplier) => {
     startTransition(() => {
       onSave(supplier); // サーバーアクションを呼ぶ
+    });
+  };
+
+  // 削除ダイアログの保存処理
+  const handleDelete = (id: number) => {
+    startTransition(() => {
+      onDelete(id); // サーバーアクションを呼ぶ
     });
   };
 
@@ -94,10 +104,18 @@ export const ShowSupplierIfomation: React.FC<RegisterSupplierProps> = ({
                     >
                       <SquarePen />
                     </button>
-                    <button className="btn btn-ghost rounded-lg ml-1">
-                      <Trash2
-                        onClick={() => showDeleteConfirmation(String(data.id))}
-                      />
+                    <button
+                      onClick={() => {
+                        setSelectedSupplier(data);
+                        (
+                          document.getElementById(
+                            "DeleteSupplierDialog"
+                          ) as HTMLDialogElement
+                        )?.showModal();
+                      }}
+                      className="btn btn-ghost rounded-lg"
+                    >
+                      <Trash2 />
                     </button>
                   </div>
                 </div>
@@ -112,6 +130,13 @@ export const ShowSupplierIfomation: React.FC<RegisterSupplierProps> = ({
           supplier={selectedSupplier}
           onSave={(supplier: Supplier) => {
             handleSave(supplier);
+          }}
+        />
+        <DeleteSupplierDialog
+          id={selectedSupplier?.id}
+          onDelete={(id: number) => {
+            handleDelete(id);
+            setSelectedSupplier(null);
           }}
         />
       </ul>

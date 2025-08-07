@@ -2,7 +2,12 @@ import React from "react";
 import { User } from "@/app/types/type";
 import { revalidatePath } from "next/cache";
 import { RegisterUser } from "./RegisterUser";
-import { createUser, fetchUserDatas, updateUser } from "@/app/lib/api";
+import {
+  createUser,
+  deleteUser,
+  fetchUserDatas,
+  updateUser,
+} from "@/app/lib/api";
 import { ShowUserInfomation } from "@/app/components/setting/ShowUserInfomation";
 
 export const CollapseUser = async () => {
@@ -19,6 +24,13 @@ export const CollapseUser = async () => {
   const handleUpdateUser = async (user: User) => {
     "use server";
     await updateUser(user);
+    revalidatePath("/setting");
+  };
+
+  //削除
+  const handleDeleteUser = async (id: string) => {
+    "use server";
+    await deleteUser(id);
     revalidatePath("/setting");
   };
 
@@ -39,6 +51,7 @@ export const CollapseUser = async () => {
           <ShowUserInfomation
             userDataList={userDataList}
             onSave={handleUpdateUser}
+            onDelete={handleDeleteUser}
           />
         </div>
       </div>

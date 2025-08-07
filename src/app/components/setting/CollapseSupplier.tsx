@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { RegisterSupplier } from "@/app/components/setting/RegisterSupplier";
 import {
   createSupplier,
+  deleteSupplierList,
   fetchSupplierList,
   updateSupplierList,
 } from "@/app/lib/api";
@@ -26,6 +27,13 @@ export const CollapseSupplier = async () => {
     revalidatePath("/setting");
   };
 
+  //削除
+  const handleDeleteSupplier = async (id: number) => {
+    "use server";
+    await deleteSupplierList(id);
+    revalidatePath("/setting");
+  };
+
   return (
     <>
       <div className="bg-base-100 border-base-300 collapse border">
@@ -43,6 +51,7 @@ export const CollapseSupplier = async () => {
           <ShowSupplierIfomation
             supplierDataList={userDataList}
             onSave={handleUpdateSupplier}
+            onDelete={handleDeleteSupplier}
           />
         </div>
       </div>
