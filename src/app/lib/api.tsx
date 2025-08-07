@@ -57,6 +57,27 @@ export async function createUser(user: User) {
   }
 }
 
+// ユーザーデータデータの更新
+export async function updateUser(user: User) {
+  try {
+    const data = await sql<User[]>`
+      UPDATE users
+      SET
+        name = ${user.name},
+        password = ${user.password},
+        icon = ${user.icon}
+      WHERE
+        id = ${user.id}
+      RETURNING *;
+    `;
+
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to update todo.");
+  }
+}
+
 // ユーザーデータの削除
 export async function deleteUser(userId: string) {
   try {
