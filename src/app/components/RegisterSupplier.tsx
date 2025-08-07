@@ -1,7 +1,19 @@
 "use client";
-import React, { useState, useTransition } from "react";
+import React, { useTransition } from "react";
 import { ListPlus } from "lucide-react";
 import { Supplier } from "@/app/types/type";
+import z from "zod";
+import { formatMessage, MESSAGE_LIST } from "../lib/messages";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const formSchema = z.object({
+  id: z.number(),
+  name: z
+    .string()
+    .min(1, MESSAGE_LIST.E010100)
+    .max(20, formatMessage(MESSAGE_LIST.E010106, "20")),
+});
 
 export interface RegisterSupplierProps {
   onSave: (supplier: Supplier) => void;
@@ -15,11 +27,22 @@ const defaultData: Supplier = {
 export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
   onSave,
 }) => {
-  const [addSupplier, setAddSupplier] = useState<Supplier>(defaultData);
+  //const [addSupplier, setAddSupplier] = useState<Supplier>(defaultData);
+  const {
+    setValue,
+    getValues,
+    register,
+    reset,
+    formState: { errors, isDirty, isValid },
+    handleSubmit,
+  } = useForm<z.infer<typeof formSchema>>({
+    defaultValues: defaultData,
+    resolver: zodResolver(formSchema),
+  });
   const [isPending, startTransition] = useTransition();
 
   // すべての入力が完了しているか
-  const isAllFilled = addSupplier.name !== "";
+  //const isAllFilled = addSupplier.name !== "";
 
   // 自動採番（ID）
   async function automaticNumbering() {
@@ -47,14 +70,13 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
   //addボタン
   const handleAdd = async (newId: number) => {
     const result = confirm("Would you like to register?");
-    const newSupplier = { ...addSupplier, id: newId };
     if (result) {
-      console.log("ID : " + newSupplier.id);
-      console.log(newSupplier);
+      setValue("id", newId);
+      console.log("ID : " + getValues().id);
+      console.log(getValues());
       startTransition(() => {
-        onSave(newSupplier);
+        onSave(getValues());
       });
-      setAddSupplier(defaultData);
     }
   };
 
@@ -62,37 +84,42 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
     const newId = await automaticNumbering();
     console.log(newId);
     await handleAdd(newId);
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
+    if (!isPending) {
+      console.log(getValues().id);
+      reset();
+    }
   };
 
   return (
     <>
-      <div>
+      <form onSubmit={handleSubmit(onSave)}>
         {/* Name */}
         <div className="mb-[10px] flex flex-row ">
           <div className="mt-2">NAME：　</div>
           <input
+            {...register("name")}
             type="text"
             id="name"
-            name="name"
-            value={addSupplier.name}
-            onChange={(e) =>
-              setAddSupplier({ ...addSupplier, name: e.target.value })
-            }
+            // name="name"
+            // value={addSupplier.name}
+            // onChange={(e) =>
+            //   setAddSupplier({ ...addSupplier, name: e.target.value })
+            // }
             placeholder="name"
             className="input input-bordered text-black md:w-[310px]"
           />
         </div>
+        <div className="text-red-300 mt-2">{errors.name?.message}</div>
         {/* Submit Button */}
         <div className="mt-6">
           <button
             type="submit"
             className="btn btn-primary"
-            disabled={!isAllFilled || isPending}
+            disabled={!isDirty || isPending}
             onClick={() => {
-              hanndleClick();
+              if (isValid) {
+                hanndleClick();
+              }
             }}
           >
             <ListPlus />
@@ -100,7 +127,7 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
           </button>
         </div>
         {isPending && <span className="text-rose-500 text-end">update...</span>}
-      </div>
+      </form>
     </>
   );
 };
