@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { jpMoneyChange, categories } from "@/app/lib/utils";
 import { Product, Category } from "@/app/types/type";
-import { ProductDetailDialog } from "@/app/components/ProductDetailDialog";
+import { ProductDetailDialog } from "@/app/components/top/ProductDetailDialog";
 
 export type SalesData = {
   name: string;

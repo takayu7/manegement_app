@@ -3,11 +3,11 @@ import React, { useState, useEffect, useTransition } from "react";
 import { Product, Category, Supplier } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
 import { SquarePen, SquarePlus, Trash2 } from "lucide-react";
-import { ProductEditDialog } from "@/app/components/ProductEditDialog";
-import { DeleteDialog } from "@/app/components/DeleteDialog";
-import { OrderDialog } from "@/app/components/OrderDialog";
+import { ProductEditDialog } from "@/app/components/inventory/ProductEditDialog";
+import { DeleteDialog } from "@/app/components/inventory/DeleteDialog";
+import { OrderDialog } from "@/app/components/inventory/OrderDialog";
 import { Player } from "@lottiefiles/react-lottie-player";
-import { ProductFormValues } from "@/app/components/ProductEditDialog";
+import { ProductFormValues } from "@/app/components/inventory/ProductEditDialog";
 
 const headerNames: string[] = [
   "Name",

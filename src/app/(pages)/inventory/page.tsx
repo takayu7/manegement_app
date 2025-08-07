@@ -1,5 +1,5 @@
 import React from "react";
-import  ProductTable from "@/app/components/ProductTable";
+import  ProductTable from "@/app/components/inventory/ProductTable";
 
 export default async function Page() {
 

@@ -3,8 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { Category } from "@/app/types/type";
 import { jpMoneyChange } from "@/app/lib/utils";
-import { SalesData } from "@/app/components/Parameter";
-import { salesCheck } from "@/app/components/Parameter";
+import { SalesData } from "@/app/components/top/Parameter";
+import { salesCheck } from "@/app/components/top/Parameter";
 import { Player } from "@lottiefiles/react-lottie-player";
 
 export interface EditDialogProps {

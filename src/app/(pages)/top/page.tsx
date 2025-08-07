@@ -1,11 +1,11 @@
 import { Loading } from "@/app/components/Loading";
 import React, { Suspense } from "react";
-import { TopTodoMessage } from "@/app/components/TopTodoMessage";
-import { CountDown } from "@/app/components/CountDown";
-import Parameter from "@/app/components/Parameter";
-import ProductBuyHistory from "@/app/components/ProductBuyHistory";
-import { UserBuyParameter } from "@/app/components/UserBuyParameter";
-import { ProductReviews } from "@/app/components/ProductReviews";
+import { TopTodoMessage } from "@/app/components/top/TopTodoMessage";
+import { CountDown } from "@/app/components/top/CountDown";
+import Parameter from "@/app/components/top/Parameter";
+import ProductBuyHistory from "@/app/components/top/ProductBuyHistory";
+import { UserBuyParameter } from "@/app/components/top/UserBuyParameter";
+import { ProductReviews } from "@/app/components/top/ProductReviews";
 
 export default async function Page() {
 
