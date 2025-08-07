@@ -12,6 +12,8 @@ import {
   SortType,
   LineType,
   UserBuyParameterType,
+  ReviewType,
+  ReviewRecType,
 } from "@/app/types/type";
 import { generateCustomId } from "@/app/lib/utils";
 
@@ -391,6 +393,65 @@ export async function fetchBuyAllHistory() {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch purchase history.");
+  }
+}
+
+//　評価の取得
+export async function fetchReviewDatas(productId: string) {
+  try {
+    type apiReviewType = {
+      product_id: string;
+      star: number;
+      comment: string;
+      date: Date;
+      user_name: string;
+      user_icon: number;
+    };
+    const data = await sql<apiReviewType[]>`
+      SELECT
+        re.product_id,
+        re.star,
+        re.comment,
+        re.date,
+        users.name AS user_name,
+        users.icon AS user_icon
+      FROM review re
+      INNER JOIN users ON re.user_id = users.id
+      WHERE re.product_id = ${productId}
+      ORDER BY date DESC;
+    `;
+
+    // スネークケース→キャメルケース変換（1件ずつ）
+    const result: ReviewType[] = data.map((item) => ({
+      productId: item.product_id,
+      star: item.star,
+      comment: item.comment,
+      date: new Date(item.date),
+      userName: item.user_name,
+      userIcon: item.user_icon,
+    }));
+
+    return result;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch review data.");
+  }
+}
+
+// 評価の登録
+export async function createReview(review: ReviewRecType) {
+  try {
+    if (!review.userId) {
+    throw new Error("userId is required and must not be null or undefined.");
+  }
+    await sql`
+      INSERT INTO review (product_id, star, comment, user_id, date)
+      VALUES (${review.productId}, ${review.star}, ${review.comment}, ${review.userId}, NOW())
+      RETURNING *;
+    `;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to create review.");
   }
 }
 

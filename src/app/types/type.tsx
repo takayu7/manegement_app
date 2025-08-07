@@ -1,4 +1,5 @@
 //型定義一覧
+// import { Category } from '@/app/types/type';
 
 export type User = {
   id: string;
@@ -47,13 +48,14 @@ export type CartItem = {
   count: number;
 };
 
-export type SortType = | "name"
-    | "category"
-    | "supplier"
-    | "count"
-    | "cost"
-    | "price"
-    | "order"
+export type SortType =
+  | "name"
+  | "category"
+  | "supplier"
+  | "count"
+  | "cost"
+  | "price"
+  | "order";
 
 export type LineType = "asc" | "desc";
 
@@ -69,16 +71,16 @@ export type BuyProductList = {
   price: number;
   count: number;
   buyDate: Date | null;
-}
+};
 
 export type PurchaseHistory = {
   buyGroupId: number;
-  productList : BuyProductList;
+  productList: BuyProductList;
 };
 
 export type PurchaseHistoryList = {
   buyGroupId: number;
-  productList : BuyProductList[];
+  productList: BuyProductList[];
 };
 
 export type UserBuyParameterType = {
@@ -88,4 +90,21 @@ export type UserBuyParameterType = {
   icon: number;
   price: number;
   count: number;
+};
+
+export type ReviewType = {
+  productId: string;
+  star: number;
+  comment: string;
+  date: Date;
+  userName: string;
+  userIcon: number;
+};
+
+export type ReviewRecType = {
+  productId: string;
+  star: number;
+  comment: string;
+  userId: string;
+  date?: Date;
 };

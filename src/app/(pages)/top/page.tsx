@@ -5,6 +5,7 @@ import { CountDown } from "@/app/components/CountDown";
 import Parameter from "@/app/components/Parameter";
 import ProductBuyHistory from "@/app/components/ProductBuyHistory";
 import { UserBuyParameter } from "@/app/components/UserBuyParameter";
+import { ProductReviews } from "@/app/components/ProductReviews";
 
 export default async function Page() {
 
@@ -21,6 +22,7 @@ export default async function Page() {
             <ProductBuyHistory />
           </div>
           <UserBuyParameter />
+          <ProductReviews />
         </div>
         <div>
           <Suspense fallback={<Loading />}>
