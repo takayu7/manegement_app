@@ -2,15 +2,23 @@ import React from "react";
 import { User } from "@/app/types/type";
 import { revalidatePath } from "next/cache";
 import { RegisterUser } from "./RegisterUser";
-import { createUser } from "@/app/lib/api";
-import { ShowUserInfomation } from "@/app/components/ShowUserInfomation";
+import { createUser, fetchUserDatas, updateUser } from "@/app/lib/api";
+import { ShowUserInfomation } from "@/app/components/setting/ShowUserInfomation";
 
-export const CollapseUser = () => {
+export const CollapseUser = async () => {
+  const userDataList = await fetchUserDatas();
   const handleSave = async (user: User) => {
     "use server";
     console.log("user:", user);
     await createUser(user);
     // ページを再取得
+    revalidatePath("/setting");
+  };
+
+  // 更新
+  const handleUpdateUser = async (user: User) => {
+    "use server";
+    await updateUser(user);
     revalidatePath("/setting");
   };
 
@@ -28,7 +36,10 @@ export const CollapseUser = () => {
           {/* User登録 */}
           <RegisterUser onSave={handleSave} />
           {/* User情報表示 */}
-          <ShowUserInfomation />
+          <ShowUserInfomation
+            userDataList={userDataList}
+            onSave={handleUpdateUser}
+          />
         </div>
       </div>
     </>

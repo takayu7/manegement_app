@@ -3,7 +3,7 @@ import React, { useTransition } from "react";
 import { ListPlus } from "lucide-react";
 import { Supplier } from "@/app/types/type";
 import z from "zod";
-import { formatMessage, MESSAGE_LIST } from "../lib/messages";
+import { formatMessage, MESSAGE_LIST } from "../../lib/messages";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -53,14 +53,12 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
       ...suppliers.map((supplier: { id: number }) => supplier.id)
     );
     let newId = maxId + 1;
-    //setAddSupplier({ ...addSupplier, id: maxId + 1 });
     //IDが連番になっているかの確認
     for (const comparedSupplier of suppliers) {
       if (comparedSupplier.id === previousId + 1) {
         previousId += 1;
       } else {
         newId = previousId + 1;
-        //setAddSupplier({ ...addSupplier, id: previousId + 1 });
         break;
       }
     }
@@ -70,13 +68,15 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
   //addボタン
   const handleAdd = async (newId: number) => {
     const result = confirm("Would you like to register?");
-    if (result) {
-      setValue("id", newId);
-      console.log("ID : " + getValues().id);
+    setValue("id", newId);
+    //const newSupplier = { ...addSupplier, id: newId };
+    if (result && isValid) {
+      console.log("ID : " + getValues("id"));
       console.log(getValues());
       startTransition(() => {
         onSave(getValues());
       });
+      reset(defaultData);
     }
   };
 
@@ -84,15 +84,14 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
     const newId = await automaticNumbering();
     console.log(newId);
     await handleAdd(newId);
-    if (!isPending) {
-      console.log(getValues().id);
-      reset();
-    }
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 2000);
   };
 
   return (
     <>
-      <form onSubmit={handleSubmit(onSave)}>
+      <form onSubmit={handleSubmit(hanndleClick)}>
         {/* Name */}
         <div className="mb-[10px] flex flex-row ">
           <div className="mt-2">NAME：　</div>
@@ -100,11 +99,6 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
             {...register("name")}
             type="text"
             id="name"
-            // name="name"
-            // value={addSupplier.name}
-            // onChange={(e) =>
-            //   setAddSupplier({ ...addSupplier, name: e.target.value })
-            // }
             placeholder="name"
             className="input input-bordered text-black md:w-[310px]"
           />
@@ -116,11 +110,6 @@ export const RegisterSupplier: React.FC<RegisterSupplierProps> = ({
             type="submit"
             className="btn btn-primary"
             disabled={!isDirty || isPending}
-            onClick={() => {
-              if (isValid) {
-                hanndleClick();
-              }
-            }}
           >
             <ListPlus />
             ADD

@@ -1,16 +1,28 @@
 import React from "react";
 import { Supplier } from "@/app/types/type";
 import { revalidatePath } from "next/cache";
-import { RegisterSupplier } from "./RegisterSupplier";
-import { createSupplier } from "@/app/lib/api";
-import { ShowSupplierIfomation } from "@/app/components/ShowSupplierIfomation";
+import { RegisterSupplier } from "@/app/components/setting/RegisterSupplier";
+import {
+  createSupplier,
+  fetchSupplierList,
+  updateSupplierList,
+} from "@/app/lib/api";
+import { ShowSupplierIfomation } from "@/app/components/setting/ShowSupplierIfomation";
 
-export const CollapseSupplier = () => {
+export const CollapseSupplier = async () => {
+  const userDataList = await fetchSupplierList();
   const handleSave = async (supplier: Supplier) => {
     "use server";
     console.log("supplier:", supplier);
     await createSupplier(supplier);
     // ページを再取得
+    revalidatePath("/setting");
+  };
+
+  // 更新
+  const handleUpdateSupplier = async (supplier: Supplier) => {
+    "use server";
+    await updateSupplierList(supplier);
     revalidatePath("/setting");
   };
 
@@ -28,7 +40,10 @@ export const CollapseSupplier = () => {
           {/* Supplier登録 */}
           <RegisterSupplier onSave={handleSave} />
           {/* Supplier情報表示 */}
-          <ShowSupplierIfomation />
+          <ShowSupplierIfomation
+            supplierDataList={userDataList}
+            onSave={handleUpdateSupplier}
+          />
         </div>
       </div>
     </>

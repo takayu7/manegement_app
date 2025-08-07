@@ -3,8 +3,8 @@ import { useEffect, useReducer, useState } from "react";
 import { Eye } from "lucide-react";
 import { EyeOff } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { User } from "../types/type";
-import { Loading } from "./Loading";
+import { User } from "@/app/types/type";
+import { Loading } from "@/app/components/Loading";
 
 // 状態型（State）
 type FormState = {
@@ -80,15 +80,15 @@ export default function LoginDialog() {
 
     for (const staff of userImfomation) {
       if (id === staff.id && password === staff.password) {
-  matched = true;
-  if (typeof window !== "undefined") {
-    sessionStorage.setItem("staffIcon", String(staff.icon));
-    sessionStorage.setItem("userName", staff.name);
-    sessionStorage.setItem("staffId", staff.id);
-  }
-  router.push("/top"); // クエリ不要
-  return;
-}
+        matched = true;
+        if (typeof window !== "undefined") {
+          sessionStorage.setItem("staffIcon", String(staff.icon));
+          sessionStorage.setItem("userName", staff.name);
+          sessionStorage.setItem("staffId", staff.id);
+        }
+        router.push("/top"); // クエリ不要
+        return;
+      }
     }
 
     setIsLoading(false); // ← マッチしなかった場合のみ false に戻す

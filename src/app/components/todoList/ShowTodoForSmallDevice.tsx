@@ -4,7 +4,7 @@ import { Todo } from "@/app/types/type";
 import { SelectStaffIcon } from "@/app/lib/utils";
 import Image from "next/image";
 import { SquarePen, Trash2 } from "lucide-react";
-import { TodoListEditDialog } from "@/app/components/TodoListEditDialog";
+import { TodoListEditDialog } from "@/app/components/todoList/TodoListEditDialog";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { DeleteTodoListDialog } from "./DeleteTodoListDialog";
 

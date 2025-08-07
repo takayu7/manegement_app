@@ -2,9 +2,9 @@ import { createTodo, deleteTodo, fetchTodo, updateTodo } from "@/app/lib/api";
 import { Todo } from "@/app/types/type";
 import { revalidatePath } from "next/cache";
 //import { todoBgColor } from "@/app/lib/utils";
-import { RegisterTodoList } from "@/app/components/RegisterTodoList";
-import { ShowTodoListForPc } from "@/app/components/ShowTodoListForPc";
-import { ShowTodoForSmallDevice } from "@/app/components/ShowTodoForSmallDevice";
+import { RegisterTodoList } from "@/app/components/todoList/RegisterTodoList";
+import { ShowTodoListForPc } from "@/app/components/todoList/ShowTodoListForPc";
+import { ShowTodoForSmallDevice } from "@/app/components/todoList/ShowTodoForSmallDevice";
 // import { revalidatePath } from "next/cache";
 
 export default async function Page() {
