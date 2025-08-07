@@ -15,7 +15,7 @@ const productNumTypeChange = (product: ProductFormValues) => {
     id: product.id,
     name: product.name,
     category: product.category,
-    supplier: product.supplier,
+    supplier: Number(product.supplier),
     count: Number(product.count), // 数値に変換
     cost: Number(product.cost), // 数値に変換
     price: Number(product.price), // 数値に変換
@@ -33,11 +33,11 @@ const formSchema = z.object({
     .min(1, MESSAGE_LIST.E010100)
     .max(30, formatMessage(MESSAGE_LIST.E010106, "30")),
   category: z.number().min(1, MESSAGE_LIST.E010101),
-  supplier: z.number(),
+  supplier: z.string(),
   count: z
     .string()
     .min(1, MESSAGE_LIST.E010100)
-    .max(4, formatMessage(MESSAGE_LIST.E010106, "4"))
+    .max(3, formatMessage(MESSAGE_LIST.E010106, "3"))
     .regex(/^[0-9]+$/, MESSAGE_LIST.E010110),
   cost: z
     .string()
@@ -61,7 +61,7 @@ const defaultData = {
   id: "a11111",
   name: "",
   category: 1,
-  supplier: 1,
+  supplier: "",
   count: "",
   order: "",
   cost: "",
@@ -116,18 +116,18 @@ export const Purchase = () => {
     getValues,
     setValue,
     register,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isValid },
     watch,
     reset,
   } = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
-    mode: "onChange",
+    mode: "onBlur",
     defaultValues: defaultData,
   });
 
-  useEffect(() => {
-    reset();
-  }, [reset]);
+  // useEffect(() => {
+  //   reset();
+  // }, [reset]);
 
   // すべての入力が完了しているか
   const isAllFilled =
@@ -183,7 +183,7 @@ export const Purchase = () => {
   }, [itmeProduct, setValue]);
 
   console.log(watch());
-  console.log(isValid, isSubmitting);
+  console.log(isValid);
 
   return (
     <>
@@ -315,7 +315,7 @@ export const Purchase = () => {
                     className="ml-5 mr-2 radio border-gray-500 focus:radio-secondary "
                     checked={Number(watch("supplier")) === Number(supplier.id)}
                     onChange={(e) => {
-                      setValue("supplier", Number(e.target.value));
+                      setValue("supplier", (e.target.value));
                     }}
                   />
                   <span className="text-lg focus:text-pink-300">
@@ -388,7 +388,7 @@ export const Purchase = () => {
             type="button"
             className="btn bg-pink-400 text-white btn-xl btn-wide hover:bg-pink-500 "
             onClick={handleCheck}
-            disabled={!isAllFilled}
+            disabled={!isValid || !isAllFilled}
           >
             <ListCheck />
             check
@@ -407,7 +407,6 @@ export const Purchase = () => {
             reset
           </button>
         </div>
-        {/* </form> */}
       </main>
       {isCheckOpen && (
         <PurchaseCheckDialog
