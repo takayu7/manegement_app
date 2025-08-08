@@ -24,6 +24,7 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
   const [todoData, setTodoData] = useState<Todo[]>(todoDataList);
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
   const [checkItem, setCheckItem] = useState<string[]>([]);
+  const [userName, setUserName] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [isMobile, setIsMobile] = useState(false);
   const callLoginUsername = () => {
@@ -149,11 +150,18 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
     setIsMobile(window.innerWidth < 768); // 768px以下をモバイルと判定
   };
 
+  //セッション情報を取得する処理
+  const updateHeaderInfo = () => {
+    const userName = sessionStorage.getItem("userName");
+    setUserName(userName);
+  };
+
   useEffect(() => {
     handleResize();
     fetchTodoData();
     setingCheckedItem();
     setTodoData(todoDataList);
+    updateHeaderInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [todoDataList]);
 
@@ -274,6 +282,9 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
                           </div>
                           {/* 編集ボタン */}
                           <button
+                            disabled={
+                              !(userName == "管理者" || userName == todo.name)
+                            }
                             onClick={() => {
                               console.log(selectedTodo);
                               setSelectedTodo(todo);
@@ -289,6 +300,9 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
                           </button>
                           {/* 削除ボタン */}
                           <button
+                            disabled={
+                              !(userName == "管理者" || userName == todo.name)
+                            }
                             onClick={() => {
                               setSelectedTodo(todo);
                               (

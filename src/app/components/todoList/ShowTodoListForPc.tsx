@@ -23,6 +23,7 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
 }) => {
   const [todoData, setTodoData] = useState<Todo[]>(todoDataList);
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
+  const [userName, setUserName] = useState<string | null>(null);
   const [checkItem, setCheckItem] = useState<string[]>([]);
   const [isPending, startTransition] = useTransition();
   const [isNotMobile, setIsMobile] = useState(false);
@@ -149,10 +150,17 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
     setIsMobile(window.innerWidth >= 768); // 768px以下をモバイルと判定
   };
 
+  //セッション情報を取得する処理
+  const updateHeaderInfo = () => {
+    const userName = sessionStorage.getItem("userName");
+    setUserName(userName);
+  };
+
   useEffect(() => {
     handleResize();
     fetchTodoData();
     setingCheckedItem();
+    updateHeaderInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [todoDataList]);
 
@@ -295,6 +303,9 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
                     </td>
                     <td className="w-10 border-b border-gray-300">
                       <button
+                        disabled={
+                          !(userName == "管理者" || userName == todo.name)
+                        }
                         onClick={() => {
                           {
                             console.log(selectedTodo);
@@ -313,6 +324,9 @@ export const ShowTodoListForPc: React.FC<RegisterTodoProps> = ({
                     </td>
                     <td className="w-10 text-center border-b border-gray-300">
                       <button
+                        disabled={
+                          !(userName == "管理者" || userName == todo.name)
+                        }
                         onClick={() => {
                           setSelectedTodo(todo);
                           (
