@@ -15,6 +15,7 @@ import {
   ReviewType,
   ReviewRecType,
   ShiftType,
+  ShiftListType,
 } from "@/app/types/type";
 import { generateCustomId } from "@/app/lib/utils";
 
@@ -535,45 +536,70 @@ export async function deleteTodo(todoId: string) {
 }
 
 // シフトデータの取得
-export async function fetchShift() {
+export async function fetchShift(targetDate: string) {
   type apiShiftType = {
     user_id: string;
+    name: string;
     shift_date: Date;
     start_time: string;
     end_time: string;
     status: number;
-    name: string;
-    icon: number;
   };
 
   try {
-    const data = await sql<apiShiftType[]>`
+    const rawData = await sql<apiShiftType[]>`
       SELECT
         shift.user_id,
+        users.name as name,
         shift.shift_date,
         shift.start_time,
         shift.end_time,
-        shift.status,
-        users.name as name,
-        users.icon as icon
+        shift.status
       FROM shift INNER JOIN users ON shift.user_id = users.id
+      WHERE shift.shift_date::text LIKE ${targetDate} || '%'
       ORDER BY shift_date;
     `;
+    // ユーザーごとにグループ化
+    const grouped = Object.values(
+      rawData.reduce((acc, item) => {
+        if (!acc[item.user_id]) {
+          acc[item.user_id] = {
+            userId: item.user_id,
+            name: item.name,
+            shiftData: [],
+          };
+        }
+        acc[item.user_id].shiftData.push({
+          shiftDate: item.shift_date,
+          startTime: item.start_time,
+          endTime: item.end_time,
+          status: item.status,
+        });
+        return acc;
+      }, {} as Record<string, { userId: string; name: string; shiftData: ShiftListType[] }>)
+    );
 
-    // スネークケース→キャメルケース変換（1件ずつ）
-    const result: ShiftType[] = data.map((item) => ({
-      userId: item.user_id,
-      shiftDate: new Date(item.shift_date),
-      startTime: item.start_time,
-      endTime: item.end_time,
-      status: item.status,
-      name: item.name,
-      icon: item.icon,
-    }));
-
-    return result;
+    return grouped;
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to fetch todo data.");
   }
 }
+
+// シフトデータの登録
+// export async function createShift(shift: ShiftType) {
+//   try {
+//     const shiftData = await fetchShift();
+
+//     for (const item of shift.shiftData) {
+//       await sql`
+//         INSERT INTO purchase_history (user_id, shift_date, start_time, end_time, status)
+//         VALUES (${shift.userId}, ${item.shiftDate}, ${item.startTime}, ${item.endTime}, ${item.status})
+//         RETURNING *;
+//       `;
+//     }
+//   } catch (error) {
+//     console.error("Database Error:", error);
+//     throw new Error("Failed to create shift.");
+//   }
+// }
