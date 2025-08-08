@@ -14,6 +14,7 @@ import {
   UserBuyParameterType,
   ReviewType,
   ReviewRecType,
+  ShiftType,
 } from "@/app/types/type";
 import { generateCustomId } from "@/app/lib/utils";
 
@@ -443,8 +444,8 @@ export async function fetchReviewDatas(productId: string) {
 export async function createReview(review: ReviewRecType) {
   try {
     if (!review.userId) {
-    throw new Error("userId is required and must not be null or undefined.");
-  }
+      throw new Error("userId is required and must not be null or undefined.");
+    }
     await sql`
       INSERT INTO review (product_id, star, comment, user_id, date)
       VALUES (${review.productId}, ${review.star}, ${review.comment}, ${review.userId}, NOW())
@@ -530,5 +531,49 @@ export async function deleteTodo(todoId: string) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to delete todo.");
+  }
+}
+
+// シフトデータの取得
+export async function fetchShift() {
+  type apiShiftType = {
+    user_id: string;
+    shift_date: Date;
+    start_time: string;
+    end_time: string;
+    status: number;
+    name: string;
+    icon: number;
+  };
+
+  try {
+    const data = await sql<apiShiftType[]>`
+      SELECT
+        shift.user_id,
+        shift.shift_date,
+        shift.start_time,
+        shift.end_time,
+        shift.status,
+        users.name as name,
+        users.icon as icon
+      FROM shift INNER JOIN users ON shift.user_id = users.id
+      ORDER BY shift_date;
+    `;
+
+    // スネークケース→キャメルケース変換（1件ずつ）
+    const result: ShiftType[] = data.map((item) => ({
+      userId: item.user_id,
+      shiftDate: new Date(item.shift_date),
+      startTime: item.start_time,
+      endTime: item.end_time,
+      status: item.status,
+      name: item.name,
+      icon: item.icon,
+    }));
+
+    return result;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch todo data.");
   }
 }
