@@ -7,6 +7,12 @@ import { Product, Category, UserBuyParameterType } from "@/app/types/type";
 import type { PieChartType } from "@/app/components/dashboard/PieChart";
 import { DataType } from "@/app/components/dashboard/LineGraph";
 
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const today = new Date();
+    const lastDay = today.getDate();
+
 export default function Page() {
   const [productDataList, setProductDataList] = useState<Product[]>([]);
   const [categoryList, setCategoryList] = useState<Category[]>([]);
@@ -42,17 +48,13 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const today = new Date();
-    const lastDay = today.getDate(); // 今日の日付まで
+    if (buyProductList.length === 0) return;
+    console.log("顧客別売上計算")
     // 今月分のみ抽出
     const filteredBuyProductList = buyProductList.filter((item) => {
       const dateObj = new Date(item.date);
       return dateObj.getFullYear() === year && dateObj.getMonth() + 1 === month;
     });
-    console.log(filteredBuyProductList);
     // 商品ごとに日付ごとの売上を集計
     const productMap: { [name: string]: number[] } = {};
     filteredBuyProductList.forEach((item) => {
@@ -67,7 +69,6 @@ export default function Page() {
         productMap[item.name][day - 1] += item.price * item.count;
       }
     });
-    console.log(productMap);
     // 累積配列に変換
     const result: DataType[] = Object.entries(productMap).map(
       ([name, data]) => {
@@ -85,6 +86,8 @@ export default function Page() {
 
   // カテゴリごとの利益を計算
   useEffect(() => {
+    if (productDataList.length === 0 || categoryList.length === 0) return;
+    console.log("カテゴリごとの利益を計算")
     const pieChartData = Object.entries(
       productDataList.reduce<Record<string, number>>((acc, product) => {
         const profit = product.price * (product.order - product.count);
@@ -106,7 +109,6 @@ export default function Page() {
     });
     setCategoryData(pieChartData);
   }, [productDataList, categoryList]);
-  console.log(categoryData);
 
   return (
     <>

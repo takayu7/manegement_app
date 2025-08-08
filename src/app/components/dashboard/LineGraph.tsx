@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import _ from "lodash";
 import { VictoryTheme } from "victory-core";
 import { VictoryChart, VictoryLine, VictoryScatter, VictoryGroup, VictoryAxis, VictoryLegend, VictoryLabel } from "victory";
@@ -13,6 +13,13 @@ const symbols = [
   "star",
   "cross"
 ];
+
+ // 今月の1日～月末までの配列を作成
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth(); // 0-indexed
+  const lastDay = new Date(year, month + 1, 0).getDate();
+  const tickValues = Array.from({ length: lastDay }, (_, i) => i + 1);
 
 //色を生成する
 function generateRandomColors(length: number): string[] {
@@ -35,17 +42,13 @@ const LineGraph: React.FC<LineProps> = ({ data }) => {
   const [dataList, setDataList] = useState<DataType[]>([]);
 
   useEffect(() => {
+    if (data.length === 0) return;
+    // データが空でない場合のみ更新
     setDataList(data);
   }, [data]);
 
-  // 今月の1日～月末までの配列を作成
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth(); // 0-indexed
-  const lastDay = new Date(year, month + 1, 0).getDate();
-  const tickValues = Array.from({ length: lastDay }, (_, i) => i + 1);
   // 折れ線グラフの色を生成
-  const colors = generateRandomColors(dataList.length);
+  const colors = useMemo(() => generateRandomColors(dataList.length), [dataList.length]);
   // 月名を取得
   const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const currentMonthName = monthNames[month];

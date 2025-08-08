@@ -23,6 +23,8 @@ const PieChart: React.FC<PieChartProps> = ({ pieChartData }) => {
   }, []);
 
   useEffect(() => {
+    if (pieChartData.length === 0) return;
+    // データが空でない場合のみ更新
     setDatas(pieChartData);
   }, [pieChartData]);
 
