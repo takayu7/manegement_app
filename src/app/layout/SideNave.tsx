@@ -10,7 +10,8 @@ import {
   Sofa,
   Settings,
   Power,
-  ChartNoAxesCombined
+  ChartNoAxesCombined,
+  CalendarCheck2,
 } from "lucide-react";
 import Image from "next/image";
 import { Loading } from "../components/Loading";
@@ -43,6 +44,11 @@ const links = [
     name: "dashboard",
     href: "/dashboard",
     icon: ChartNoAxesCombined,
+  },
+      {
+    name: "shift",
+    href: "/shift",
+    icon: CalendarCheck2,
   },
   {
     name: "Setting",
@@ -106,7 +112,7 @@ const SideNav = () => {
       {isLoading && <Loading />}
       <div className="flex h-full flex-col py-4 md:px-2">
         <button
-          className="btn mb-2 h-0 items-center justify-start rounded-md md:h-30 relative overflow-hidden p-0 hidden md:flex"
+          className="btn mb-2 h-0 items-center justify-center rounded-md md:h-20 relative overflow-hidden p-0 hidden md:flex"
           onClick={() =>
             (
               document.getElementById("loginDiaLog") as HTMLDialogElement
@@ -116,7 +122,7 @@ const SideNav = () => {
           <Image
             src="/logo.png"
             alt="Description"
-            width={180}
+            width={100}
             height={100}
             className="object-contain"
           />
