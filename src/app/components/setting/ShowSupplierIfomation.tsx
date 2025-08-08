@@ -50,12 +50,12 @@ export const ShowSupplierIfomation: React.FC<RegisterSupplierProps> = ({
   // };
 
   //ユーザー情報を削除するかどうかの確認をする処理
-  const showDeleteConfirmation = async (supplierId: number) => {
-    const approval = confirm("Do you want to delete the supplier?");
-    if (approval) {
-      handleDelete(supplierId);
-    }
-  };
+  // const showDeleteConfirmation = async (supplierId: number) => {
+  //   const approval = confirm("Do you want to delete the supplier?");
+  //   if (approval) {
+  //     handleDelete(supplierId);
+  //   }
+  // };
 
   // 編集ダイアログの保存処理
   const handleSave = (supplier: Supplier) => {
