@@ -1,5 +1,5 @@
 import React from "react";
-import { Purchase } from "@/app/components/Purchase";
+import { Purchase } from "@/app/components/purchase/Purchase";
 
 export default async function PurchasePage() {
 

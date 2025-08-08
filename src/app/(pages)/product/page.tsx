@@ -1,4 +1,4 @@
-import ProductList from "@/app/components/ProductList";
+import ProductList from "@/app/components/product/ProductList";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
