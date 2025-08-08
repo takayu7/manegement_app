@@ -90,6 +90,7 @@ export type UserBuyParameterType = {
   icon: number;
   price: number;
   count: number;
+  date: Date;
 };
 
 export type ReviewType = {

@@ -383,7 +383,8 @@ export async function fetchBuyAllHistory() {
         users.name,
         users.icon,
         product.price,
-        ph.count
+        ph.count,
+        ph.buy_date AS date
       FROM purchase_history ph
       INNER JOIN product ON ph.id = product.id
       INNER JOIN users ON ph.userid = users.id
