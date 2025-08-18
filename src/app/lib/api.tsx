@@ -540,6 +540,7 @@ export async function fetchShift(targetDate: string) {
   type apiShiftType = {
     user_id: string;
     name: string;
+    icon: string;
     shift_date: Date;
     start_time: string;
     end_time: string;
@@ -551,6 +552,7 @@ export async function fetchShift(targetDate: string) {
       SELECT
         shift.user_id,
         users.name as name,
+        users.icon as icon,
         shift.shift_date,
         shift.start_time,
         shift.end_time,
@@ -566,6 +568,7 @@ export async function fetchShift(targetDate: string) {
           acc[item.user_id] = {
             userId: item.user_id,
             name: item.name,
+            icon: item.icon,
             shiftData: [],
           };
         }
@@ -576,7 +579,7 @@ export async function fetchShift(targetDate: string) {
           status: item.status,
         });
         return acc;
-      }, {} as Record<string, { userId: string; name: string; shiftData: ShiftListType[] }>)
+      }, {} as Record<string, { userId: string; name: string; icon: string; shiftData: ShiftListType[] }>)
     );
 
     return grouped;
