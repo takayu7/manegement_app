@@ -46,6 +46,7 @@ const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({ onClose }) => {
         </div>
         {/* アニメーション */}
         {loading ? (
+          <div className="mx-auto">
           <Player
             autoplay
             loop
@@ -55,6 +56,7 @@ const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({ onClose }) => {
               width: "100px",
             }}
           />
+          </div>
         ) : history.length > 0 ? (
           history.map((item) => (
             <div

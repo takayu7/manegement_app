@@ -2,16 +2,12 @@
 import React, { startTransition, useEffect, useState } from "react";
 import Image from "next/image";
 import { toast } from "react-toastify";
-import {
-  Sofa,
- ShoppingCart,
-  ScrollText,
-} from "lucide-react";
+import { Sofa, ShoppingCart, ScrollText } from "lucide-react";
 import { Product, CartItem, BuyProductList } from "@/app/types/type";
 import { CartDialog } from "@/app/components/product/CartDialog";
 import OrderHistoryDialog from "@/app/components/product/OrderHistoryDialog";
 import { ReviewDialog } from "@/app/components/product/ReviewDialog";
-import  DetailDialog  from "@/app/components/product/DetailDialog";
+import DetailDialog from "@/app/components/product/DetailDialog";
 import { Player } from "@lottiefiles/react-lottie-player";
 
 export const ProductList = () => {
@@ -26,6 +22,7 @@ export const ProductList = () => {
   const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
 
   const [showThanks, setShowThanks] = useState(false);
   // ローディング状態
@@ -126,7 +123,7 @@ export const ProductList = () => {
     });
   };
 
-  // カート商品の購入ボタン
+  // buyボタン(購入)(CartDialog内)
   const handleBuy = (cart: CartItem[], product: BuyProductList[]) => {
     startTransition(() => {
       console.log(product);
@@ -138,26 +135,31 @@ export const ProductList = () => {
     setIsCartOpen(false);
   };
 
-  //削除ボタン
+  //deleteボタン(削除)(CartDialog内)
   const handleDelete = (id: string) => {
     setCartItems((prev) => prev.filter((item) => item.id !== id));
   };
 
+  //購入履歴ボタン
   const handleSave = (buyProductList: BuyProductList[]) => {
     console.log(buyProductList);
     setIsOrderHistoryOpen(false);
   };
 
-  const handleDetail =(product: Product)=>{
+  //detailボタン
+  const handleDetail = (product: Product) => {
     setSelectedProduct(product);
     setIsDetailsOpen(true);
-  }
+  };
 
   //reviewボタン
   const handleReview = (product: Product) => {
     setSelectedProduct(product);
     setIsReviewOpen(true);
   };
+
+  //add reviewボタン（ReviewDialog内）
+
 
   return (
     <>
@@ -181,6 +183,7 @@ export const ProductList = () => {
         <div className="grid gap-4  lg:gap-6 lg:grid-cols-3 ">
           {/* アニメーション */}
           {loading ? (
+            <div className="mx-auto">
             <Player
               autoplay
               loop
@@ -188,12 +191,9 @@ export const ProductList = () => {
               style={{
                 height: "100px",
                 width: "100px",
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
               }}
             />
+            </div>
           ) : (
             productDatas.map((product) => (
               <div
@@ -245,7 +245,7 @@ export const ProductList = () => {
           )}
         </div>
         {/* カートボタン */}
-         <div className="indicator fixed top-49 right-12 lg:top-35 lg:right-30">
+        <div className="indicator fixed top-49 right-12 lg:top-35 lg:right-30">
           {cartItems.length > 0 && (
             <span className="indicator-item badge badge-primary bg-blue-900 rounded-full ">
               {cartItems.length}
@@ -270,99 +270,6 @@ export const ProductList = () => {
         </div>
       </main>
 
-      {/* カード */}
-      {/* {selectedProduct && (
-        <>
-          <div
-            className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center"
-            onClick={() => setSelectedProduct(null)}
-          />
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="bg-white w-[100%] lg:w-[700px] p-6 lg:p-8 flex flex-col lg:flex-row rounded-2xl relative">
-              <div className="flex-shrink-0 inline-block mr-5">
-                <Image
-                  src={CategoryImages[selectedProduct.category]}
-                  alt={selectedProduct.name}
-                  width={250}
-                  height={100}
-                  className="rounded-xl "
-                />
-              </div>
-
-              <div className="flex flex-col">
-                <div className="mb-5">
-                  <h2 className="text-2xl font-bold">{selectedProduct.name}</h2>
-                  <p className="mt-4 text-sm">{selectedProduct.explanation}</p>
-                </div>
-                <div className="mb-5">
-                  <p className="mt-2">price：{selectedProduct.price}</p>
-                  <p className="mt-2">
-                    stock：
-                    {selectedProduct.count > 0 ? (
-                      selectedProduct.count
-                    ) : (
-                      <span className="text-red-600">sold out</span>
-                    )}
-                  </p>
-                </div>
-                <div className="flex items-end">
-                  <label className="mt-2">buy :</label>
-                  <label>{buyProduct}</label>
-                  <div className="flex items-center gap-4 ml-6">
-                    <button
-                      className="btn btn-outline btn-error"
-                      onClick={() => {
-                        setBuyProductId((prev) => ({
-                          ...prev,
-                          [selectedProduct.id]: buyProduct - 1,
-                        }));
-                      }}
-                      disabled={buyProduct <= 0}
-                    >
-                      <Minus />
-                    </button>
-                    <button
-                      className="btn btn-outline btn-success"
-                      onClick={() => {
-                        setBuyProductId((prev) => ({
-                          ...prev,
-                          [selectedProduct.id]: buyProduct + 1,
-                        }));
-                      }}
-                      disabled={
-                        selectedProduct.count <= 0 ||
-                        selectedProduct.count <= buyProduct
-                      }
-                    >
-                      <Plus />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-end">
-                <button
-                  type="submit"
-                  className="btn btn-outline btn-secondary btn-lg absolute bottom-7 right-10 hover:text-white"
-                  onClick={handleAdd}
-                  disabled={buyProduct < 1}
-                >
-                  <ShoppingCart className="mr-0.5" />
-                  cart
-                </button>
-              </div>
-              <div className="">
-                <button
-                  className="absolute top-4 right-4 btn btn-ghost btn-circle"
-                  onClick={() => setSelectedProduct(null)}
-                >
-                  <CircleX className="mr-0.5" />
-                </button>
-              </div>
-            </div>
-          </div>
-        </>
-      )}  */}
       {isCartOpen && (
         <CartDialog
           product={productDatas}

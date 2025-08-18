@@ -3,7 +3,7 @@
 import { Category, Supplier } from "@/app/types/type";
 import { ListPlus, Undo2 } from "lucide-react";
 import { Player } from "@lottiefiles/react-lottie-player";
-import{ProductFormValues}from "@/app/components/purchase/Purchase"
+import { ProductFormValues } from "@/app/components/purchase/Purchase";
 
 export interface PurchaseCheckDialogProps {
   product: ProductFormValues;
@@ -30,15 +30,15 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
   };
 
   const supplierName = (num: number) => {
-    const supplier = supplierList.find((sup) => sup.id === num || Number(sup.id) ===  Number(num));
+    const supplier = supplierList.find(
+      (sup) => sup.id === num || Number(sup.id) === Number(num)
+    );
     return supplier ? supplier.name : "Unkown";
   };
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center">
-
       <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[600px] relative h-110 overflow-y-auto">
-        
         <h2 className="text-3xl font-bold mb-3 text-center text-gray-800">
           Check
         </h2>
@@ -94,14 +94,9 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
         <div className="flex flex-col lg:flex-row items-center gap-2 relative">
           <div className="absolute -top-64 lg:-top-82 left-30 flex justify-center w-full">
             <div className="relative top-40 left-0 lg:top-[200px] lg:left-[10px] w-[110px] h-[100px] lg:w-[150px] lg:h-[150px]">
-         <Player
-        autoplay
-        loop
-        src="/lottie/WalkingElephant.json"
-
-      />
-      </div>
-      </div>
+              <Player autoplay loop src="/lottie/WalkingElephant.json" />
+            </div>
+          </div>
           <button
             type="submit"
             className="btn bg-pink-400 text-white hover:bg-pink-500 btn-wide btn-lg"
