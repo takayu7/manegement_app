@@ -44,6 +44,7 @@ const PieChart: React.FC<PieChartProps> = ({ pieChartData }) => {
             opacity: opacity,
             transition: "opacity 1s, radius 0.2s, labelRadius 0.2s",
             cursor: "pointer",
+            padding: 10,
           },
         }}
         events={[

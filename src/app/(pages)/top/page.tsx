@@ -22,7 +22,9 @@ export default async function Page() {
             <ProductBuyHistory />
           </div>
           <UserBuyParameter />
+          <div className="h-80 py-5 bg-gray-100 border border-gray-300 rounded-md overflow-y-auto">
           <ProductReviews />
+          </div>
         </div>
         <div>
           <Suspense fallback={<Loading />}>

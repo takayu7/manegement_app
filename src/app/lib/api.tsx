@@ -14,7 +14,6 @@ import {
   UserBuyParameterType,
   ReviewType,
   ReviewRecType,
-  ShiftType,
   ShiftListType,
 } from "@/app/types/type";
 import { generateCustomId } from "@/app/lib/utils";

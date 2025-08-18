@@ -86,7 +86,11 @@ export default function LoginDialog() {
           sessionStorage.setItem("userName", staff.name);
           sessionStorage.setItem("staffId", staff.id);
         }
-        router.push("/top"); // クエリ不要
+        if (staff.id.startsWith("c")) {
+          router.push("/customerTop");
+        } else {
+          router.push("/top");
+        }
         return;
       }
     }

@@ -21,6 +21,11 @@ const formSchema = z.object({
     .min(1, MESSAGE_LIST.E010100)
     .max(10, formatMessage(MESSAGE_LIST.E010106, "10")),
   icon: z.number().min(1, MESSAGE_LIST.E010100),
+  userType: z
+    .enum(["staff", "customer"])
+    .refine((val) => val === "staff" || val === "customer", {
+      message: MESSAGE_LIST.E010100,
+    }),
 });
 
 export interface RegisterUserProps {
@@ -32,6 +37,7 @@ const defaultValues = {
   name: "",
   password: "",
   icon: 0,
+  userType: "staff" as "staff" | "customer",
 };
 
 export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
@@ -55,17 +61,23 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
   //   addUser.name !== "" && addUser.password !== "" && addUser.icon > 0;
 
   // 自動採番（ID）
-  function getRandomNumFromServer() {
-    const randomNumber = Math.floor(Math.random() * 999_999).toString();
+  function getRandomNumFromServer(userType: "staff" | "customer") {
+    const randomNumber = Math.floor(Math.random() * 999_999)
+      .toString()
+      .padStart(6, "0");
+    if (userType === "customer") {
+      return "c" + randomNumber;
+    }
     return randomNumber;
   }
   async function automaticNumbering() {
     const data = await fetch("/api/users");
     const users = await data.json();
-    let randomNum = getRandomNumFromServer();
+    const userType = getValues("userType") as "staff" | "customer";
+    let randomNum = getRandomNumFromServer(userType);
     const existingIds = new Set(users.map((user: { id: string }) => user.id));
     while (existingIds.has(randomNum)) {
-      randomNum = getRandomNumFromServer();
+      randomNum = getRandomNumFromServer(userType);
     }
     const id = randomNum;
     setValue("id", id);
@@ -122,6 +134,34 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
             className="input input-bordered text-black"
           />
           <div className="text-red-300 mt-2">{errors.password?.message}</div>
+        </div>
+        <div className="mb-[20px] flex items-center gap-7">
+          USER TYPE： 　　
+          <div className="flex items-center gap-3">
+            <input
+              type="radio"
+              id="userTypeStaff"
+              value="staff"
+              checked={watch("userType") == "staff"}
+              onChange={(e) => {
+                setValue("userType", e.target.value as "staff" | "customer");
+              }}
+            />
+            <label htmlFor="userTypeStaff">Staff</label>
+          </div>
+          <div className="flex items-center gap-3">
+            <input
+              type="radio"
+              id="userTypeCustomer"
+              value="customer"
+              checked={watch("userType") == "customer"}
+              onChange={(e) => {
+                setValue("userType", e.target.value as "staff" | "customer");
+              }}
+            />
+            <label htmlFor="userTypeCustomer">Customer</label>
+          </div>
+          <div className="text-red-300 mt-2">{errors.userType?.message}</div>
         </div>
         {/* Icon */}
         <div className="flex flex-col">

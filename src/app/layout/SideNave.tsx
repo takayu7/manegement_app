@@ -1,7 +1,7 @@
 "use client";
 import clsx from "clsx";
 import { useRouter, usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect , useCallback} from "react";
 import {
   House,
   ShoppingCart,
@@ -18,7 +18,13 @@ import { Loading } from "../components/Loading";
 import dynamic from "next/dynamic";
 import ErrorMessageDiaolog from "@/app/components/errorMessageDiaolog";
 
-const links = [
+export type linkType = {
+  name: string;
+  href: string;
+  icon: React.ElementType;
+};
+
+const staffLinks: linkType[] = [
   { name: "TOP", href: "/top", icon: House },
   {
     name: "Inventory Management",
@@ -57,29 +63,74 @@ const links = [
   },
 ];
 
+const customerLinks: linkType[] = [
+  { name: "TOP", href: "/customerTop", icon: House },
+  {
+    name: "Product List",
+    href: "/product",
+    icon: Sofa,
+  }
+];
+
 const NavLinks = ({ onNavigate }: { onNavigate: (href: string) => void }) => {
+  const [userId, setUserId] = useState<string>("0");
   const pathname = usePathname(); //現在のパスを取得
+
+  // セッションストレージからユーザーIDを取得して状態を更新する関数
+  const updateHeaderInfo = useCallback(() => {
+    const storedId = sessionStorage.getItem("staffId") || "0";
+    setUserId(storedId);
+  }, []);
+    //再ログイン時にuserIdの値を更新する
+    useEffect(() => {
+      updateHeaderInfo();
+      const handler = () => updateHeaderInfo();
+      window.addEventListener("headerUpdate", handler);
+      return () => {
+        window.removeEventListener("headerUpdate", handler);
+      };
+    }, [updateHeaderInfo]);
+
 
   return (
     <>
-      {links.map((link) => {
-        const LinkIcon = link.icon;
-        return (
-          <button
-            key={link.name}
-            onClick={() => onNavigate(link.href)}
-            className={clsx(
-              "flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3 text-left",
-              {
-                "bg-sky-100 text-blue-600": pathname === link.href,
-              }
-            )}
-          >
-            <LinkIcon className="w-6" />
-            <p className="hidden md:block">{link.name}</p>
-          </button>
-        );
-      })}
+      {userId.startsWith("c") ? (
+        customerLinks.map((link) => {
+          const LinkIcon = link.icon;
+          return (
+            <button
+              key={link.name}
+              onClick={() => onNavigate(link.href)}
+              className={clsx(
+                "flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3 text-left",
+                {
+                  "bg-sky-100 text-blue-600": pathname === link.href,
+                }
+              )}
+            >
+              <LinkIcon className="w-6" />
+              <p className="hidden md:block">{link.name}</p>
+            </button>
+          );
+        })
+      ) : staffLinks.map((link) => {
+          const LinkIcon = link.icon;
+          return (
+            <button
+              key={link.name}
+              onClick={() => onNavigate(link.href)}
+              className={clsx(
+                "flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3 text-left",
+                {
+                  "bg-sky-100 text-blue-600": pathname === link.href,
+                }
+              )}
+            >
+              <LinkIcon className="w-6" />
+              <p className="hidden md:block">{link.name}</p>
+            </button>
+          );
+        })}
     </>
   );
 };
