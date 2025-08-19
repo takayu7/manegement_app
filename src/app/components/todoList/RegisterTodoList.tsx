@@ -67,10 +67,14 @@ export const RegisterTodoList: React.FC<RegisterTodoProps> = ({ onSave }) => {
   const [userData, setUserData] = useState<User[]>([]);
   //ユーザー情報の取得
   async function fetchUserData() {
-    const data = await fetch("/api/users");
-    const users = await data.json();
-    setUserData(users);
-    console.log(users);
+    fetch("/api/users")
+      .then((res) => res.json())
+      .then((data) => setUserData(data))
+      .then(() =>
+        setUserData((users) => users.filter((user) => !user.id.startsWith("c")))
+      );
+    //const users = await data.json();
+    //setUserData(users);
   }
 
   //ユーザーがlimit timeの値を変更した際に、その値を取得する処理

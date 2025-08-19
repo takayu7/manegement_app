@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Todo, User } from "@/app/types/type";
+import { Todo } from "@/app/types/type";
 import { ListPlus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import z from "zod";
@@ -57,13 +57,11 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
   });
   //const [editTodo, setEditTodo] = useState<Todo>(defaultTodoData);
   const [timeLimit, setTimeLimit] = useState("");
-  const [userData, setUserData] = useState<User[]>([]);
 
   //ユーザー情報の取得
   async function fetchUserData() {
     const data = await fetch("/api/users");
     const users = await data.json();
-    setUserData(users);
     console.log(users);
   }
 
@@ -153,9 +151,7 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
           {/* ユーザー名 */}
           <li className="flex flex-col gap-1 md:items-center md:gap-4 md:flex-row">
             <label className="w-40">name :</label>
-            <select
-              {...register("userid")}
-              id="name"
+            <h2
               // name="name"
               // value={editTodo.userid}
               // onChange={(e) => {
@@ -165,14 +161,10 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
               //     userid: e.target.value,
               //   });
               // }}
-              className="select rounded-sm border-2 p-1 text-lg md:mx-5 "
+              className="p-1 text-lg md:mx-5 "
             >
-              {userData.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </select>
+              {todo?.name}
+            </h2>
           </li>
           <div className="text-red-300 mt-2">{errors.name?.message}</div>
           {/* ToDo */}
