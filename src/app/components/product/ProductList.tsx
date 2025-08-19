@@ -23,7 +23,6 @@ export const ProductList = () => {
   const [isReviewOpen, setIsReviewOpen] = useState(false);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
 
-
   const [showThanks, setShowThanks] = useState(false);
   // ローディング状態
   const [loading, setLoading] = useState(true);
@@ -158,9 +157,6 @@ export const ProductList = () => {
     setIsReviewOpen(true);
   };
 
-  //add reviewボタン（ReviewDialog内）
-
-
   return (
     <>
       {showThanks && (
@@ -180,19 +176,19 @@ export const ProductList = () => {
           Product list
         </h1>
 
-        <div className="grid gap-4  lg:gap-6 lg:grid-cols-3 ">
+        <div className="grid gap-4 lg:gap-6 lg:grid-cols-3 ">
           {/* アニメーション */}
           {loading ? (
             <div className="mx-auto">
-            <Player
-              autoplay
-              loop
-              src="/lottie/Loading.json"
-              style={{
-                height: "100px",
-                width: "100px",
-              }}
-            />
+              <Player
+                autoplay
+                loop
+                src="/lottie/Loading.json"
+                style={{
+                  height: "100px",
+                  width: "100px",
+                }}
+              />
             </div>
           ) : (
             productDatas.map((product) => (
@@ -243,33 +239,36 @@ export const ProductList = () => {
               </div>
             ))
           )}
-        </div>
-        {/* カートボタン */}
-        <div className="indicator fixed top-49 right-12 lg:top-35 lg:right-30">
-          {cartItems.length > 0 && (
-            <span className="indicator-item badge badge-primary bg-blue-900 rounded-full ">
-              {cartItems.length}
-            </span>
-          )}
-          <button
-            onClick={() => setIsCartOpen(true)}
-            className="btn btn-lg lg:btn-xl btn-error text-white btn-circle"
-          >
-            <ShoppingCart />
-          </button>
-        </div>
 
-        {/* 購入履歴ボタン */}
-        <div className="indicator fixed top-67 right-12 lg:top-53 lg:right-30">
-          <button
-            onClick={() => setIsOrderHistoryOpen(true)}
-            className="btn btn-lg lg:btn-xl btn-error text-white btn-circle"
-          >
-            <ScrollText />
-          </button>
+          {/* カートボタン */}
+          <div className="indicator fixed top-[23vh] right-[7vw] lg:top-[20vh] lg:right-[8vw] mb:top-[5vh] mb:right-[8vw]">
+            {cartItems.length > 0 && (
+              <span className="indicator-item badge badge-primary bg-blue-900 rounded-full ">
+                {cartItems.length}
+              </span>
+            )}
+            <button
+              onClick={() => setIsCartOpen(true)}
+              className="btn btn-lg lg:btn-xl btn-error text-white btn-circle"
+            >
+              <ShoppingCart />
+            </button>
+          </div>
+
+          {/* 購入履歴ボタン */}
+          <div className="indicator fixed top-[30vh] right-[7vw] lg:top-[30vh] lg:right-[8vw] mb:top-[15vh] mb:right-[8vw]">
+            <button
+              onClick={() => setIsOrderHistoryOpen(true)}
+              className="btn btn-lg lg:btn-xl btn-error text-white btn-circle"
+            >
+              <ScrollText />
+            </button>
+          </div>
+          
         </div>
       </main>
 
+      {/* カートダイアログ */}
       {isCartOpen && (
         <CartDialog
           product={productDatas}
@@ -280,6 +279,7 @@ export const ProductList = () => {
         />
       )}
 
+      {/* 購入履歴ダイアログ */}
       {isOrderHistoryOpen && (
         <OrderHistoryDialog
           onSave={handleSave}
@@ -287,6 +287,7 @@ export const ProductList = () => {
         />
       )}
 
+      {/* レビューダイアログ */}
       {isReviewOpen && selectedProduct && (
         <ReviewDialog
           product={selectedProduct}
@@ -295,6 +296,7 @@ export const ProductList = () => {
         />
       )}
 
+      {/* 商品詳細ダイアログ */}
       {isDetailsOpen && selectedProduct && (
         <DetailDialog
           product={selectedProduct}

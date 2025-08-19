@@ -57,7 +57,23 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
     );
   };
 
+  //総合評価
+  const averageStarRating = () => {
+    // if (productReviewDatas.length === 0) return;
 
+    const totalStars = productReviewDatas.reduce(
+      (acc, review) => acc + review.star,
+      0
+    );
+    return totalStars / productReviewDatas.length;
+  };
+
+  const handleClick = () => {
+    setIsAddReviewOpen(true);
+
+  };
+
+  console.log(productReviewDatas);
 
   return (
     <>
@@ -66,15 +82,15 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
           {/* アニメーション */}
           {loading ? (
             <div className="mx-auto">
-            <Player
-              autoplay
-              loop
-              src="/lottie/Loading.json"
-              style={{
-                height: "100px",
-                width: "100px",
-              }}
-            />
+              <Player
+                autoplay
+                loop
+                src="/lottie/Loading.json"
+                style={{
+                  height: "100px",
+                  width: "100px",
+                }}
+              />
             </div>
           ) : (
             <>
@@ -86,6 +102,9 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
                   height={100}
                   className="rounded-xl "
                 />
+                <div className="pt-1 flex justify-center">
+                  {renderStarRating(Math.round(averageStarRating()))}
+                </div>
               </div>
 
               <div className="flex flex-col relative pb-5">
@@ -137,7 +156,7 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
               <div className="absolute bottom-5 right-8">
                 <button
                   className="btn btn-outline btn-secondary  hover:text-white"
-                  onClick={() => setIsAddReviewOpen(true)}
+                  onClick={handleClick}
                 >
                   add review
                 </button>
@@ -161,6 +180,7 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
           product={product}
           categoryImages={categoryImages}
           onClose={() => setIsAddReviewOpen(false)}
+          setProductReviewDatas={setProductReviewDatas}
         />
       )}
     </>
