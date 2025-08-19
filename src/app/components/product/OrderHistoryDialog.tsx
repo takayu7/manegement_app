@@ -34,8 +34,16 @@ const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({ onClose }) => {
       .finally(() => setLoading(false));
   }, [userId]);
 
+  // const handleDialogClick = (e: React.MouseEvent<HTMLDialogElement>) => {
+  //     if (e.target === e.currentTarget) {
+  //       e.currentTarget.close();
+  //     }
+  //   };
+
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center">
+    
+    <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center"
+>
       <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[600px] relative h-2/3 overflow-auto">
         {/* ヘッダー */}
         <div className="flex">

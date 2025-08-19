@@ -1,4 +1,4 @@
-import { useState, useEffect, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { ReviewType, ReviewRecType } from "@/app/types/type";
 import Image from "next/image";
 import { Player } from "@lottiefiles/react-lottie-player";
@@ -12,17 +12,20 @@ interface AddReviewDialogProps {
   onClose: () => void;
   //   onSave:()=>void;
   categoryImages: Record<string, string>;
+  setProductReviewDatas: React.Dispatch<
+    React.SetStateAction< ReviewType[] >
+  >;
+ 
 }
 
 export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
   product,
   onClose,
   categoryImages,
+  setProductReviewDatas,
 }) => {
-  const [productReviewDatas, setProductReviewDatas] = useState<ReviewType[]>(
-    []
-  );
-  const [loading, setLoading] = useState(true);
+
+  const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [starRating, setStarRating] = useState(3);
   const [comment, setComment] = useState("");
@@ -30,15 +33,6 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
   const categoryImg = categoryImages[product.category];
   const productId = product.id;
   const productName = product.name;
-
-  // DBからレビュー情報を取得
-  useEffect(() => {
-    setLoading(true);
-    fetch(`/api/review/${productId}`)
-      .then((res) => res.json())
-      .then((data) => setProductReviewDatas(data))
-      .finally(() => setLoading(false));
-  }, [productId]);
 
   // ユーザーIDをセッションストレージから取得
   const userId = useSessionStorage("staffId", "0");
@@ -54,6 +48,26 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
     });
     const responseText = await response.text();
     console.log("Response text:", responseText);
+  };
+
+  const handleAdd = () => {
+    const review: ReviewRecType = {
+      productId: productId,
+      star: starRating,
+      comment: comment,
+      userId: userId,
+    };
+    startTransition(() => {
+      setLoading(true);
+      onSave(review)
+      // .then((onClose))
+      // .finally(()=>setLoading(false));
+    });
+     fetch(`/api/review/${productId}`)
+      .then((res) => res.json())
+      .then((data) => setProductReviewDatas(data))
+      .then((onClose))
+      .finally(() => setLoading(false));
   };
 
   // 評価を星に変換
@@ -132,20 +146,10 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
                   className="btn btn-outline btn-secondary px-12 "
                   disabled={isPending}
                   onClick={() => {
-                    const review: ReviewRecType = {
-                      productId: productId,
-                      star: starRating,
-                      comment: comment,
-                      userId: userId,
-                    };
-                    startTransition(() => {
-                      onSave(review).then(()=>onClose())
-                    });
-                    
-                    console.log(isPending)
+                    handleAdd();
+                    console.log(isPending);
                   }}
                 >
-                  
                   add
                 </button>
                 {isPending && (
