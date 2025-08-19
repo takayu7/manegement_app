@@ -6,7 +6,7 @@ export default function Page() {
   return (
     <>
       <div className="space-y-6">
-        <h1 className="text-xl">Shift</h1>
+        <h1 className="text-xl md:text-4xl font-bold">Shift</h1>
         <ShowShift />
       </div>
     </>
