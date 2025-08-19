@@ -118,7 +118,9 @@ export type ShiftListType = {
 };
 
 export type ShiftType = {
+  //[x: string]: ReactNode;
   userId: string;
   name: string;
+  icon: string;
   shiftData: ShiftListType[];
 };
