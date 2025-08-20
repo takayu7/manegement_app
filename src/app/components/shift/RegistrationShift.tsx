@@ -191,7 +191,7 @@ export const RegistrationShift = () => {
               name={`startTime${index}`}
               disabled={s.status !== 1}
               value={
-                s.status === 1 ? Number(s.startTime.slice(0, 2)) || "" : ""
+                s.status === 1 && s.startTime ? Number((s.startTime || "").slice(0, 2)) || "" : ""
               }
               onChange={(e) => {
                 const newStartTime = e.target.value.padStart(2, "0") + ":00";
@@ -220,7 +220,7 @@ export const RegistrationShift = () => {
               id={`endTime${index}`}
               name={`endTime${index}`}
               disabled={s.status !== 1}
-              value={s.status === 1 ? Number(s.endTime.slice(0, 2)) || "" : ""}
+              value={s.status === 1 && s.endTime ? Number((s.endTime || "").slice(0, 2)) || "" : ""}
               required
               onChange={(e) => {
                 const newEndTime = e.target.value.padStart(2, "0") + ":00";

@@ -1,7 +1,7 @@
 "use client";
 import clsx from "clsx";
 import { useRouter, usePathname } from "next/navigation";
-import { useState, useEffect , useCallback} from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   House,
   ShoppingCart,
@@ -17,6 +17,7 @@ import Image from "next/image";
 import { Loading } from "../components/Loading";
 import dynamic from "next/dynamic";
 import ErrorMessageDiaolog from "@/app/components/errorMessageDiaolog";
+import { Menu } from 'lucide-react';
 
 export type linkType = {
   name: string;
@@ -46,12 +47,12 @@ const staffLinks: linkType[] = [
     href: "/todolist",
     icon: SquarePen,
   },
-    {
+  {
     name: "dashboard",
     href: "/dashboard",
     icon: ChartNoAxesCombined,
   },
-      {
+  {
     name: "shift",
     href: "/shift",
     icon: CalendarCheck2,
@@ -69,7 +70,7 @@ const customerLinks: linkType[] = [
     name: "Product List",
     href: "/product",
     icon: Sofa,
-  }
+  },
 ];
 
 const NavLinks = ({ onNavigate }: { onNavigate: (href: string) => void }) => {
@@ -81,56 +82,55 @@ const NavLinks = ({ onNavigate }: { onNavigate: (href: string) => void }) => {
     const storedId = sessionStorage.getItem("staffId") || "0";
     setUserId(storedId);
   }, []);
-    //再ログイン時にuserIdの値を更新する
-    useEffect(() => {
-      updateHeaderInfo();
-      const handler = () => updateHeaderInfo();
-      window.addEventListener("headerUpdate", handler);
-      return () => {
-        window.removeEventListener("headerUpdate", handler);
-      };
-    }, [updateHeaderInfo]);
-
+  //再ログイン時にuserIdの値を更新する
+  useEffect(() => {
+    updateHeaderInfo();
+    const handler = () => updateHeaderInfo();
+    window.addEventListener("headerUpdate", handler);
+    return () => {
+      window.removeEventListener("headerUpdate", handler);
+    };
+  }, [updateHeaderInfo]);
 
   return (
     <>
-      {userId.startsWith("c") ? (
-        customerLinks.map((link) => {
-          const LinkIcon = link.icon;
-          return (
-            <button
-              key={link.name}
-              onClick={() => onNavigate(link.href)}
-              className={clsx(
-                "flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3 text-left",
-                {
-                  "bg-sky-100 text-blue-600": pathname === link.href,
-                }
-              )}
-            >
-              <LinkIcon className="w-6" />
-              <p className="hidden md:block">{link.name}</p>
-            </button>
-          );
-        })
-      ) : staffLinks.map((link) => {
-          const LinkIcon = link.icon;
-          return (
-            <button
-              key={link.name}
-              onClick={() => onNavigate(link.href)}
-              className={clsx(
-                "flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3 text-left",
-                {
-                  "bg-sky-100 text-blue-600": pathname === link.href,
-                }
-              )}
-            >
-              <LinkIcon className="w-6" />
-              <p className="hidden md:block">{link.name}</p>
-            </button>
-          );
-        })}
+      {userId.startsWith("c")
+        ? customerLinks.map((link) => {
+            const LinkIcon = link.icon;
+            return (
+              <button
+                key={link.name}
+                onClick={() => onNavigate(link.href)}
+                className={clsx(
+                  "flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3 text-left",
+                  {
+                    "bg-sky-100 text-blue-600": pathname === link.href,
+                  }
+                )}
+              >
+                <LinkIcon className="w-6" />
+                <p className="">{link.name}</p>
+              </button>
+            );
+          })
+        : staffLinks.map((link) => {
+            const LinkIcon = link.icon;
+            return (
+              <button
+                key={link.name}
+                onClick={() => onNavigate(link.href)}
+                className={clsx(
+                  "flex h-[30px] md:h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3 text-left",
+                  {
+                    "bg-sky-100 text-blue-600": pathname === link.href,
+                  }
+                )}
+              >
+                <LinkIcon className="w-6" />
+                <p className="">{link.name}</p>
+              </button>
+            );
+          })}
     </>
   );
 };
@@ -161,9 +161,9 @@ const SideNav = () => {
   return (
     <>
       {isLoading && <Loading />}
-      <div className="flex h-full flex-col py-4 md:px-2">
+      <div className="hidden md:block h-full py-4 px-2">
         <button
-          className="btn mb-2 h-0 items-center justify-center rounded-md md:h-20 relative overflow-hidden p-0 hidden md:flex"
+          className="btn w-full mb-2 rounded-md h-20 relative"
           onClick={() =>
             (
               document.getElementById("loginDiaLog") as HTMLDialogElement
@@ -187,6 +187,25 @@ const SideNav = () => {
             <Power className="w-6" />
             <div className="hidden md:block">Sign Out</div>
           </button>
+        </div>
+      </div>
+      <div className="drawer drawer-end mt-2 block sm:hidden">
+        <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+        <div className="drawer-content flex justify-center">
+          {/* Page content here */}
+          <label htmlFor="my-drawer" className="btn btn-ghost drawer-button">
+            <Menu />
+          </label>
+        </div>
+        <div className="drawer-side">
+          <label
+            htmlFor="my-drawer"
+            aria-label="close sidebar"
+            className="drawer-overlay"
+          ></label>
+          <div className="menu bg-base-200 text-base-content min-h-full w-80 p-4 mt-24">
+            <NavLinks onNavigate={handleNavigation} />
+          </div>
         </div>
       </div>
       {/* ログインダイヤログ*/}
