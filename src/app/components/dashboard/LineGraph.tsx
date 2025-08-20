@@ -2,7 +2,15 @@
 import React, { useState, useEffect, useMemo } from "react";
 import _ from "lodash";
 import { VictoryTheme } from "victory-core";
-import { VictoryChart, VictoryLine, VictoryScatter, VictoryGroup, VictoryAxis, VictoryLegend, VictoryLabel } from "victory";
+import {
+  VictoryChart,
+  VictoryLine,
+  VictoryScatter,
+  VictoryGroup,
+  VictoryAxis,
+  VictoryLegend,
+  VictoryLabel,
+} from "victory";
 
 const symbols = [
   "circle",
@@ -11,32 +19,37 @@ const symbols = [
   "square",
   "triangleUp",
   "star",
-  "cross"
+  "cross",
 ];
 
- // 今月の1日～月末までの配列を作成
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth(); // 0-indexed
-  const lastDay = new Date(year, month + 1, 0).getDate();
-  const tickValues = Array.from({ length: lastDay }, (_, i) => i + 1);
+// 今月の1日～月末までの配列を作成
+const now = new Date();
+const year = now.getFullYear();
+const month = now.getMonth(); // 0-indexed
+const lastDay = new Date(year, month + 1, 0).getDate();
+const tickValues = Array.from({ length: lastDay }, (_, i) => i + 1);
 
 //色を生成する
 function generateRandomColors(length: number): string[] {
   return Array.from({ length }, () => {
     // 6桁の16進数カラーコードを生成
-    return "#" + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, "0");
+    return (
+      "#" +
+      Math.floor(Math.random() * 0xffffff)
+        .toString(16)
+        .padStart(6, "0")
+    );
   });
 }
 
 export type DataType = {
   name: string;
   data: number[];
-}
+};
 
 export interface LineProps {
   data: DataType[];
-};
+}
 
 const LineGraph: React.FC<LineProps> = ({ data }) => {
   const [dataList, setDataList] = useState<DataType[]>([]);
@@ -48,9 +61,25 @@ const LineGraph: React.FC<LineProps> = ({ data }) => {
   }, [data]);
 
   // 折れ線グラフの色を生成
-  const colors = useMemo(() => generateRandomColors(dataList.length), [dataList.length]);
+  const colors = useMemo(
+    () => generateRandomColors(dataList.length),
+    [dataList.length]
+  );
   // 月名を取得
-  const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   const currentMonthName = monthNames[month];
 
   return (
@@ -97,12 +126,13 @@ const LineGraph: React.FC<LineProps> = ({ data }) => {
       {/*グラフの「Y軸（縦軸）」の設定 */}
       <VictoryAxis
         dependentAxis // Y軸（値軸）として表示する
-        label="Total Sales"// Y軸のタイトル（ラベル）
-        tickValues={_.range(0, 1000000, 100000)}// Y軸の目盛りの値
-        tickFormat={(value) =>//目盛りのラベル
-          `${value}`
-        }
-        style={{// 軸やラベル、目盛り、グリッド線の見た目
+        label="Total Sales" // Y軸のタイトル（ラベル）
+        tickValues={_.range(0, 1000000, 100000)} // Y軸の目盛りの値
+        tickFormat={(
+          value //目盛りのラベル
+        ) => `${value}`}
+        style={{
+          // 軸やラベル、目盛り、グリッド線の見た目
           axis: {
             stroke: "transparent",
           },
@@ -131,8 +161,7 @@ const LineGraph: React.FC<LineProps> = ({ data }) => {
           <VictoryLine
             style={{
               data: {
-                stroke:
-                  colors[i],
+                stroke: colors[i],
                 strokeWidth: 1,
               },
             }}
@@ -140,7 +169,7 @@ const LineGraph: React.FC<LineProps> = ({ data }) => {
           {/*折れ線グラフの各データ点（ドット）*/}
           <VictoryScatter
             size={2}
-            symbol={symbols[i] as any} // 型アサーション
+            symbol={symbols[i]  as "circle" | "diamond" | "plus" | "square" | "triangleUp" | "star" | "cross"} // 型アサーション
             style={{
               data: {
                 fill: colors[i],
@@ -151,10 +180,9 @@ const LineGraph: React.FC<LineProps> = ({ data }) => {
       ))}
       {/* 凡例の設定 はグラフの下などに「色・シンボル・ラベル」を一覧表示します */}
       <VictoryLegend
-        itemsPerRow={4} //1行に4つまで並べる
-        x={50} //凡例の表示位置を指定
+        x={50}
         y={220}
-        data={dataList.map((s,i) => ({
+        data={dataList.map((s, i) => ({
           name: s.name,
           symbol: {
             fill: colors[i],
@@ -162,16 +190,8 @@ const LineGraph: React.FC<LineProps> = ({ data }) => {
           },
         }))}
         style={{
-          data: {
-            fill: ({ datum }) =>
-              datum.symbol.fill,
-          },
-          labels: {
-            fontSize: 8,
-          },
-          border: {
-            stroke: "transparent",
-          },
+          labels: { fontSize: 8 },
+          border: { stroke: "transparent" },
         }}
       />
     </VictoryChart>

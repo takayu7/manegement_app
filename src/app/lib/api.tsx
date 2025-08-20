@@ -14,6 +14,7 @@ import {
   UserBuyParameterType,
   ReviewType,
   ReviewRecType,
+  ShiftType,
   ShiftListType,
 } from "@/app/types/type";
 import { generateCustomId } from "@/app/lib/utils";
@@ -557,7 +558,7 @@ export async function fetchShift(targetDate: string) {
         shift.end_time,
         shift.status
       FROM shift INNER JOIN users ON shift.user_id = users.id
-      WHERE shift.shift_date::text LIKE ${targetDate} || '%'
+  WHERE to_char(shift.shift_date, 'YYYY-MM') = ${targetDate}
       ORDER BY shift_date;
     `;
     // ユーザーごとにグループ化
@@ -584,24 +585,73 @@ export async function fetchShift(targetDate: string) {
     return grouped;
   } catch (error) {
     console.error("Database Error:", error);
-    throw new Error("Failed to fetch todo data.");
+    throw error;
   }
 }
 
 // シフトデータの登録
-// export async function createShift(shift: ShiftType) {
-//   try {
-//     const shiftData = await fetchShift();
+export async function createShift(shift: ShiftType, targetDate: string) {
+  const shiftList = await fetchShift(targetDate);
+  const userShift = shiftList.find((t) => t.userId === shift.userId);
 
-//     for (const item of shift.shiftData) {
-//       await sql`
-//         INSERT INTO purchase_history (user_id, shift_date, start_time, end_time, status)
-//         VALUES (${shift.userId}, ${item.shiftDate}, ${item.startTime}, ${item.endTime}, ${item.status})
-//         RETURNING *;
-//       `;
-//     }
-//   } catch (error) {
-//     console.error("Database Error:", error);
-//     throw new Error("Failed to create shift.");
-//   }
-// }
+  try {
+    for (const item of shift.shiftData) {
+      const existingShift = (userShift?.shiftData || []).find(
+        (es) =>
+          item.shiftDate &&
+          es.shiftDate &&
+          new Date(item.shiftDate).toISOString().slice(0, 10) ===
+            new Date(es.shiftDate).toISOString().slice(0, 10)
+      );
+      console.log("existingShift", existingShift);
+      if (!existingShift) {
+        await sql`
+            INSERT INTO shift (user_id, shift_date, start_time, end_time, status)
+            VALUES (
+              ${shift.userId ? shift.userId : null},
+              ${
+                item.shiftDate
+                  ? new Date(item.shiftDate).toISOString().slice(0, 10)
+                  : null
+              },
+              ${
+                item.startTime && item.startTime !== "" ? item.startTime : null
+              },
+              ${item.endTime && item.endTime !== "" ? item.endTime : null},
+              ${typeof item.status === "number" ? item.status : null}
+            )
+            RETURNING *;
+          `;
+      } else {
+        await sql`
+            UPDATE shift
+            SET
+              start_time = ${
+                item.startTime && item.startTime !== "" ? item.startTime : null
+              },
+              end_time = ${
+                item.endTime && item.endTime !== "" ? item.endTime : null
+              },
+              status = ${typeof item.status === "number" ? item.status : null}
+            WHERE
+              user_id = ${shift.userId}
+              AND shift_date = ${
+                item.shiftDate
+                  ? new Date(item.shiftDate).toISOString().slice(0, 10)
+                  : null
+              }
+            RETURNING *;
+          `;
+      }
+    }
+  } catch (error) {
+    console.error("Database Error:", error);
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+    console.error("リクエスト内容:", shift);
+    console.error("ユーザーのシフト情報:", userShift);
+    throw new Error("Failed to create shift.");
+  }
+}

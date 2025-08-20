@@ -75,7 +75,7 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
               supplier:
             </label>
             <p className="font-bold text-blue-900">
-              {supplierName(product.supplier)}
+              {supplierName(Number(product.supplier))}
             </p>
           </li>
 

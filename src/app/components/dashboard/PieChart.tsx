@@ -38,7 +38,7 @@ const PieChart: React.FC<PieChartProps> = ({ pieChartData }) => {
           .map((item) => ({ x: item.title, y: item.value }))}
         theme={VictoryTheme.clean}
         radius={({ index }) => (activeIndex === index ? 130 : 120)}
-        labelRadius={({ index }) => (activeIndex === index ? 150 : 140)} // ←追加
+        labelRadius={140}
         style={{
           data: {
             opacity: opacity,

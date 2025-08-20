@@ -5,7 +5,7 @@ import { CountDown } from "@/app/components/top/CountDown";
 import Parameter from "@/app/components/top/Parameter";
 import ProductBuyHistory from "@/app/components/top/ProductBuyHistory";
 import { UserBuyParameter } from "@/app/components/top/UserBuyParameter";
-import { ProductReviews } from "@/app/components/top/ProductReviews";
+import {RegistrationShift} from "@/app/components/shift/RegistrationShift";
 
 export default async function Page() {
 
@@ -22,9 +22,7 @@ export default async function Page() {
             <ProductBuyHistory />
           </div>
           <UserBuyParameter />
-          <div className="h-80 py-5 bg-gray-100 border border-gray-300 rounded-md overflow-y-auto">
-          <ProductReviews />
-          </div>
+          <RegistrationShift />
         </div>
         <div>
           <Suspense fallback={<Loading />}>
