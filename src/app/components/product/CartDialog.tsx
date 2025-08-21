@@ -7,6 +7,7 @@ import { CartItem, Product, BuyProductList } from "@/app/types/type";
 import { Plus, Minus, ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSessionStorage } from "@/app/hooks/useSessionStorage";
+import useStore from "@/app/store/useStore";
 
 // import React, { useState, useTransition } from "react";
 
@@ -24,10 +25,12 @@ export const CartDialog: React.FC<CartDialogProps> = ({
   onSave,
   onDelete,
 }) => {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(cartItems);
   const [buyItems, setBuyItems] = useState<BuyProductList[]>([]);
 
   const userId = useSessionStorage("staffId", "0");
+
+  const setStoreCartItem = useStore((state) => state.setStoreCartItem);
 
   //cartItemsをitemsにセット
   useEffect(() => {
@@ -86,6 +89,7 @@ export const CartDialog: React.FC<CartDialogProps> = ({
           )
           .filter((item) => item.buyCount > 0) //数量が0の場合は削除
     );
+    
   };
 
   return (
@@ -164,7 +168,7 @@ export const CartDialog: React.FC<CartDialogProps> = ({
             </button>
             <button
               className="btn bg-blue-900 hover:bg-blue-800 btn-lg px-6 py-2 text-white font-semibold rounded-lg"
-              onClick={onClose}
+              onClick={() => { onClose(); setStoreCartItem(items); }}
             >
               Cancel
             </button>

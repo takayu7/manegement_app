@@ -9,33 +9,11 @@ import OrderHistoryDialog from "@/app/components/product/OrderHistoryDialog";
 import { ReviewDialog } from "@/app/components/product/ReviewDialog";
 import DetailDialog from "@/app/components/product/DetailDialog";
 import { Player } from "@lottiefiles/react-lottie-player";
+import useStore from "@/app/store/useStore";
 
-export const ProductList = () => {
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [productDatas, setProductDatas] = useState<Product[]>([]);
-  const [buyProductId, setBuyProductId] = useState<{ [id: string]: number }>(
-    {}
-  );
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+type SetProductDatas = React.Dispatch<React.SetStateAction<Product[]>>;
 
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
-  const [isReviewOpen, setIsReviewOpen] = useState(false);
-  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
-
-  const [showThanks, setShowThanks] = useState(false);
-  // ローディング状態
-  const [loading, setLoading] = useState(true);
-
-  // 商品データの取得
-  useEffect(() => {
-    fetch(`/api/products`)
-      .then((res) => res.json())
-      .then((data) => setProductDatas(data))
-      .finally(() => setLoading(false));
-  }, []);
-
-  const onSave = async (cart: CartItem[], product: BuyProductList[]) => {
+  export const onSave = async (cart: CartItem[], product: BuyProductList[], setProductDatas: SetProductDatas) => {
     // 購入履歴の登録
     await fetch("/api/userBuyHistory", {
       method: "POST",
@@ -62,6 +40,36 @@ export const ProductList = () => {
     const updatedData = await updated.json();
     setProductDatas(updatedData);
   };
+
+export const ProductList = () => {
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [productDatas, setProductDatas] = useState<Product[]>([]);
+  const [buyProductId, setBuyProductId] = useState<{ [id: string]: number }>(
+    {}
+  );
+  // const [cartItems, addCartItem] = useState<CartItem[]>([]);
+
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false);
+
+  const [showThanks, setShowThanks] = useState(false);
+  // ローディング状態
+  const [loading, setLoading] = useState(true);
+
+const setStoreCartItem = useStore((state) => state.setStoreCartItem);
+const addStoreCartItem = useStore((state) => state.addStoreCartItem);
+
+const cartItems = useStore((state) => state.cartItem);
+
+  // 商品データの取得
+  useEffect(() => {
+    fetch(`/api/products`)
+      .then((res) => res.json())
+      .then((data) => setProductDatas(data))
+      .finally(() => setLoading(false));
+  }, []);
 
   const buyProduct = selectedProduct
     ? buyProductId[selectedProduct.id] || 0
@@ -92,7 +100,7 @@ export const ProductList = () => {
         ...updateCartItems[existingItem],
         buyCount: updateCartItems[existingItem].buyCount + buyProduct,
       };
-      setCartItems(updateCartItems);
+      setStoreCartItem(updateCartItems);
     } else {
       const newItem: CartItem = {
         id: selectedProduct.id,
@@ -101,9 +109,7 @@ export const ProductList = () => {
         price: selectedProduct.price,
         count: selectedProduct.count,
       };
-      setCartItems((prev) => {
-        return [...prev, newItem];
-      });
+      addStoreCartItem(newItem);
     }
 
     //初期化
@@ -126,17 +132,17 @@ export const ProductList = () => {
   const handleBuy = (cart: CartItem[], product: BuyProductList[]) => {
     startTransition(() => {
       console.log(product);
-      onSave(cart, product);
+      onSave(cart, product, setProductDatas);
     });
     setShowThanks(true);
     setTimeout(() => setShowThanks(false), 4000);
-    setCartItems([]);
+    setStoreCartItem([]);
     setIsCartOpen(false);
   };
 
   //deleteボタン(削除)(CartDialog内)
   const handleDelete = (id: string) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+    setStoreCartItem(cartItems.filter((item) => item.id !== id));
   };
 
   //購入履歴ボタン

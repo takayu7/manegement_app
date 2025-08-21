@@ -71,6 +71,11 @@ const customerLinks: linkType[] = [
     href: "/product",
     icon: Sofa,
   },
+    {
+    name: "Cart",
+    href: "/cart",
+    icon: ShoppingCart,
+  },
 ];
 
 const NavLinks = ({ onNavigate }: { onNavigate: (href: string) => void }) => {
