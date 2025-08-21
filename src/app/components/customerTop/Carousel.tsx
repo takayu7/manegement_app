@@ -1,6 +1,6 @@
-import * as React from "react";
-
-import { Card, CardContent } from "@/components/ui/card";
+"use client";
+import React, { useState, useEffect } from "react";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Carousel,
   CarouselContent,
@@ -8,34 +8,93 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import { Product } from "@/app/types/type";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+import CarouselDetailDialog from "@/app/components/customerTop/CarouselDetailDialog";
 
-export function TopCarousel() {
+export const TopCarousel = () => {
+  const [productDatas, setProductDatas] = useState<Product[]>([]);
+  const [isCarouselDetailOpen, setIsCarouselDetailOpen]=useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+
+  // 商品データの取得
+  useEffect(() => {
+    fetch(`/api/products`)
+      .then((res) => res.json())
+      .then((data) => setProductDatas(data));
+  }, []);
+
+  const CategoryImages: Record<string, string> = {
+    "1": "/product/image2.jpg",
+    "2": "/product/image6.jpg",
+    "3": "/product/image4.jpg",
+    "4": "/product/image3.jpg",
+    "5": "/product/image7.jpg",
+    "6": "/product/image8.jpg",
+    "7": "/product/image1.jpg",
+  };
+
+  const handleDetail = (product: Product) => {
+    setSelectedProduct(product);
+    setIsCarouselDetailOpen(true);
+  };
+
   return (
-    <Carousel
-      opts={{
-        align: "start",
-         loop: true,
-      }}
-      className="justify-center max-w-7xl bg-yellow-50 items-center "
-    >
-      <CarouselContent className="">
-        {Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3 ">
-            <div className="p-1">
-              <Card className="bg-blue-100">
-                <CardContent className="flex aspect-square items-center justify-center p-6 ">
-                  <span className="text-3xl font-semibold">{index + 1}</span>
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-        ))}
+    <>
+      <Carousel
+        opts={{
+          align: "start",
+          loop: true,
+        }}
+        className="justify-center max-w-4xl items-center"
+      >
+        <CarouselContent>
+          {productDatas.map((product, index) => (
+            <CarouselItem
+              key={product.id}
+              className="md:basis-1/2 lg:basis-1/3 flex"
+            >
+              <Button
+                size="img"
+                className="bg-white hover:bg-white"
+                key={index}
+                onClick={() => handleDetail(product)}
+              >
+                <div className="p-1">
+                  <Card className="bg-gray-100 h-full w-full max-w-sm">
+                    <CardContent className="flex aspect-video items-center justify-center p-0">
+                      <Image
+                        src={CategoryImages[Number(product.category)]}
+                        alt={product.name}
+                        width={500}
+                        height={500}
+                        className="rounded-xl object-cover h-full m-full flex items-center"
+                      />
+                    </CardContent>
+                    <CardFooter className="flex flex-col">
+                      <span className="text-lg">{product.name}</span>
+                    </CardFooter>
+                  </Card>
+                </div>
+              </Button>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
 
-      </CarouselContent >
-      <div className="flex ">
-      <CarouselPrevious className=""/>
-      </div>
-      <CarouselNext />
-    </Carousel>
+      {/* 商品詳細ダイアログ */}
+      {isCarouselDetailOpen && (
+        <CarouselDetailDialog
+          product={selectedProduct}
+          categoryImages={CategoryImages}
+          onClose={() => setIsCarouselDetailOpen(false)}
+        />
+      )}
+    </>
   );
-}
+};
+
+export default TopCarousel;
