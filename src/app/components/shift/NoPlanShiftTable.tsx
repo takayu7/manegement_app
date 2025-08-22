@@ -5,23 +5,26 @@ import Image from "next/image";
 import { SelectStaffIcon } from "@/app/lib/utils";
 import { User } from "@/app/types/type";
 
-const date = new Date();
-const year = date.getFullYear();
-const month = date.getMonth() + 1;
-const nowDate = `${year}-${String(month).padStart(2, "0")}`;
+// const date = new Date();
+// const year = date.getFullYear();
+// const month = date.getMonth() + 1;
+// const nowDate = `${year}-${String(month).padStart(2, "0")}`;
 
 type Props = {
   user: User;
   targetDate: string;
 };
 
-export const NoPlanShiftTable: React.FC<Props> = ({ user, targetDate }) => {
+export const NoPlanShiftTable: React.FC<Props> = ({
+  user,
+  targetDate = "",
+}) => {
   const [days, setDays] = useState<string[]>([]);
 
-  // 初回：月リスト生成
+  // 月リスト生成
   useEffect(() => {
     // 初期状態で days を作成
-    const initDate = new Date(nowDate);
+    const initDate = new Date(targetDate);
     const theLastDate = new Date(
       initDate.getFullYear(),
       initDate.getMonth() + 1,
@@ -34,7 +37,7 @@ export const NoPlanShiftTable: React.FC<Props> = ({ user, targetDate }) => {
       initDays.push(i.toString().padStart(2, "0"));
     }
     setDays(initDays);
-  }, []);
+  }, [targetDate]);
 
   return (
     <>
@@ -52,7 +55,9 @@ export const NoPlanShiftTable: React.FC<Props> = ({ user, targetDate }) => {
                 height={40}
                 className="mt-[10px] ml-[10px] mb-[10px] w-auto h-auto rounded-lg shadow-md"
               />
-              <h2 className="mt-2 text-lg font-semibold">{user.name}</h2>
+              <h2 className="mt-2 text-black text-lg font-semibold">
+                {user.name}
+              </h2>
             </th>
           </tr>
 

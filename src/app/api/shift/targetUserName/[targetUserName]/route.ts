@@ -1,13 +1,13 @@
 import { NextResponse, NextRequest } from "next/server";
-import { fetchShift, createShift } from "@/app/lib/api";
+import { createShift, fetchShiftByUserName } from "@/app/lib/api";
 
 export async function GET(
   req: Request,
-  { params }: { params: Promise<{ targetDate: string }> }
+  { params }: { params: Promise<{ targetUserName: string }> }
 ) {
   try {
-    const { targetDate } = await params;
-    const shiftData = await fetchShift(targetDate);
+    const { targetUserName } = await params;
+    const shiftData = await fetchShiftByUserName(targetUserName);
     return NextResponse.json(shiftData);
   } catch (error) {
     if (error instanceof Error) {
@@ -19,16 +19,19 @@ export async function GET(
   }
 }
 
-export async function POST(request: NextRequest,{ params }: { params: Promise<{ targetDate: string }> }) {
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ targetUserName: string }> }
+) {
   try {
     const body = await request.json();
-    const { targetDate } = await params;
-    await createShift(body, targetDate);
+    const { targetUserName } = await params;
+    await createShift(body, targetUserName);
     return NextResponse.json(
       {
         success: true,
         message: "Shift created successfully",
-        data: body
+        data: body,
       },
       { status: 201 }
     );

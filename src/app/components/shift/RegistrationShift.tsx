@@ -64,7 +64,7 @@ export const RegistrationShift = () => {
   //DBからデータの取得
   useEffect(() => {
     setLoading(true);
-    fetch(`/api/shift/${targetDate}`)
+    fetch(`/api/shift/targetDate/${targetDate}`)
       .then((res) => res.json())
       .then((data) => setShiftList(data))
       .finally(() => setLoading(false));
@@ -128,7 +128,7 @@ export const RegistrationShift = () => {
     };
     console.log("newShift:", newShift);
     //DBに登録依頼
-    const response = await fetch(`/api/shift/${targetDate}`, {
+    const response = await fetch(`/api/shift/targetDate/${targetDate}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -191,7 +191,9 @@ export const RegistrationShift = () => {
               name={`startTime${index}`}
               disabled={s.status !== 1}
               value={
-                s.status === 1 && s.startTime ? Number((s.startTime || "").slice(0, 2)) || "" : ""
+                s.status === 1 && s.startTime
+                  ? Number((s.startTime || "").slice(0, 2)) || ""
+                  : ""
               }
               onChange={(e) => {
                 const newStartTime = e.target.value.padStart(2, "0") + ":00";
@@ -220,7 +222,11 @@ export const RegistrationShift = () => {
               id={`endTime${index}`}
               name={`endTime${index}`}
               disabled={s.status !== 1}
-              value={s.status === 1 && s.endTime ? Number((s.endTime || "").slice(0, 2)) || "" : ""}
+              value={
+                s.status === 1 && s.endTime
+                  ? Number((s.endTime || "").slice(0, 2)) || ""
+                  : ""
+              }
               required
               onChange={(e) => {
                 const newEndTime = e.target.value.padStart(2, "0") + ":00";

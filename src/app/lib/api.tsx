@@ -33,6 +33,25 @@ export async function fetchUserDatas() {
   }
 }
 
+// ユーザーデータを名前を基に曖昧検索して取得
+export async function fetchUserDatasByUserName(userName: string) {
+  try {
+    let data = await sql<
+      User[]
+    >`SELECT id, name, password, icon FROM users WHERE name LIKE ${
+      "%" + userName + "%"
+    }`;
+    //曖昧検索でユーザーデータが取得できない場合は、全件検索でユーザーデータを取得
+    if (data.length === 0) {
+      data = await sql<User[]>`SELECT * FROM users`;
+    }
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch user data.");
+  }
+}
+
 //ユーザーデータをIDを基に取得
 export async function fetchUserDatasById(userId: string) {
   try {
@@ -535,8 +554,8 @@ export async function deleteTodo(todoId: string) {
   }
 }
 
-// シフトデータの取得
-export async function fetchShift(targetDate: string) {
+// 特定の月のシフトデータの取得
+export async function fetchShiftByMonth(targetDate: string) {
   type apiShiftType = {
     user_id: string;
     name: string;
@@ -589,9 +608,63 @@ export async function fetchShift(targetDate: string) {
   }
 }
 
+// 特定のユーザーのシフトデータの取得
+export async function fetchShiftByUserName(targetUserName: string) {
+  type apiShiftType = {
+    user_id: string;
+    name: string;
+    icon: string;
+    shift_date: Date;
+    start_time: string;
+    end_time: string;
+    status: number;
+  };
+
+  try {
+    const rawData = await sql<apiShiftType[]>`
+      SELECT
+        shift.user_id,
+        users.name as name,
+        users.icon as icon,
+        shift.shift_date,
+        shift.start_time,
+        shift.end_time,
+        shift.status
+      FROM shift INNER JOIN users ON shift.user_id = users.id
+  WHERE name LIKE ${"%" + targetUserName + "%"}
+      ORDER BY shift_date;
+    `;
+    // ユーザーごとにグループ化
+    const grouped = Object.values(
+      rawData.reduce((acc, item) => {
+        if (!acc[item.user_id]) {
+          acc[item.user_id] = {
+            userId: item.user_id,
+            name: item.name,
+            icon: item.icon,
+            shiftData: [],
+          };
+        }
+        acc[item.user_id].shiftData.push({
+          shiftDate: item.shift_date,
+          startTime: item.start_time,
+          endTime: item.end_time,
+          status: item.status,
+        });
+        return acc;
+      }, {} as Record<string, { userId: string; name: string; icon: string; shiftData: ShiftListType[] }>)
+    );
+
+    return grouped;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw error;
+  }
+}
+
 // シフトデータの登録
 export async function createShift(shift: ShiftType, targetDate: string) {
-  const shiftList = await fetchShift(targetDate);
+  const shiftList = await fetchShiftByMonth(targetDate);
   const userShift = shiftList.find((t) => t.userId === shift.userId);
 
   try {

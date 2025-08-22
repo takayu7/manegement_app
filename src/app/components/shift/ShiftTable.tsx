@@ -5,10 +5,10 @@ import Image from "next/image";
 import { SelectStaffIcon } from "@/app/lib/utils";
 import { ShiftType } from "@/app/types/type";
 
-const date = new Date();
-const year = date.getFullYear();
-const month = date.getMonth() + 1;
-const nowDate = `${year}-${String(month).padStart(2, "0")}`;
+// const date = new Date();
+// const year = date.getFullYear();
+// const month = date.getMonth() + 1;
+// const nowDate = `${year}-${String(month).padStart(2, "0")}`;
 
 const statesList = [
   { key: 0, value: "未定" },
@@ -22,13 +22,13 @@ type Props = {
   targetDate: string;
 };
 
-export const ShiftTable: React.FC<Props> = ({ shift, targetDate }) => {
+export const ShiftTable: React.FC<Props> = ({ shift, targetDate = "" }) => {
   const [days, setDays] = useState<string[]>([]);
 
-  // 初回：月リスト生成
+  // 月リスト生成
   useEffect(() => {
     // 初期状態で days を作成
-    const initDate = new Date(nowDate);
+    const initDate = new Date(targetDate);
     const theLastDate = new Date(
       initDate.getFullYear(),
       initDate.getMonth() + 1,
@@ -41,7 +41,7 @@ export const ShiftTable: React.FC<Props> = ({ shift, targetDate }) => {
       initDays.push(i.toString().padStart(2, "0"));
     }
     setDays(initDays);
-  }, []);
+  }, [targetDate]);
 
   return (
     <>
@@ -63,7 +63,9 @@ export const ShiftTable: React.FC<Props> = ({ shift, targetDate }) => {
                 height={40}
                 className="mt-[10px] ml-[10px] mb-[10px] w-auto h-auto rounded-lg shadow-md"
               />
-              <h2 className="mt-2 text-lg font-semibold">{shift.name}</h2>
+              <h2 className="mt-2 text-black text-lg font-semibold">
+                {shift.name}
+              </h2>
             </th>
           </tr>
 
@@ -73,6 +75,17 @@ export const ShiftTable: React.FC<Props> = ({ shift, targetDate }) => {
             const shiftForDay = shift.shiftData.find((s) =>
               String(s.shiftDate).startsWith(dateKey)
             );
+            let timeZone = "　　　　　　　　";
+            if (shiftForDay !== undefined && shiftForDay.status !== 0) {
+              if (
+                shiftForDay.startTime === null ||
+                shiftForDay.endTime === null
+              ) {
+                timeZone = "　　　終日　　　";
+              } else {
+                timeZone = shiftForDay.startTime + "～" + shiftForDay.endTime;
+              }
+            }
 
             return (
               <tr key={day}>
@@ -81,9 +94,7 @@ export const ShiftTable: React.FC<Props> = ({ shift, targetDate }) => {
                     {new Date(`${dateKey}T00:00:00`).toLocaleDateString()}
                     {"　　　"}
                     {shiftForDay
-                      ? `${shiftForDay.startTime} ～ ${
-                          shiftForDay.endTime
-                        }　　　${
+                      ? `${timeZone}　　　${
                           statesList.find(
                             (item) => item.key === shiftForDay.status
                           )?.value || "未定"
