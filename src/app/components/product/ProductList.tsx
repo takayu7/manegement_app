@@ -81,7 +81,7 @@ const cartItems = useStore((state) => state.cartItem);
     "3": "/product/image4.jpg",
     "4": "/product/image3.jpg",
     "5": "/product/image7.jpg",
-    "6": "/product/image8.jpg",
+    "6": "/product/image5.jpg",
     "7": "/product/image1.jpg",
   };
 

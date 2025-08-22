@@ -31,7 +31,7 @@ export const TopCarousel = () => {
     "3": "/product/image4.jpg",
     "4": "/product/image3.jpg",
     "5": "/product/image7.jpg",
-    "6": "/product/image8.jpg",
+    "6": "/product/image5.jpg",
     "7": "/product/image1.jpg",
   };
 
@@ -47,22 +47,22 @@ export const TopCarousel = () => {
           align: "start",
           loop: true,
         }}
-        className="justify-center max-w-4xl items-center"
+        className="justify-center max-w-4xl items-center "
       >
         <CarouselContent>
           {productDatas.map((product, index) => (
             <CarouselItem
               key={product.id}
-              className="md:basis-1/2 lg:basis-1/3 flex"
+              className="md:basis-1/2 lg:basis-1/3 "
             >
               <Button
                 size="img"
-                className="bg-white hover:bg-white"
+                className="bg-white hover:bg-white "
                 key={index}
                 onClick={() => handleDetail(product)}
               >
                 <div className="p-1">
-                  <Card className="bg-gray-100 h-full w-full max-w-sm">
+                  <Card className="bg-gray-100 h-full w-full max-w-sm flex">
                     <CardContent className="flex aspect-video items-center justify-center p-0">
                       <Image
                         src={CategoryImages[Number(product.category)]}
