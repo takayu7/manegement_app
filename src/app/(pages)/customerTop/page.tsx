@@ -2,7 +2,7 @@
 import React from "react";
 import { TopCarousel } from "@/app/components/customerTop/Carousel";
 import { SalesRanking }from "@/app/components/customerTop/SalesRanking";
-// import {StarRanking} from "@/app/components/customerTop/StarRanking";
+import {StarRanking} from "@/app/components/customerTop/StarRanking";
 
 export default async function Page() {
   return (
@@ -15,9 +15,9 @@ export default async function Page() {
         <div>
           <SalesRanking />
         </div>
-        {/* <div className="flex justify-center">
+        <div className="flex justify-center">
           <StarRanking />
-        </div> */}
+        </div>
       </div>
     </>
   );
