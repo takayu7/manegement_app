@@ -5,7 +5,6 @@ import { CountDown } from "@/app/components/top/CountDown";
 import Parameter from "@/app/components/top/Parameter";
 import ProductBuyHistory from "@/app/components/top/ProductBuyHistory";
 import { UserBuyParameter } from "@/app/components/top/UserBuyParameter";
-import {RegistrationShift} from "@/app/components/shift/RegistrationShift";
 
 export default async function Page() {
 
@@ -22,7 +21,6 @@ export default async function Page() {
             <ProductBuyHistory />
           </div>
           <UserBuyParameter />
-          <RegistrationShift />
         </div>
         <div>
           <Suspense fallback={<Loading />}>

@@ -17,7 +17,8 @@ import Image from "next/image";
 import { Loading } from "../components/Loading";
 import dynamic from "next/dynamic";
 import ErrorMessageDiaolog from "@/app/components/errorMessageDiaolog";
-import { Menu } from 'lucide-react';
+import { Menu } from "lucide-react";
+import useStore from "@/app/store/useStore";
 
 export type linkType = {
   name: string;
@@ -71,7 +72,7 @@ const customerLinks: linkType[] = [
     href: "/product",
     icon: Sofa,
   },
-    {
+  {
     name: "Cart",
     href: "/cart",
     icon: ShoppingCart,
@@ -81,6 +82,8 @@ const customerLinks: linkType[] = [
 const NavLinks = ({ onNavigate }: { onNavigate: (href: string) => void }) => {
   const [userId, setUserId] = useState<string>("0");
   const pathname = usePathname(); //現在のパスを取得
+
+  const cartItems = useStore((state) => state.cartItem);
 
   // セッションストレージからユーザーIDを取得して状態を更新する関数
   const updateHeaderInfo = useCallback(() => {
@@ -115,6 +118,11 @@ const NavLinks = ({ onNavigate }: { onNavigate: (href: string) => void }) => {
               >
                 <LinkIcon className="w-6" />
                 <p className="">{link.name}</p>
+                {cartItems.length > 0 && link.name === "Cart" && (
+                  <span className="indicator-item badge badge-primary w-6 h-6 bg-blue-900 rounded-full ">
+                    {cartItems.length}
+                  </span>
+                )}
               </button>
             );
           })
@@ -166,7 +174,7 @@ const SideNav = () => {
   return (
     <>
       {isLoading && <Loading />}
-      <div className="hidden md:block h-full py-4 px-2">
+      <div className="hidden md:block">
         <button
           className="btn w-full mb-2 rounded-md h-20 relative"
           onClick={() =>
@@ -183,7 +191,7 @@ const SideNav = () => {
             className="object-contain"
           />
         </button>
-        <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
+        <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-1">
           <NavLinks onNavigate={handleNavigation} />
           <button
             onClick={() => handleNavigation("/")}

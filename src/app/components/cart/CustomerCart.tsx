@@ -88,12 +88,26 @@ export const CustomerCart = () => {
     <>
       {showThanks && (
         <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
-          <Player
-            autoplay
-            loop={false}
-            src="/lottie/Thanks.json"
-            style={{ height: "100vh", width: "100vw" }}
-          />
+          <div className="hero bg-gray-600/40 min-h-screen">
+            <div className="hero-content text-center">
+              <div className="max-w-md">
+                <h1 className="text-5xl font-bold text-white">Thank You!!</h1>
+                <div className="flex items-center justify-center">
+                  <p className="py-6 text-white">
+                    Thank you so much for shopping with us! We’re excited for you
+                    to receive your order and hope it brings you joy. Your support
+                    means a lot to us!
+                  </p>
+                <Player
+                  autoplay
+                  loop={false}
+                  src="/lottie/Thanks.json"
+                  style={{ height: "20vh", width: "20vw" }}
+                />
+</div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
       {items.length === 0 ? (
@@ -155,6 +169,7 @@ export const CustomerCart = () => {
       </p>
       <button
         className="btn btn-dash btn-info w-full rounded-lg mt-5 text-sky-400 font-semibold hover:bg-sky-400 hover:text-white"
+        disabled={items.length === 0}
         onClick={() => {
           setStoreCartItem(items);
           setShowAirplane(true);

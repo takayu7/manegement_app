@@ -249,7 +249,7 @@ const cartItems = useStore((state) => state.cartItem);
           {/* カートボタン */}
           <div className="indicator fixed top-[23vh] right-[7vw] lg:top-[20vh] lg:right-[8vw] mb:top-[5vh] mb:right-[8vw]">
             {cartItems.length > 0 && (
-              <span className="indicator-item badge badge-primary bg-blue-900 rounded-full ">
+              <span className="indicator-item badge badge-primary w-6 h-6 bg-blue-900 rounded-full ">
                 {cartItems.length}
               </span>
             )}
