@@ -4,11 +4,12 @@ import Image from "next/image";
 import { Product } from "@/app/types/type";
 import { Plus, Minus, CircleX } from "lucide-react";
 import { ShoppingCart } from "lucide-react";
+import { CategoryImages } from "@/app/lib/utils";
+import { jpMoneyChange } from "@/app/lib/utils";
 
 interface DetailDialogProps {
   product: Product;
   buyProduct: number;
-  categoryImages: Record<string, string>;
   setBuyProductId: React.Dispatch<
     React.SetStateAction<{ [id: string]: number }>
   >;
@@ -19,12 +20,10 @@ interface DetailDialogProps {
 const DetailDialog: React.FC<DetailDialogProps> = ({
   product,
   buyProduct,
-  categoryImages,
   setBuyProductId,
   onAdd,
   onClose,
 }) => {
-  const categoryImg = categoryImages[product.category];
 
   return (
     <>
@@ -33,7 +32,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({
         <div className="bg-white w-[100%] lg:w-[700px] p-6 lg:p-8 flex flex-col lg:flex-row rounded-2xl relative">
           <div className="flex-shrink-0 inline-block mr-5">
             <Image
-              src={categoryImg}
+              src={`${CategoryImages(String(product.category))}`}
               alt={product.name}
               width={250}
               height={100}
@@ -48,7 +47,7 @@ const DetailDialog: React.FC<DetailDialogProps> = ({
             </div>
 
             <div className="mb-5">
-              <p className="mt-2">price: {product.price}</p>
+              <p className="mt-2">price: {jpMoneyChange(product.price)}</p>
               <p className="mt-2">
                 stock:
                 {product.count > 0 ? (

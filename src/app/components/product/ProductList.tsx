@@ -10,36 +10,41 @@ import { ReviewDialog } from "@/app/components/product/ReviewDialog";
 import DetailDialog from "@/app/components/product/DetailDialog";
 import { Player } from "@lottiefiles/react-lottie-player";
 import useStore from "@/app/store/useStore";
+import { CategoryImages } from "@/app/lib/utils";
 
 type SetProductDatas = React.Dispatch<React.SetStateAction<Product[]>>;
 
-  export const onSave = async (cart: CartItem[], product: BuyProductList[], setProductDatas: SetProductDatas) => {
-    // 購入履歴の登録
-    await fetch("/api/userBuyHistory", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(product),
-      cache: "no-store",
-    });
+export const onSave = async (
+  cart: CartItem[],
+  product: BuyProductList[],
+  setProductDatas: SetProductDatas
+) => {
+  // 購入履歴の登録
+  await fetch("/api/userBuyHistory", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(product),
+    cache: "no-store",
+  });
 
-    // 商品情報の更新
-    const resProducts = await fetch("/api/userBuyHistory", {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(cart),
-      cache: "no-store",
-    });
-    const responseText = await resProducts.text();
-    console.log("Response text:", responseText);
-    // 商品一覧を再取得してstateを更新
-    const updated = await fetch("/api/products");
-    const updatedData = await updated.json();
-    setProductDatas(updatedData);
-  };
+  // 商品情報の更新
+  const resProducts = await fetch("/api/userBuyHistory", {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(cart),
+    cache: "no-store",
+  });
+  const responseText = await resProducts.text();
+  console.log("Response text:", responseText);
+  // 商品一覧を再取得してstateを更新
+  const updated = await fetch("/api/products");
+  const updatedData = await updated.json();
+  setProductDatas(updatedData);
+};
 
 export const ProductList = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -58,10 +63,10 @@ export const ProductList = () => {
   // ローディング状態
   const [loading, setLoading] = useState(true);
 
-const setStoreCartItem = useStore((state) => state.setStoreCartItem);
-const addStoreCartItem = useStore((state) => state.addStoreCartItem);
+  const setStoreCartItem = useStore((state) => state.setStoreCartItem);
+  const addStoreCartItem = useStore((state) => state.addStoreCartItem);
 
-const cartItems = useStore((state) => state.cartItem);
+  const cartItems = useStore((state) => state.cartItem);
 
   // 商品データの取得
   useEffect(() => {
@@ -74,16 +79,6 @@ const cartItems = useStore((state) => state.cartItem);
   const buyProduct = selectedProduct
     ? buyProductId[selectedProduct.id] || 0
     : 0;
-
-  const CategoryImages: Record<string, string> = {
-    "1": "/product/image2.jpg",
-    "2": "/product/image6.jpg",
-    "3": "/product/image4.jpg",
-    "4": "/product/image3.jpg",
-    "5": "/product/image7.jpg",
-    "6": "/product/image5.jpg",
-    "7": "/product/image1.jpg",
-  };
 
   // 商品をカートに追加ボタン
   const handleAdd = () => {
@@ -216,7 +211,7 @@ const cartItems = useStore((state) => state.cartItem);
 
                 <figure className="flex justify-center items-center h-auto">
                   <Image
-                    src={CategoryImages[product.category]}
+                    src={`${CategoryImages(String(product.category))}`}
                     alt={product.name}
                     width={190}
                     height={80}
@@ -270,7 +265,6 @@ const cartItems = useStore((state) => state.cartItem);
               <ScrollText />
             </button>
           </div>
-          
         </div>
       </main>
 
@@ -297,7 +291,6 @@ const cartItems = useStore((state) => state.cartItem);
       {isReviewOpen && selectedProduct && (
         <ReviewDialog
           product={selectedProduct}
-          categoryImages={CategoryImages}
           onClose={() => setIsReviewOpen(false)}
         />
       )}
@@ -308,7 +301,6 @@ const cartItems = useStore((state) => state.cartItem);
           product={selectedProduct}
           buyProduct={buyProduct}
           setBuyProductId={setBuyProductId}
-          categoryImages={CategoryImages}
           onAdd={handleAdd}
           onClose={() => setIsDetailsOpen(false)}
         />

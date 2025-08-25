@@ -132,3 +132,46 @@ export function generateCustomId(): string {
   const random = String(Math.floor(Math.random() * 1000)).padStart(3, "0");
   return `${year}${date}${random}`;
 }
+
+//カテゴリ画像を返す関数
+export const CategoryImages = (catImg: string): string => {
+  switch (catImg) {
+    case "1":
+      return "/product/image2.jpg";
+    case "2":
+      return "/product/image6.jpg";
+    case "3":
+      return "/product/image4.jpg";
+    case "4":
+      return "/product/image3.jpg";
+    case "5":
+      return "/product/image7.jpg";
+    case "6":
+      return "/product/image5.jpg";
+    case "7":
+      return "/product/image1.jpg";
+    default:
+      return "Unknown";
+  }
+};
+
+// 評価を星に変換する関数
+export function renderStarRating(rating: number) {
+  const array = Array.from({ length: 5 }, (_, i) => i + 1);
+  return (
+    <div className="rating">
+      {array.map((star) => (
+        <div
+          key={star}
+          className="mask mask-star bg-yellow-400"
+          aria-label={`${star} star`}
+          aria-current={star === rating ? "true" : "false"}
+          style={{
+            maskSize: "20px",
+          }}
+        ></div>
+      ))}
+    </div>
+  );
+}
+

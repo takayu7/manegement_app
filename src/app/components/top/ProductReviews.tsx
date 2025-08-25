@@ -2,7 +2,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { ReviewType, ReviewRecType } from "@/app/types/type";
-import { SelectStaffIcon } from "@/app/lib/utils";
+import { SelectStaffIcon, renderStarRating } from "@/app/lib/utils";
 import { Player } from "@lottiefiles/react-lottie-player";
 import Image from "next/image";
 import { useSessionStorage } from "@/app/hooks/useSessionStorage";
@@ -49,22 +49,6 @@ export const ProductReviews = () => {
     console.log("Response text:", responseText);
   };
 
-  // 評価を星に変換する
-  const renderStarRating = (rating: number) => {
-    const array = Array.from({ length: 5 }, (_, i) => i + 1);
-    return (
-      <div className="rating">
-        {array.map((star) => (
-          <div
-            key={star}
-            className="mask mask-star"
-            aria-label={`${star} star`}
-            aria-current={star === rating ? "true" : "false"}
-          ></div>
-        ))}
-      </div>
-    );
-  };
 
   return (
     <>

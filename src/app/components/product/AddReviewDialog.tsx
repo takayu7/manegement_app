@@ -2,26 +2,22 @@ import { useState, useTransition } from "react";
 import { ReviewType, ReviewRecType } from "@/app/types/type";
 import Image from "next/image";
 import { Player } from "@lottiefiles/react-lottie-player";
-// import { SelectStaffIcon } from "@/app/lib/utils";
 import { useSessionStorage } from "@/app/hooks/useSessionStorage";
 import { CircleX } from "lucide-react";
 import { Product } from "@/app/types/type";
+import { CategoryImages, renderStarRating } from "@/app/lib/utils";
 
 interface AddReviewDialogProps {
   product: Product;
   onClose: () => void;
-  //   onSave:()=>void;
-  categoryImages: Record<string, string>;
   setProductReviewDatas: React.Dispatch<
     React.SetStateAction< ReviewType[] >
   >;
- 
 }
 
 export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
   product,
   onClose,
-  categoryImages,
   setProductReviewDatas,
 }) => {
 
@@ -30,7 +26,6 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
   const [starRating, setStarRating] = useState(3);
   const [comment, setComment] = useState("");
 
-  const categoryImg = categoryImages[product.category];
   const productId = product.id;
   const productName = product.name;
 
@@ -60,35 +55,12 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
     startTransition(() => {
       setLoading(true);
       onSave(review)
-      // .then((onClose))
-      // .finally(()=>setLoading(false));
     });
      fetch(`/api/review/${productId}`)
       .then((res) => res.json())
       .then((data) => setProductReviewDatas(data))
       .then((onClose))
       .finally(() => setLoading(false));
-  };
-
-  // 評価を星に変換
-  const renderStarRating = (rating: number) => {
-    const array = Array.from({ length: 5 }, (_, i) => i + 1);
-    return (
-      <div className="rating">
-        {array.map((star) => (
-          <div
-            key={star}
-            className="mask mask-star bg-yellow-400"
-            aria-label={`${star} star`}
-            aria-current={star === rating ? "true" : "false"}
-            style={{
-              maskSize: "20px",
-            }}
-            onClick={() => setStarRating(star)} // 評価を追加
-          ></div>
-        ))}
-      </div>
-    );
   };
 
   return (
@@ -113,7 +85,7 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
             <>
               <div className="flex-shrink-0 inline-block mr-5">
                 <Image
-                  src={categoryImg}
+                  src={`${CategoryImages(String(product.category))}`}
                   alt="商品画像"
                   width={250}
                   height={100}

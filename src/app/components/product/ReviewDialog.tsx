@@ -6,17 +6,16 @@ import { Player } from "@lottiefiles/react-lottie-player";
 import { SelectStaffIcon } from "@/app/lib/utils";
 import { CircleX } from "lucide-react";
 import { AddReviewDialog } from "@/app/components/product/AddReviewDialog";
+import { CategoryImages, renderStarRating } from "@/app/lib/utils";
 
 interface ReviewDialogProps {
   product: Product;
   onClose: () => void;
-  categoryImages: Record<string, string>;
 }
 
 export const ReviewDialog: React.FC<ReviewDialogProps> = ({
   product,
   onClose,
-  categoryImages,
 }) => {
   const [productReviewDatas, setProductReviewDatas] = useState<ReviewType[]>(
     []
@@ -24,7 +23,6 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
   const [loading, setLoading] = useState(true);
   const [isAddReviewOpen, setIsAddReviewOpen] = useState(false);
 
-  const categoryImg = categoryImages[product.category];
   const productId = product.id;
   const productName = product.name;
 
@@ -37,30 +35,8 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
       .finally(() => setLoading(false));
   }, [productId]);
 
-  // 評価を星に変換
-  const renderStarRating = (rating: number) => {
-    const array = Array.from({ length: 5 }, (_, i) => i + 1);
-    return (
-      <div className="rating">
-        {array.map((star) => (
-          <div
-            key={star}
-            className="mask mask-star bg-yellow-400"
-            aria-label={`${star} star`}
-            aria-current={star === rating ? "true" : "false"}
-            style={{
-              maskSize: "20px",
-            }}
-          ></div>
-        ))}
-      </div>
-    );
-  };
-
-  //総合評価
+  //各商品ごとの平均評価
   const averageStarRating = () => {
-    // if (productReviewDatas.length === 0) return;
-
     const totalStars = productReviewDatas.reduce(
       (acc, review) => acc + review.star,
       0
@@ -70,10 +46,7 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
 
   const handleClick = () => {
     setIsAddReviewOpen(true);
-
   };
-
-  console.log(productReviewDatas);
 
   return (
     <>
@@ -96,7 +69,7 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
             <>
               <div className="flex-shrink-0 inline-block mr-5">
                 <Image
-                  src={categoryImg}
+                  src={`${CategoryImages(String(product.category))}`}
                   alt="商品画像"
                   width={250}
                   height={100}
@@ -178,7 +151,6 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
       {isAddReviewOpen && (
         <AddReviewDialog
           product={product}
-          categoryImages={categoryImages}
           onClose={() => setIsAddReviewOpen(false)}
           setProductReviewDatas={setProductReviewDatas}
         />

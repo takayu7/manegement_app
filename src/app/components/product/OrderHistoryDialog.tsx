@@ -34,12 +34,6 @@ const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({ onClose }) => {
       .finally(() => setLoading(false));
   }, [userId]);
 
-  // const handleDialogClick = (e: React.MouseEvent<HTMLDialogElement>) => {
-  //     if (e.target === e.currentTarget) {
-  //       e.currentTarget.close();
-  //     }
-  //   };
-
   return (
     
     <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center"
@@ -119,7 +113,7 @@ const OrderHistoryDialog: React.FC<OrderHistoryDialogProps> = ({ onClose }) => {
 
         <button
           onClick={onClose}
-          className="fixed top-40 right-6 lg:top-35 lg:right-110 btn btn-ghost btn-circle"
+          className="absolute top-4 right-4 btn btn-ghost btn-circle"
         >
           <CircleX className="size-6.5 text-blue-900" />
         </button>
