@@ -16,6 +16,7 @@ import {
   ReviewRecType,
   ShiftType,
   ShiftListType,
+  AllReviewType,
 } from "@/app/types/type";
 import { generateCustomId } from "@/app/lib/utils";
 
@@ -418,7 +419,38 @@ export async function fetchBuyAllHistory() {
   }
 }
 
-//　評価の取得
+// 評価の所得‗全件
+export async function fetchReviewAllDatas() {
+  try {
+    type apiReviewType = {
+      product_id: string;
+      star: number;
+      name: string;
+    };
+    const data = await sql<apiReviewType[]>`
+      SELECT
+        re.product_id,
+        re.star,
+        product.name AS name
+      FROM review re
+      INNER JOIN product ON re.product_id = product.id
+    `;
+
+    // スネークケース→キャメルケース変換（1件ずつ）
+    const result: AllReviewType[] = data.map((item) => ({
+      productId: item.product_id,
+      star: item.star,
+      name: item.name,
+    }));
+
+    return result;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch review data.");
+  }
+}
+
+//　評価の取得_商品指定
 export async function fetchReviewDatas(productId: string) {
   try {
     type apiReviewType = {

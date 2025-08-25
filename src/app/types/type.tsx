@@ -93,6 +93,12 @@ export type UserBuyParameterType = {
   date: Date;
 };
 
+export type AllReviewType = {
+  productId: string;
+  star: number;
+  name: string;
+};
+
 export type ReviewType = {
   productId: string;
   star: number;
