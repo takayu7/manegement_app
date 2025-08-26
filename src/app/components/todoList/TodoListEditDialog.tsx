@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Todo } from "@/app/types/type";
 import { ListPlus } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import z from "zod";
 import { formatMessage, MESSAGE_LIST } from "@/app/lib/messages";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -47,6 +47,8 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
 }) => {
   const {
     register,
+    watch,
+    control,
     getValues,
     setValue,
     formState: { errors },
@@ -56,7 +58,7 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
     resolver: zodResolver(formSchema),
   });
   //const [editTodo, setEditTodo] = useState<Todo>(defaultTodoData);
-  const [timeLimit, setTimeLimit] = useState("");
+  //const [timeLimit, setTimeLimit] = useState("");
 
   //ユーザー情報の取得
   async function fetchUserData() {
@@ -76,28 +78,35 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
     return oneUser;
   }
 
-  const getToday = new Date(getValues("deadline") || "");
-  const y = getToday.getFullYear();
-  const m = getToday.getMonth() + 1;
-  const d = getToday.getDate();
-  const deadline =
-    y +
-    "-" +
-    m.toString().padStart(2, "0") +
-    "-" +
-    d.toString().padStart(2, "0");
-
-  //ユーザーがlimit timeの値を変更した際に、その値を取得する処理
-  const limitTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newLimiTime = e.target.value;
-    if (newLimiTime === "") {
-      setValue("deadline", null);
-      //setAddTodo({ ...addTodo, deadline: null });
+  const convertDateToString = (date: Date | null) => {
+    if (date === null) {
+      return "";
     } else {
-      setValue("deadline", new Date(newLimiTime));
-      //setAddTodo({ ...addTodo, deadline: new Date(newLimiTime) });
+      const getToday = new Date(watch("deadline") || "");
+      const y = getToday.getFullYear();
+      const m = getToday.getMonth() + 1;
+      const d = getToday.getDate();
+      const deadline =
+        y +
+        "-" +
+        m.toString().padStart(2, "0") +
+        "-" +
+        d.toString().padStart(2, "0");
+      return deadline;
     }
   };
+
+  //ユーザーがlimit timeの値を変更した際に、その値を取得する処理
+  // const limitTimeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const newLimiTime = e.target.value;
+  //   if (newLimiTime === "") {
+  //     setValue("deadline", null);
+  //     //setAddTodo({ ...addTodo, deadline: null });
+  //   } else {
+  //     setValue("deadline", new Date(newLimiTime));
+  //     //setAddTodo({ ...addTodo, deadline: new Date(newLimiTime) });
+  //   }
+  // };
 
   //handleSubmit内の処理
   async function handleFormSubmit() {
@@ -120,9 +129,13 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
     setValue("icon", Number(todo?.icon));
     if (todo?.deadline !== undefined && todo?.deadline !== null) {
       setValue("deadline", new Date(todo?.deadline));
+    } else {
+      setValue("deadline", null);
     }
     if (todo?.checked !== undefined && todo?.checked !== null) {
       setValue("checked", new Date(todo?.checked));
+    } else {
+      setValue("checked", null);
     }
   }, [
     setValue,
@@ -137,9 +150,9 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
 
   useEffect(() => {
     //setEditTodo(todo ? { ...todo } : defaultTodoData);
-    setTimeLimit(deadline);
+    //setTimeLimit(deadline);
     fetchUserData();
-  }, [deadline, todo]);
+  }, []);
 
   return (
     <dialog id="TodoListEditDialog" className="modal md:p-5">
@@ -190,23 +203,23 @@ export const TodoListEditDialog: React.FC<EditDialogProps> = ({
           {/* TimeLimit */}
           <li className="flex flex-col gap-1 md:items-center md:gap-4 md:flex-row">
             <label className="w-40">Time Limit :</label>
-            <input
-              //{...register("deadline")}
-              type="date"
+            <Controller
               name="deadline"
-              value={timeLimit}
-              onChange={(e) => {
-                console.log(new Date(e.target.value));
-                setTimeLimit(e.target.value);
-                limitTimeChange(e);
-              }}
-              // name="deadline"
-              // value={deadline}
-              // onChange={(e) =>
-              //   setEditTodo({ ...editTodo, deadline: new Date(e.target.value) })
-              // }
-              // placeholder="explanation"
-              className="rounded-sm border-2 p-1 text-lg textarea md:mx-5"
+              control={control}
+              render={({ field }) => (
+                <input
+                  {...field}
+                  type="date"
+                  value={convertDateToString(field.value)}
+                  onChange={(e) => {
+                    field.onChange(new Date(e.target.value));
+                    console.log(new Date(e.target.value));
+                    //setTimeLimit(e.target.value);
+                    //limitTimeChange(e);
+                  }}
+                  className="rounded-sm border-2 p-1 text-lg textarea md:mx-5"
+                />
+              )}
             />
           </li>
         </ul>
