@@ -4,6 +4,7 @@ import { Category, Supplier } from "@/app/types/type";
 import { ListPlus, Undo2 } from "lucide-react";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { ProductFormValues } from "@/app/components/purchase/Purchase";
+import { jpMoneyChange } from "@/app/lib/utils";
 
 export interface PurchaseCheckDialogProps {
   product: ProductFormValues;
@@ -38,7 +39,7 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center">
-      <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[600px] relative h-110 overflow-y-auto">
+      <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[600px] relative h-110 overflow-y-auto overflow-x-hidden">
         <h2 className="text-3xl font-bold mb-3 text-center text-gray-800">
           Check
         </h2>
@@ -59,15 +60,15 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
           </li>
           {/* 商品説明 */}
           <li className="flex lg:flex-row ">
-            <label className=" font-semibold text-gray-700 w-40">
+            <label className=" font-semibold text-gray-700 w-40 mr-15">
               explanation:
             </label>
             <p className="font-bold text-blue-900">{product.explanation}</p>
           </li>
           {/* 仕入れ数 */}
           <li className="flex lg:flex-row ">
-            <label className=" font-semibold text-gray-700 w-40">cost:</label>
-            <p className="font-bold text-blue-900">{product.cost}</p>
+            <label className=" font-semibold text-gray-700 w-40">count:</label>
+            <p className="font-bold text-blue-900">{product.count}</p>
           </li>
           {/* 仕入れ先 */}
           <li className="flex lg:flex-row ">
@@ -81,13 +82,13 @@ export const PurchaseCheckDialog: React.FC<PurchaseCheckDialogProps> = ({
 
           {/* 原価 */}
           <li className="flex lg:flex-row ">
-            <label className=" font-semibold text-gray-700 w-40">count:</label>
-            <p className="font-bold text-blue-900">{product.count}</p>
+            <label className=" font-semibold text-gray-700 w-40">cost:</label>
+            <p className="font-bold text-blue-900">{jpMoneyChange(Number(product.cost))}</p>
           </li>
           {/* 販売価格 */}
           <li className="flex lg:flex-row ">
             <label className=" font-semibold text-gray-700 w-40">price:</label>
-            <p className="font-bold text-blue-900">{product.price}</p>
+            <p className="font-bold text-blue-900">{jpMoneyChange(Number(product.price))}</p>
           </li>
         </ul>
 
