@@ -17,6 +17,7 @@ import {
   ShiftType,
   ShiftDataType,
   AllReviewType,
+  userItemsType,
 } from "@/app/types/type";
 import { generateCustomId } from "@/app/lib/utils";
 
@@ -317,6 +318,10 @@ export async function createPurchaseHistory(buyProductList: BuyProductList[]) {
     const groupId = generateCustomId();
 
     for (const item of buyProductList) {
+      if (!item.id || !item.userid || !item.count) {
+        console.error("itemの値が不正です:", item);
+        continue; // または throw new Error で中断
+      }
       await sql`
         INSERT INTO purchase_history (id, userid, count, buy_date, buy_group_id)
         VALUES (${item.id}, ${item.userid}, ${item.count}, NOW(), ${groupId})
@@ -506,6 +511,120 @@ export async function createReview(review: ReviewRecType) {
   } catch (error) {
     console.error("Database Error:", error);
     throw new Error("Failed to create review.");
+  }
+}
+
+//　後で買うとお気に入りの取得
+export async function fetchUserItemDatas(userId: string) {
+  try {
+    const data = await sql<
+      {
+        product_id: string;
+        product_name: string;
+      }[]
+    >`
+  SELECT
+    ui.user_id,
+    bl.product_id,
+    p.name AS product_name
+  FROM user_items ui
+  LEFT JOIN LATERAL unnest(string_to_array(ui.buy_later, ',')) AS bl(product_id) ON TRUE
+  LEFT JOIN product p ON p.id = bl.product_id
+  WHERE ui.user_id = ${userId}
+`;
+    //データがなければ空を返す
+    if (!data) {
+      return data;
+    }
+
+    // スネークケース→キャメルケース変換（1件ずつ）
+    const result: userItemsType[] = data.map((item) => ({
+      userId: userId,
+      productId: item.product_id,
+      productName: item.product_name,
+    }));
+
+    return result;
+  } catch (error) {
+    console.error("Database Error:", error);
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+    throw new Error("Failed to fetch review data.");
+  }
+}
+
+// 後で購入の登録
+type userItemsReq = {
+  productId: string;
+  userId: string;
+};
+export async function upUserItemDatas({ productId, userId }: userItemsReq) {
+  const myLaterList: userItemsType[] = await fetchUserItemDatas(userId);
+
+  try {
+    if (!myLaterList || myLaterList.length === 0) {
+      await sql`
+        INSERT INTO user_items (user_id, buy_later)
+        VALUES (${userId}, ${productId});
+      `;
+    } else {
+      const isExist = myLaterList.some((item) => item.productId === productId);
+      if (isExist) {
+        return;
+      } else {
+        await sql`
+            UPDATE user_items
+            SET buy_later =
+            CASE
+              WHEN buy_later IS NULL OR buy_later = '' THEN ${productId}
+              ELSE buy_later || ',' || ${productId}
+            END
+            WHERE user_id = ${userId}
+          `;
+      }
+    }
+  } catch (error) {
+    console.error("Database Error:", error);
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+    throw new Error("Failed to create shift.");
+  }
+}
+
+export async function deleteUserItemDatas({ productId, userId }: userItemsReq) {
+  const myLaterList: userItemsType[] = await fetchUserItemDatas(userId);
+
+  try {
+    if (!myLaterList || myLaterList.length === 0) {
+      return;
+    } else {
+      const isExist = myLaterList.some((item) => item.productId === productId);
+      if (!isExist) {
+        return;
+      } else {
+        await sql`
+            UPDATE user_items
+            SET buy_later = array_to_string(array_remove(string_to_array(buy_later, ','), ${productId}), ',')
+            WHERE user_id = ${userId}
+          `;
+        // buy_laterがnullまたは空文字になった場合は行ごと削除
+        await sql`
+            DELETE FROM user_items
+            WHERE user_id = ${userId} AND (buy_later IS NULL OR buy_later = '')
+          `;
+      }
+    }
+  } catch (error) {
+    console.error("Database Error:", error);
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+    throw new Error("Failed to create shift.");
   }
 }
 

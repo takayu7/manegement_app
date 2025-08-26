@@ -1,6 +1,7 @@
 
 import React from "react";
 import { CustomerCart } from '@/app/components/cart/CustomerCart';
+import { AfterBuyCart } from "@/app/components/cart/AfterBuyCart";
 
 export default async function Page() {
   return (
@@ -8,6 +9,7 @@ export default async function Page() {
       <div className="space-y-6">
         <h1 className="mb-10 text-xl md:text-4xl font-bold ">Cart</h1>
           <CustomerCart />
+          <AfterBuyCart />
       </div>
     </>
   );

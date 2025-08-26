@@ -130,3 +130,9 @@ export type ShiftType = {
   icon: string;
   shiftData: ShiftDataType[];
 };
+
+export type userItemsType = {
+      userId: string;
+      productId: string;
+      productName: string;
+    };
