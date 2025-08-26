@@ -163,7 +163,7 @@ export function renderStarRating(rating: number) {
       {array.map((star) => (
         <div
           key={star}
-          className="mask mask-star bg-yellow-400"
+          className="mask mask-star bg-pink-500"
           aria-label={`${star} star`}
           aria-current={star === rating ? "true" : "false"}
           style={{

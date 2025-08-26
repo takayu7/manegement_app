@@ -41,7 +41,9 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
       (acc, review) => acc + review.star,
       0
     );
-    return totalStars / productReviewDatas.length;
+    if (productReviewDatas.length === 0) return 0;
+    const average = totalStars / productReviewDatas.length;
+    return Math.round(average * 10) / 10;
   };
 
   const handleClick = () => {
@@ -75,8 +77,9 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
                   height={100}
                   className="rounded-xl "
                 />
-                <div className="pt-1 flex justify-center">
+                <div className="pt-2 flex justify-center">
                   {renderStarRating(Math.round(averageStarRating()))}
+                  <p className="pl-2 font-bold">{averageStarRating()}</p>
                 </div>
               </div>
 

@@ -3,47 +3,38 @@ import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { Product } from "@/app/types/type";
-import { Button } from "@/components/ui/button";
-// import { date } from "zod";
-// import { fa } from "zod/v4/locales";
-// import { Button } from "@/components/ui/button";
+import { jpMoneyChange } from "@/app/lib/utils";
+import CarouselDetailDialog from "@/app/components/customerTop/CarouselDetailDialog";
+import { Trophy } from "lucide-react";
 
 export const SalesRanking = () => {
   const [productDatas, setProductDatas] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isCarouselDetailOpen, setIsCarouselDetailOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   // 商品データの取得
   useEffect(() => {
     fetch(`/api/products`)
       .then((res) => res.json())
-      .then((data) => setProductDatas(data))
-      .finally(() => setLoading(false));
+      .then((data) =>
+        setProductDatas(data.sort((a, b) => b.order - a.order).slice(0, 5))
+      );
   }, []);
 
-  // useEffect(() => {
-  //   if (productDatas.length === 0) return;
-  //   const salesArray = [...productDatas];
-  // return()=>setProductDatas(salesArray.sort((a, b) => b.order - a.order))
-  // console.log(setProductDatas);
-  // }, [productDatas]);
-
-  const handleClick = () => {
-    const salesArray = [...productDatas];
-    setProductDatas(salesArray.sort((a, b) => b.order - a.order));
+  const handleDetail = (product: Product) => {
+    setSelectedProduct(product);
+    setIsCarouselDetailOpen(true);
   };
 
   return (
     <>
       <Table>
-        <TableCaption>Sales Ranking</TableCaption>
 
         <TableHeader>
           <TableRow>
@@ -55,22 +46,41 @@ export const SalesRanking = () => {
 
         <TableBody>
           {productDatas.map((product, index) => (
-            <TableRow key={product.id}>
-              <TableCell className="font-medium">{index + 1}</TableCell>
+            <TableRow
+              key={product.id}
+              onClick={() => handleDetail(product)}
+              className={
+                index === 0
+                  ? "bg-yellow-400 hover:bg-yellow-200"
+                  : index === 1
+                  ? "bg-gray-300 hover:bg-gray-200"
+                  : index === 2
+                  ? "bg-orange-700  text-white  hover:bg-orange-300 hover:text-black"
+                  : ""
+              }
+            >
+              <TableCell className="font-medium flex ">
+                {index + 1}
+                {index === 0 && (
+                  <div className="pl-3">
+                    <Trophy />
+                  </div>
+                )}
+              </TableCell>
               <TableCell>{product.name}</TableCell>
-              <TableCell className="text-right">{product.price}</TableCell>
+              <TableCell className="text-right">{jpMoneyChange(product.price)}</TableCell>
             </TableRow>
           ))}
         </TableBody>
-
-        {/* <TableFooter>
-          <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">$2,500.00</TableCell>
-          </TableRow>
-        </TableFooter> */}
       </Table>
-      <Button onClick={handleClick}>Ranking</Button>
+
+      {/* 商品詳細ダイアログ */}
+      {isCarouselDetailOpen && (
+        <CarouselDetailDialog
+          product={selectedProduct}
+          onClose={() => setIsCarouselDetailOpen(false)}
+        />
+      )}
     </>
   );
 };

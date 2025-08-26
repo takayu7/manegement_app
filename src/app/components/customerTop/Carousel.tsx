@@ -10,8 +10,8 @@ import {
 } from "@/components/ui/carousel";
 import { Product } from "@/app/types/type";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import CarouselDetailDialog from "@/app/components/customerTop/CarouselDetailDialog";
+import { CategoryImages } from "@/app/lib/utils";
 
 export const TopCarousel = () => {
   const [productDatas, setProductDatas] = useState<Product[]>([]);
@@ -24,16 +24,6 @@ export const TopCarousel = () => {
       .then((res) => res.json())
       .then((data) => setProductDatas(data));
   }, []);
-
-  const CategoryImages: Record<string, string> = {
-    "1": "/product/image2.jpg",
-    "2": "/product/image6.jpg",
-    "3": "/product/image4.jpg",
-    "4": "/product/image3.jpg",
-    "5": "/product/image7.jpg",
-    "6": "/product/image5.jpg",
-    "7": "/product/image1.jpg",
-  };
 
   const handleDetail = (product: Product) => {
     setSelectedProduct(product);
@@ -50,22 +40,18 @@ export const TopCarousel = () => {
         className="justify-center max-w-4xl items-center "
       >
         <CarouselContent>
-          {productDatas.map((product, index) => (
+          {productDatas.map((product) => (
             <CarouselItem
               key={product.id}
               className="md:basis-1/2 lg:basis-1/3 "
+              onClick={() => handleDetail(product)}
             >
-              <Button
-                size="img"
-                className="bg-white hover:bg-white "
-                key={index}
-                onClick={() => handleDetail(product)}
-              >
+             
                 <div className="p-1">
-                  <Card className="bg-gray-100 h-full w-full max-w-sm flex">
+                  <Card className="bg-gray-100 h-100 w-70 max-w-sm flex">
                     <CardContent className="flex aspect-video items-center justify-center p-0">
                       <Image
-                        src={CategoryImages[Number(product.category)]}
+                        src={`${CategoryImages(String(product.category))}`}
                         alt={product.name}
                         width={500}
                         height={500}
@@ -77,7 +63,6 @@ export const TopCarousel = () => {
                     </CardFooter>
                   </Card>
                 </div>
-              </Button>
             </CarouselItem>
           ))}
         </CarouselContent>
@@ -89,7 +74,6 @@ export const TopCarousel = () => {
       {isCarouselDetailOpen && (
         <CarouselDetailDialog
           product={selectedProduct}
-          categoryImages={CategoryImages}
           onClose={() => setIsCarouselDetailOpen(false)}
         />
       )}
