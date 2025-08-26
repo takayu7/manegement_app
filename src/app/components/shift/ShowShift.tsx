@@ -206,7 +206,7 @@ export const ShowShift = () => {
                                 "editShift"
                               ) as HTMLDialogElement
                             )?.showModal();
-                            console.log(newShiftList.userId);
+                            console.log(userId);
                           }}
                           className="btn btn-primary ml-5 mb-10  bg-white text-black"
                         >
@@ -246,15 +246,15 @@ export const ShowShift = () => {
                     </div>
                   </>
                 )}
-                <ShiftEditDialog
-                  userId={userId}
-                  name={dialogUserName}
-                  targetDate={targetDate}
-                  onSaveButtonClick={fetchShift}
-                />
               </div>
             );
           })}
+          <ShiftEditDialog
+            userId={userId}
+            name={dialogUserName}
+            targetDate={targetDate}
+            onSaveButtonClick={fetchShift}
+          />
         </div>
       )}
     </>

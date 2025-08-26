@@ -1,10 +1,11 @@
 "use client";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import React from "react";
-import { ShiftType, ShiftListType } from "@/app/types/type";
-// import z, { regex } from "zod";
-// import { useForm } from "react-hook-form";
-// import { zodResolver } from "@hookform/resolvers/zod";
+import { ShiftType, ShiftDataType } from "@/app/types/type";
+import z from "zod";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Player } from "@lottiefiles/react-lottie-player";
 
 const statesList = [
   { key: 0, value: "未定" },
@@ -43,61 +44,74 @@ export const ShiftEditDialog: React.FC<Prop> = ({
     }));
   }, [targetDate]);
 
+  //時間を秒に変換する処理
+  const parseTime = (time: string) => {
+    const [h, m, s] = time.split(":").map(Number);
+    const second = h * 60 + m + s;
+    return second;
+  };
+
+  //入力フォームのバリデーション
+  const shiftDataSchema = z.array(
+    z
+      .object({
+        shiftDate: z.date(),
+        startTime: z.string().nullable(),
+        endTime: z.string().nullable(),
+        status: z.number(),
+      })
+      .superRefine((data, ctx) => {
+        if (data.startTime != null && data.endTime != null) {
+          const startTime = parseTime(data.startTime);
+          const endTime = parseTime(data.endTime);
+          if (startTime >= endTime) {
+            ctx.addIssue({
+              code: "custom",
+              message: "startはendよりも小さい値を選んでください。",
+              path: ["startTime"],
+            });
+          }
+        }
+      })
+  );
+  const formSchema = z.object({
+    userId: z.string(),
+    name: z.string(),
+    icon: z.string(),
+    shiftData: shiftDataSchema,
+  });
+
   const defaultData = useMemo(() => {
     return {
       userId: "",
       name: "",
       icon: "",
-      shiftData: generateMonthShiftData() as ShiftListType[],
+      shiftData: generateMonthShiftData() as ShiftDataType[],
     };
   }, [generateMonthShiftData]);
 
-  const parseTime = (time: string) => {
-    const [h, m] = time.split(":").map(Number);
-    const second = h * 60 + m;
-    return second;
-  };
-
-  // //入力フォームのバリデーション
-  // const formSchema = z
-  //   .object({
-  //     shiftDate: z.date(),
-  //     startTime: z.string().regex(/^\d{2}:\d{2}$/),
-  //     endTime: z.string().regex(/^\d{2}:\d{2}$/),
-  //     status: z.number(),
-  //   })
-  //   .superRefine((data, ctx) => {
-  //     if (parseTime(data.startTime) >= parseTime(data.endTime)) {
-  //       ctx.addIssue({
-  //         code: "custom",
-  //         message: "開始時間は終了時間よりも小さいの値を指定してください。",
-  //         path: ["startTime"],
-  //       });
-  //       ctx.addIssue({
-  //         code: "custom",
-  //         message: "終了時間は開始時間よりも大きいの値を指定してください。",
-  //         path: ["endTime"],
-  //       });
-  //     }
-  //   });
-  // const formArraySchema = z.array(formSchema);
-
   const [shiftList, setShiftList] = useState<ShiftType[]>([]);
   const [loading, setLoading] = useState(true);
-  // const {
-  //   register,
-  //   getValues,
-  //   setValue,
-  //   FormState: { errors },
-  //   handleSubmit,
-  // } = useForm({
-  //   defaultValues: defaultData.shiftData,
-  //   resolver: zodResolver(formArraySchema),
-  // });
-  const [shiftData, setShiftData] = useState<ShiftType>(defaultData);
+  const {
+    register,
+    control,
+    setValue,
+    getValues,
+    watch,
+    formState: { errors },
+    handleSubmit,
+  } = useForm<z.infer<typeof formSchema>>({
+    defaultValues: defaultData,
+    resolver: zodResolver(formSchema),
+  });
 
-  console.log(shiftData);
   console.log(shiftList);
+
+  //defaultValuesに値を挿入する処理
+  useEffect(() => {
+    setValue("userId", userId);
+    setValue("name", name);
+  });
 
   //入力フォームに表示するデータをフォーマットに挿入
   useEffect(() => {
@@ -111,11 +125,9 @@ export const ShiftEditDialog: React.FC<Prop> = ({
         const userShift = data.find((t: ShiftType) => t.userId === userId);
 
         // shiftData を更新
-        setShiftData(() => ({
-          ...defaultData,
-          userId,
-          name,
-          shiftData: defaultData.shiftData.map((s) => {
+        setValue(
+          "shiftData",
+          defaultData.shiftData.map((s) => {
             const matchingShift = userShift?.shiftData.find(
               (t: { shiftDate: Date }) => {
                 const tDate = new Date(t.shiftDate);
@@ -137,11 +149,11 @@ export const ShiftEditDialog: React.FC<Prop> = ({
               };
             }
             return s;
-          }),
-        }));
+          })
+        );
       })
       .finally(() => setLoading(false));
-  }, [defaultData, name, targetDate, userId]);
+  }, [defaultData.shiftData, setValue, targetDate, userId]);
 
   // DBに登録
   const onSave = async (shift: ShiftType) => {
@@ -149,16 +161,6 @@ export const ShiftEditDialog: React.FC<Prop> = ({
     const newShift = {
       ...shift,
       shiftData: shift.shiftData
-        // .filter((s) => {
-        //   if (!s.shiftDate) return false;
-        //   const dateStr =
-        //     s.shiftDate instanceof Date
-        //       ? s.shiftDate.toISOString().slice(0, 7)
-        //       : String(s.shiftDate).slice(0, 7);
-        //   return (
-        //     dateStr === targetDate && ((s.startTime && s.endTime) || s.status) //時間またはステータスが入っているものだけを残す
-        //   );
-        // })
         //残ったシフトデータのshiftDateを（"YYYY-MM-DD"形式）に変換
         .map((s) => ({
           ...s,
@@ -182,160 +184,136 @@ export const ShiftEditDialog: React.FC<Prop> = ({
     console.log("Response text:", responseText);
   };
 
+  //Saveボタンが押された時の処理
+  const handleSaveClick = async () => {
+    setLoading(true);
+    const newShift: ShiftType = getValues();
+    await onSave(newShift);
+    onSaveButtonClick(targetDate);
+    (document.getElementById("editShift") as HTMLDialogElement).close();
+    setLoading(false);
+  };
+
   return (
     <dialog id="editShift" className="modal overflow-y-auto md:p-5">
-      {loading && <p>Loading...</p>}
-
-      <form className="w-2/3 h-120 bg-blue-300 p-1  rounded-lg">
+      <form
+        onSubmit={handleSubmit(handleSaveClick)}
+        className="w-2/3 h-120 bg-blue-300 p-1  rounded-lg"
+      >
         <h2 className="my-5 text-xl md:text-4xl font-bold text-center">
-          {shiftData.name}
+          {getValues("name")}
         </h2>
         <div className="ml-20 h-80 overflow-y-auto">
-          {shiftData.shiftData.map((s, index) => (
+          {watch("shiftData").map((s, index) => (
             <div key={index} className="grid grid-cols-7 gap-2 mb-2">
               <p className="my-auto">{s.shiftDate.toLocaleDateString()}</p>
-              <select
-                id={`status${index}`}
-                name={`status${index}`}
-                value={s.status}
-                required
-                onChange={(e) => {
-                  setShiftData((prev) => ({
-                    ...prev,
-                    shiftData: prev.shiftData.map((shift, i) =>
-                      i === index
-                        ? {
-                            ...shift,
-                            status: Number(e.target.value),
-                            startTime:
-                              Number(e.target.value) !== 1
-                                ? ""
-                                : shift.startTime,
-                            endTime:
-                              Number(e.target.value) !== 1 ? "" : shift.endTime,
-                          }
-                        : shift
-                    ),
-                  }));
-                }}
-                className={`select rounded-sm border-3 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
-                  s.startTime ? "select-secondary" : ""
-                }`}
-              >
-                <option value=""></option>
-                {statesList.map((state) => (
-                  <option
-                    key={state.key}
-                    value={state.key}
-                    className={`${state.key === 3 ? "bg-red-300" : ""}`}
+
+              {/* stuts（ここから）*/}
+              <Controller
+                name={`shiftData.${index}.status`}
+                control={control}
+                render={({ field }) => (
+                  <select
+                    {...field}
+                    id={`status${index}`}
+                    required
+                    onChange={(e) => {
+                      const newStatus = Number(e.target.value);
+                      field.onChange(newStatus);
+                      if (newStatus !== 1) {
+                        setValue(`shiftData.${index}.startTime`, "");
+                        setValue(`shiftData.${index}.endTime`, "");
+                      }
+                    }}
+                    className={`select rounded-sm border-3 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
+                      s.startTime ? "select-secondary" : ""
+                    }`}
                   >
-                    {state.value}
-                  </option>
-                ))}
-              </select>
+                    <option value=""></option>
+                    {statesList.map((state) => (
+                      <option
+                        key={state.key}
+                        value={state.key}
+                        className={`${state.key === 3 ? "bg-red-300" : ""}`}
+                      >
+                        {state.value}
+                      </option>
+                    ))}
+                  </select>
+                )}
+              />
+              {/* stuts（ここまで）*/}
+
+              {/* 開始時間（ここから）*/}
               <select
+                {...register(`shiftData.${index}.startTime`)}
                 id={`startTime${index}`}
-                name={`startTime${index}`}
-                disabled={s.status !== 1}
-                value={
-                  s.status === 1 && s.startTime
-                    ? Number((s.startTime || "").slice(0, 2)) || ""
-                    : ""
-                }
-                onChange={(e) => {
-                  const newStartTime = e.target.value.padStart(2, "0") + ":00";
-                  setShiftData((prev) => ({
-                    ...prev,
-                    shiftData: prev.shiftData.map((shift, i) =>
-                      i === index
-                        ? { ...shift, startTime: newStartTime }
-                        : shift
-                    ),
-                  }));
-                }}
+                //name={`startTime${index}`}
+                disabled={watch(`shiftData.${index}.status`) != 1}
                 required
                 className={`select rounded-sm border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
-                  s.startTime ? "select-secondary" : ""
+                  watch(`shiftData.${index}.startTime`)
+                    ? "select-secondary"
+                    : ""
                 }`}
               >
                 <option value="">start</option>
                 {Array.from({ length: 24 }, (_, i) => (
                   <option
                     key={i + 1}
-                    value={i + 1}
-                    disabled={
-                      s.endTime !== null &&
-                      parseTime(i + 1 + ":00") >= parseTime(s.endTime)
-                    }
+                    value={(i + 1).toString().padStart(2, "0") + ":00:00"}
                   >
                     {i + 1}
                   </option>
                 ))}
               </select>
+              {/* 開始時間（ここまで）*/}
               <p className="my-auto">:00</p>
               <p className="my-auto">-</p>
+
+              {/* 終了時間（ここから）*/}
               <select
+                {...register(`shiftData.${index}.endTime`)}
                 id={`endTime${index}`}
-                name={`endTime${index}`}
-                disabled={s.status !== 1}
-                value={
-                  s.status === 1 && s.endTime
-                    ? Number((s.endTime || "").slice(0, 2)) || ""
-                    : ""
-                }
+                disabled={watch(`shiftData.${index}.status`) != 1}
                 required
-                onChange={(e) => {
-                  const newEndTime = e.target.value.padStart(2, "0") + ":00";
-                  setShiftData((prev) => ({
-                    ...prev,
-                    shiftData: prev.shiftData.map((shift, i) =>
-                      i === index ? { ...shift, endTime: newEndTime } : shift
-                    ),
-                  }));
-                }}
                 className={`select rounded-sm border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
-                  s.startTime ? "select-secondary" : ""
+                  watch(`shiftData.${index}.startTime`)
+                    ? "select-secondary"
+                    : ""
                 }`}
               >
                 <option value="">end</option>
                 {Array.from({ length: 24 }, (_, i) => (
                   <option
                     key={i + 1}
-                    value={i + 1}
-                    disabled={
-                      s.endTime !== null &&
-                      parseTime(i + 1 + ":00") <= parseTime(s.startTime)
-                    }
+                    value={(i + 1).toString().padStart(2, "0") + ":00:00"}
                   >
                     {i + 1}
                   </option>
                 ))}
               </select>
+              {/* 終了時間（ここまで）*/}
               <p className="my-auto">:00</p>
-              {/* <p className="my-auto">
-            {statesList.find((item) => item.key === s.status)?.value || "未定"}
-          </p> */}
+              <div>
+                <p className="text-red-600 mt-2">
+                  {errors.shiftData?.[index]?.startTime?.message}
+                </p>
+                <p className="text-red-600 mt-2">
+                  {errors.shiftData?.[index]?.endTime?.message}
+                </p>
+              </div>
             </div>
           ))}
         </div>
         <div className="flex justify-center mt-4">
-          <button
-            className="btn btn-primary"
-            onClick={async () => {
-              await onSave(shiftData);
-              onSaveButtonClick(targetDate);
-              (
-                document.getElementById("editShift") as HTMLDialogElement
-              ).close();
-            }}
-          >
+          <button type="submit" className="btn btn-primary">
             Save
           </button>
           <button
             type="button"
             className="ml-5 btn btn-primary bg-gray-600 border-gray-600"
             onClick={() => {
-              console.log(shiftData);
               (
                 document.getElementById("editShift") as HTMLDialogElement
               ).close();
@@ -345,6 +323,22 @@ export const ShiftEditDialog: React.FC<Prop> = ({
           </button>
         </div>
       </form>
+      {loading && (
+        <Player
+          autoplay
+          loop
+          src="/lottie/Loading.json"
+          style={{
+            height: "100px",
+            width: "100px",
+            zIndex: "100px",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        />
+      )}
     </dialog>
   );
 };

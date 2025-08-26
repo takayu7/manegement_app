@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import React from "react";
-import { ShiftType, ShiftListType } from "@/app/types/type";
+import { ShiftType, ShiftDataType } from "@/app/types/type";
 
 const statesList = [
   { key: 0, value: "未定" },
@@ -26,7 +26,7 @@ const defaultData: ShiftType = {
   userId: "",
   name: "",
   icon: "",
-  shiftData: generateMonthShiftData(2025, 8) as ShiftListType[], // 2025年8月分で仮指定※変更要！！
+  shiftData: generateMonthShiftData(2025, 8) as ShiftDataType[], // 2025年8月分で仮指定※変更要！！
 };
 
 const targetDate = "2025-08";

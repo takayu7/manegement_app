@@ -116,10 +116,10 @@ export type ReviewRecType = {
   date?: Date;
 };
 
-export type ShiftListType = {
+export type ShiftDataType = {
   shiftDate: Date;
-  startTime: string;
-  endTime: string;
+  startTime: string | null;
+  endTime: string | null;
   status: number;
 };
 
@@ -128,5 +128,5 @@ export type ShiftType = {
   userId: string;
   name: string;
   icon: string;
-  shiftData: ShiftListType[];
+  shiftData: ShiftDataType[];
 };

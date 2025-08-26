@@ -15,7 +15,7 @@ import {
   ReviewType,
   ReviewRecType,
   ShiftType,
-  ShiftListType,
+  ShiftDataType,
   AllReviewType,
 } from "@/app/types/type";
 import { generateCustomId } from "@/app/lib/utils";
@@ -630,7 +630,7 @@ export async function fetchShiftByMonth(targetDate: string) {
           status: item.status,
         });
         return acc;
-      }, {} as Record<string, { userId: string; name: string; icon: string; shiftData: ShiftListType[] }>)
+      }, {} as Record<string, { userId: string; name: string; icon: string; shiftData: ShiftDataType[] }>)
     );
 
     return grouped;
@@ -684,7 +684,7 @@ export async function fetchShiftByUserName(targetUserName: string) {
           status: item.status,
         });
         return acc;
-      }, {} as Record<string, { userId: string; name: string; icon: string; shiftData: ShiftListType[] }>)
+      }, {} as Record<string, { userId: string; name: string; icon: string; shiftData: ShiftDataType[] }>)
     );
 
     return grouped;
