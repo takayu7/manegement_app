@@ -77,10 +77,14 @@ export const ReviewDialog: React.FC<ReviewDialogProps> = ({
                   height={100}
                   className="rounded-xl "
                 />
-                <div className="pt-2 flex justify-center">
-                  {renderStarRating(Math.round(averageStarRating()))}
-                  <p className="pl-2 font-bold">{averageStarRating()}</p>
-                </div>
+                {productReviewDatas.length > 0 ? (
+                  <div className="pt-2 flex justify-center">
+                    {renderStarRating(Math.round(averageStarRating()))}
+                    <p className="pl-2 font-bold">{averageStarRating()}</p>
+                  </div>
+                ) : (
+                  <p className=""></p>
+                )}
               </div>
 
               <div className="flex flex-col relative pb-5">

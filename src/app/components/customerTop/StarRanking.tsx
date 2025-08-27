@@ -76,7 +76,6 @@ export const StarRanking = () => {
       .sort((a, b) => b.star - a.star)
       .reduce((acc, review) => {
         const exists = acc.some((item) => item.productId === review.productId);
-
         if (!exists) {
           acc.push({
             productId: review.productId,
@@ -100,12 +99,13 @@ export const StarRanking = () => {
 
   return (
     <>
-      <Table>
+      <Table className="">
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">Ranking</TableHead>
             <TableHead>Name</TableHead>
             <TableHead className="pl-10">Review</TableHead>
+            <TableHead></TableHead>
             <TableHead className="text-right">Price</TableHead>
           </TableRow>
         </TableHeader>
@@ -127,7 +127,7 @@ export const StarRanking = () => {
                   ? "bg-gray-300 hover:bg-gray-200"
                   : index === 2
                   ? "bg-orange-700 text-white hover:bg-orange-300 hover:text-black"
-                  : ""
+                  : "hover:bg-gray-100"
               }
             >
               <TableCell className="font-medium flex">
@@ -139,12 +139,15 @@ export const StarRanking = () => {
                 )}
               </TableCell>
               <TableCell className="size-10">{product.name}</TableCell>
-              <TableCell className="size-10 pl-10 flex">
+              <TableCell className="size-10 pl-10 ">
                 {renderStarRating(
                   Math.round(averageStarRating(product.productId))
                 )}
-                <TableCell className="flex items-center pl-2">{averageStarRating(product.productId)}</TableCell>
               </TableCell>
+              <TableCell className="items-center pl-2">
+                {averageStarRating(product.productId)}
+              </TableCell>
+
               <TableCell className="text-right">
                 {jpMoneyChange(product.price)}
               </TableCell>

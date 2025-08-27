@@ -56,7 +56,7 @@ export const SalesRanking = () => {
                   ? "bg-gray-300 hover:bg-gray-200"
                   : index === 2
                   ? "bg-orange-700  text-white  hover:bg-orange-300 hover:text-black"
-                  : ""
+                  : "hover:bg-gray-100"
               }
             >
               <TableCell className="font-medium flex ">

@@ -24,6 +24,7 @@ const CarouselDetailDialog: React.FC<CarouselDetailDialogProps> = ({
     []
   );
   const [loading, setLoading] = useState(true);
+  // const navigate=useNavigate();
 
   const productId = product.id;
 
@@ -46,6 +47,10 @@ const CarouselDetailDialog: React.FC<CarouselDetailDialogProps> = ({
     const average = totalStars / productReviewDatas.length;
     return Math.round(average * 10) / 10;
   };
+
+  // const onClick=()=>{
+  //   navigate("/product")
+  // }
 
   return (
     <>
@@ -82,10 +87,14 @@ const CarouselDetailDialog: React.FC<CarouselDetailDialogProps> = ({
                 </div>
                 <div>
                   <p className="mt-4 text-sm">{product.explanation}</p>
-                  <div className="flex">
-                    {renderStarRating(Math.round(averageStarRating()))}
-                    <p className="pl-2">{averageStarRating()}</p>
-                  </div>
+                  {productReviewDatas.length > 0 ? (
+                    <div className="flex mt-5">
+                      {renderStarRating(Math.round(averageStarRating()))}
+                      <p className="pl-2">{averageStarRating()}</p>
+                    </div>
+                  ) : (
+                    <p className="text-gray-500 italic mt-5">No Review</p>
+                  )}
                 </div>
                 <button
                   className="absolute top-4 right-4 btn btn-ghost btn-circle"
@@ -93,6 +102,7 @@ const CarouselDetailDialog: React.FC<CarouselDetailDialogProps> = ({
                 >
                   <CircleX className="mr-0.5" />
                 </button>
+                {/* <button onClick={onClick}></button> */}
               </div>
             </>
           )}
