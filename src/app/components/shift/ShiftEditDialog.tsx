@@ -205,104 +205,106 @@ export const ShiftEditDialog: React.FC<Prop> = ({
         </h2>
         <div className="ml-20 h-80 overflow-y-auto">
           {watch("shiftData").map((s, index) => (
-            <div key={index} className="grid grid-cols-7 gap-2 mb-2">
-              <p className="my-auto">{s.shiftDate.toLocaleDateString()}</p>
+            <div key={index}>
+              <div className="grid grid-cols-7 gap-2 mb-6">
+                <p className="my-auto">{s.shiftDate.toLocaleDateString()}</p>
 
-              {/* stuts（ここから）*/}
-              <Controller
-                name={`shiftData.${index}.status`}
-                control={control}
-                render={({ field }) => (
-                  <select
-                    {...field}
-                    id={`status${index}`}
-                    required
-                    onChange={(e) => {
-                      const newStatus = Number(e.target.value);
-                      field.onChange(newStatus);
-                      if (newStatus !== 1) {
-                        setValue(`shiftData.${index}.startTime`, "");
-                        setValue(`shiftData.${index}.endTime`, "");
-                      }
-                    }}
-                    className={`select rounded-sm border-3 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
-                      s.startTime ? "select-secondary" : ""
-                    }`}
-                  >
-                    <option value=""></option>
-                    {statesList.map((state) => (
-                      <option
-                        key={state.key}
-                        value={state.key}
-                        className={`${state.key === 3 ? "bg-red-300" : ""}`}
-                      >
-                        {state.value}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              />
-              {/* stuts（ここまで）*/}
+                {/* stuts（ここから）*/}
+                <Controller
+                  name={`shiftData.${index}.status`}
+                  control={control}
+                  render={({ field }) => (
+                    <select
+                      {...field}
+                      id={`status${index}`}
+                      required
+                      onChange={(e) => {
+                        const newStatus = Number(e.target.value);
+                        field.onChange(newStatus);
+                        if (newStatus !== 1) {
+                          setValue(`shiftData.${index}.startTime`, "");
+                          setValue(`shiftData.${index}.endTime`, "");
+                        }
+                      }}
+                      className={`select rounded-sm border-3 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
+                        s.startTime ? "select-secondary" : ""
+                      }`}
+                    >
+                      <option value=""></option>
+                      {statesList.map((state) => (
+                        <option
+                          key={state.key}
+                          value={state.key}
+                          className={`${state.key === 3 ? "bg-red-300" : ""}`}
+                        >
+                          {state.value}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+                {/* stuts（ここまで）*/}
 
-              {/* 開始時間（ここから）*/}
-              <select
-                {...register(`shiftData.${index}.startTime`)}
-                id={`startTime${index}`}
-                //name={`startTime${index}`}
-                disabled={watch(`shiftData.${index}.status`) != 1}
-                required
-                className={`select rounded-sm border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
-                  watch(`shiftData.${index}.startTime`)
-                    ? "select-secondary"
-                    : ""
-                }`}
-              >
-                <option value="">start</option>
-                {Array.from({ length: 24 }, (_, i) => (
-                  <option
-                    key={i + 1}
-                    value={(i + 1).toString().padStart(2, "0") + ":00:00"}
-                  >
-                    {i + 1}
-                  </option>
-                ))}
-              </select>
-              {/* 開始時間（ここまで）*/}
-              <p className="my-auto">:00</p>
-              <p className="my-auto">-</p>
+                {/* 開始時間（ここから）*/}
+                <select
+                  {...register(`shiftData.${index}.startTime`)}
+                  id={`startTime${index}`}
+                  //name={`startTime${index}`}
+                  disabled={watch(`shiftData.${index}.status`) != 1}
+                  required
+                  className={`select rounded-sm border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
+                    watch(`shiftData.${index}.startTime`)
+                      ? "select-secondary"
+                      : ""
+                  }`}
+                >
+                  <option value="">start</option>
+                  {Array.from({ length: 24 }, (_, i) => (
+                    <option
+                      key={i + 1}
+                      value={(i + 1).toString().padStart(2, "0") + ":00:00"}
+                    >
+                      {i + 1}
+                    </option>
+                  ))}
+                </select>
+                {/* 開始時間（ここまで）*/}
+                <p className="my-auto">:00</p>
+                <p className="my-auto">-</p>
 
-              {/* 終了時間（ここから）*/}
-              <select
-                {...register(`shiftData.${index}.endTime`)}
-                id={`endTime${index}`}
-                disabled={watch(`shiftData.${index}.status`) != 1}
-                required
-                className={`select rounded-sm border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
-                  watch(`shiftData.${index}.startTime`)
-                    ? "select-secondary"
-                    : ""
-                }`}
-              >
-                <option value="">end</option>
-                {Array.from({ length: 24 }, (_, i) => (
-                  <option
-                    key={i + 1}
-                    value={(i + 1).toString().padStart(2, "0") + ":00:00"}
-                  >
-                    {i + 1}
-                  </option>
-                ))}
-              </select>
-              {/* 終了時間（ここまで）*/}
-              <p className="my-auto">:00</p>
-              <div>
-                <p className="text-red-600 mt-2">
-                  {errors.shiftData?.[index]?.startTime?.message}
-                </p>
-                <p className="text-red-600 mt-2">
-                  {errors.shiftData?.[index]?.endTime?.message}
-                </p>
+                {/* 終了時間（ここから）*/}
+                <select
+                  {...register(`shiftData.${index}.endTime`)}
+                  id={`endTime${index}`}
+                  disabled={watch(`shiftData.${index}.status`) != 1}
+                  required
+                  className={`select rounded-sm border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
+                    watch(`shiftData.${index}.startTime`)
+                      ? "select-secondary"
+                      : ""
+                  }`}
+                >
+                  <option value="">end</option>
+                  {Array.from({ length: 24 }, (_, i) => (
+                    <option
+                      key={i + 1}
+                      value={(i + 1).toString().padStart(2, "0") + ":00:00"}
+                    >
+                      {i + 1}
+                    </option>
+                  ))}
+                </select>
+                {/* 終了時間（ここまで）*/}
+                <p className="my-auto">:00</p>
               </div>
+              {errors.shiftData?.[index]?.startTime !== undefined &&
+                errors.shiftData?.[index]?.startTime !== null && (
+                  <div>
+                    <p className="text-red-600 mt-[-24px] ml-[250px]">
+                      {errors.shiftData?.[index]?.startTime?.message}
+                    </p>
+                  </div>
+                )}
             </div>
           ))}
         </div>
@@ -314,6 +316,7 @@ export const ShiftEditDialog: React.FC<Prop> = ({
             type="button"
             className="ml-5 btn btn-primary bg-gray-600 border-gray-600"
             onClick={() => {
+              errors.shiftData = undefined;
               (
                 document.getElementById("editShift") as HTMLDialogElement
               ).close();
