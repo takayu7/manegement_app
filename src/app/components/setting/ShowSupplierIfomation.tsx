@@ -77,7 +77,7 @@ export const ShowSupplierIfomation: React.FC<RegisterSupplierProps> = ({
 
   return (
     <>
-      <ul className="table p-7 mt-10 md:mt-0 md:ml-30 flex flex-col text-black gap-3 bg-[#FAFAFA] rounded-[16px]">
+      <ul className="table p-7 mt-10 lg:mt-0 lg:ml-30 flex flex-col text-black gap-3 bg-[#FAFAFA] rounded-[16px] ">
         {supplierData.length != 0 ? (
           <div className="flex flex-col gap-3 rounded-[16px]">
             {supplierData.map((data, index) => (

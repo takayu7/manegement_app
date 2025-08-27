@@ -19,7 +19,7 @@ export const ShowUserInfomation: React.FC<RegisterUserProps> = ({
 }) => {
   const [userData, setUserData] = useState<User[]>(userDataList);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
-  const [userName, setUserName] = useState<string | null>(null);
+  const [userId, setUserId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   //ユーザー情報の取得
   async function fetchUserData() {
@@ -73,8 +73,8 @@ export const ShowUserInfomation: React.FC<RegisterUserProps> = ({
 
   //セッション情報を取得する処理
   const updateHeaderInfo = () => {
-    const userName = sessionStorage.getItem("userName");
-    setUserName(userName);
+    const userId = sessionStorage.getItem("staffId");
+    setUserId(userId);
   };
 
   useEffect(() => {
@@ -95,7 +95,7 @@ export const ShowUserInfomation: React.FC<RegisterUserProps> = ({
                 </div>
                 <div className="flex flex-row">
                   <button
-                    disabled={!(userName == "管理者" || userName == data.name)}
+                    disabled={!(userId == "admin" || userId == data.id)}
                     onClick={() => {
                       {
                         console.log(selectedUser);
@@ -112,7 +112,7 @@ export const ShowUserInfomation: React.FC<RegisterUserProps> = ({
                     <SquarePen />
                   </button>
                   <button
-                    disabled={!(userName == "管理者" || userName == data.name)}
+                    disabled={!(userId == "admin" || userId == data.id)}
                     onClick={() => {
                       setSelectedUser(data);
                       (
