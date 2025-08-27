@@ -99,7 +99,7 @@ export const ShiftTable: React.FC<Props> = ({ shift, targetDate = "" }) => {
                             (item) => item.key === shiftForDay.status
                           )?.value || "未定"
                         }`
-                      : "予定なし"}
+                      : "　　　　　　　　　　　 未定"}
                   </p>
                 </td>
               </tr>
