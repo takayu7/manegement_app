@@ -235,6 +235,22 @@ export async function fetchProductDatas(sort: Sort | null = null) {
   }
 }
 
+//　商品単体の取得
+export async function fetchProductSingleData(productId: string) {
+  try {
+    const data = await sql<Product[]>`
+      SELECT *
+      FROM product
+      WHERE id = ${productId}
+    `;
+
+    return data;
+  } catch (error) {
+    console.error("Database Error:", error);
+    throw new Error("Failed to fetch review data.");
+  }
+}
+
 // 商品データの登録
 export async function createProduct(product: Product) {
   try {

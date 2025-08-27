@@ -2,6 +2,7 @@
 import React from "react";
 import { CustomerCart } from '@/app/components/cart/CustomerCart';
 import { AfterBuyCart } from "@/app/components/cart/AfterBuyCart";
+import { Test } from "@/app/components/cart/Test";
 
 export default async function Page() {
   return (
@@ -10,6 +11,7 @@ export default async function Page() {
         <h1 className="mb-10 text-xl md:text-4xl font-bold ">Cart</h1>
           <CustomerCart />
           <AfterBuyCart />
+          <Test />
       </div>
     </>
   );
