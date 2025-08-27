@@ -121,14 +121,16 @@ export const ShowShift = () => {
 
   //serchedUserName 変更時にシフト取得
   useEffect(() => {
-    setLoading(true);
-    fetch(`/api/targetUserName/${serchedUserName}`)
-      .then((res) => res.json())
-      .then((data) => setUsers(data))
-      .then(() =>
-        setUsers((users) => users.filter((user) => !user.id.startsWith("c")))
-      )
-      .finally(() => setLoading(false));
+    if (serchedUserName !== "") {
+      setLoading(true);
+      fetch(`/api/targetUserName/${serchedUserName}`)
+        .then((res) => res.json())
+        .then((data) => setUsers(data))
+        .then(() =>
+          setUsers((users) => users.filter((user) => !user.id.startsWith("c")))
+        )
+        .finally(() => setLoading(false));
+    }
   }, [serchedUserName]);
 
   return (
