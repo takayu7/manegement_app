@@ -148,7 +148,7 @@ const NavLinks = ({ onNavigate }: { onNavigate: (href: string) => void }) => {
   );
 };
 
-const LoginDialog = dynamic(() => import("@/app/components/loginDialog"), {
+const LoginDialog = dynamic(() => import("@/app/components/LoginDialog"), {
   loading: () => <Loading />,
   ssr: false,
 });
@@ -179,7 +179,7 @@ const SideNav = () => {
           className="btn w-full mb-2 rounded-md h-20 relative"
           onClick={() =>
             (
-              document.getElementById("loginDiaLog") as HTMLDialogElement
+              document.getElementById("LoginDialog") as HTMLDialogElement
             )?.showModal()
           }
         >

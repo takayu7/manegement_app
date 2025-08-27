@@ -1,11 +1,11 @@
 "use client";
-import { Loading } from "./components/Loading";
+import { Loading } from "@/app/components/Loading";
 import dynamic from "next/dynamic";
 import React from "react";
-import ErrorMessageDiaolog from "./components/errorMessageDiaolog";
+import ErrorMessageDiaolog from "@/app/components/errorMessageDiaolog";
 import Image from "next/image";
 
-const LoginDialog = dynamic(() => import("./components/loginDialog"), {
+const LoginDialog = dynamic(() => import("@/app/components/LoginDialog"), {
   loading: () => <Loading />,
   ssr: false,
 });
@@ -31,7 +31,7 @@ export default function Page() {
             className="btn btn-outline border-4 border-neutral-200 text-neutral-100 rounded-[4px] w-[240px] h-[48px] absolute bottom-[330px] hover:text-neutral-800 xl:bottom-[200px]"
             onClick={() =>
               (
-                document.getElementById("loginDiaLog") as HTMLDialogElement
+                document.getElementById("LoginDialog") as HTMLDialogElement
               )?.showModal()
             }
           >

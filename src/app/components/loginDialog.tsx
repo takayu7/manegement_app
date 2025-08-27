@@ -56,6 +56,17 @@ export default function LoginDialog() {
   function loginCanceled() {
     dispatch({ type: "RESET" });
     setShowPassword(false);
+    (document.getElementById("LoginDialog") as HTMLDialogElement).close();
+  }
+
+  async function handleLogin() {
+    await checkError(state.id, state.password);
+    if (loginError) {
+      (
+        document.getElementById("showErrorMessage") as HTMLDialogElement
+      )?.showModal();
+      setLoginError(false);
+    }
   }
 
   const fetchData = async () => {
@@ -105,7 +116,7 @@ export default function LoginDialog() {
   if (isLoading) return <Loading />;
 
   return (
-    <dialog id="loginDiaLog" className="modal">
+    <dialog id="LoginDialog" className="modal">
       <div className="modal-box bg-stone-700/80 w-[360px] h-[280px]">
         <h2 className="text-[#76F6CE] text-[24px] font-bold text-center leading-[120%]">
           login
@@ -113,8 +124,19 @@ export default function LoginDialog() {
         <p className="py-5 text-gray-50">
           Please enter your ID and password to log in
         </p>
-        <div className="relative mt-[-10px]">
-          <form method="dialog">
+        <div
+          onKeyDown={
+            !isInputChecked
+              ? async (e) => {
+                  if (e.key === "Enter") {
+                    handleLogin();
+                  }
+                }
+              : undefined
+          }
+          className="relative mt-[-10px]"
+        >
+          <form>
             {/* if there is a button in form, it will close the modal */}
             <div className="flex flex-col gap-2">
               <input
@@ -153,6 +175,7 @@ export default function LoginDialog() {
               )}
             </div>
             <button
+              type="button"
               className="btn rounded-[4px] bg-[#FFFFFF] w-[103px] h-[28px] absolute right-[180px] top-[110px]"
               onClick={loginCanceled}
             >
@@ -160,18 +183,11 @@ export default function LoginDialog() {
             </button>
           </form>
           <button
+            type="button"
             className="btn bg-[#CFF7D3] rounded-[4px]  w-[103px] h-[28px] absolute left-[180px] top-[110px]"
             disabled={isInputChecked}
             onClick={async () => {
-              await checkError(state.id, state.password);
-              if (loginError) {
-                (
-                  document.getElementById(
-                    "showErrorMessage"
-                  ) as HTMLDialogElement
-                )?.showModal();
-                setLoginError(false);
-              }
+              handleLogin();
             }}
           >
             <span className="text-[#999999]">log in</span>
