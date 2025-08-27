@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { SelectStaffIcon } from "@/app/lib/utils";
 import Image from "next/image";
 import { Player } from "@lottiefiles/react-lottie-player";
+import { CustomerRank } from "@/app/components/customerTop/CustomerRank";
 
 export default function Header() {
   const [userName, setUserName] = useState<string | null>(null);
@@ -49,6 +50,7 @@ export default function Header() {
       ) : (
         <p>ログインしてください</p>
       )}
+      <CustomerRank />
       <div
         onClick={handleClick}
         style={{
