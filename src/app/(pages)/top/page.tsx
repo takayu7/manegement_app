@@ -5,13 +5,13 @@ import { CountDown } from "@/app/components/top/CountDown";
 import Parameter from "@/app/components/top/Parameter";
 import ProductBuyHistory from "@/app/components/top/ProductBuyHistory";
 import { UserBuyParameter } from "@/app/components/top/UserBuyParameter";
+import { ParentCompForShift } from "@/app/components/top/ParentCompForShift";
 
 export default async function Page() {
-
-
   return (
     <>
       <div className="space-y-6 relative">
+        <ParentCompForShift />
         <div className="flex  border-gray-300 items-center flex-col gap-2 lg:flex-row md:justify-between lg:border-b-2">
           <TopTodoMessage />
           <CountDown />
