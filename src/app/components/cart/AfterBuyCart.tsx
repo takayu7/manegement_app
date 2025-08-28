@@ -1,9 +1,10 @@
 "use client";
 import React, { startTransition, useEffect, useState } from "react";
-// import useStore from "@/app/store/useStore";
-import { userItemsType } from "@/app/types/type";
+import { userItemsType, CartItem } from "@/app/types/type";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { useSessionStorage } from "@/app/hooks/useSessionStorage";
+import { Trash2, ShoppingCart } from "lucide-react";
+import useStore from "@/app/store/useStore";
 
 type SetProductDatas = React.Dispatch<React.SetStateAction<userItemsType[]>>;
 
@@ -55,6 +56,8 @@ export const AfterBuyCart = () => {
   const [buyLaterList, setBuyLaterList] = useState<userItemsType[]>([]);
   //アニメーションの制御
   const [Loading, setLoading] = useState(false);
+  const addStoreCartItem = useStore((state) => state.addStoreCartItem);
+  const cartItems = useStore((state) => state.cartItem);
 
   console.log(userId);
   console.log(buyLaterList);
@@ -69,12 +72,35 @@ export const AfterBuyCart = () => {
       .finally(() => setLoading(false));
   }, [userId]);
 
-  // buyボタン(購入)(CartDialog内)
+  // cartに追加ボタン
   const handleAdd = (productId: string) => {
+    setLoading(true);
+    fetch(`/api/product/${productId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const newData = data[0];
+        const newItem: CartItem = {
+          id: newData.id,
+          name: newData.name,
+          buyCount: 1,
+          price: newData.price,
+          count: newData.count,
+        };
+
+        console.log(newData);
+        console.log(newItem);
+        if (!cartItems.some((i) => i.id === newItem.id)) {
+          addStoreCartItem(newItem);
+        }
+        console.log(cartItems);
+      })
+      .finally(() => setLoading(false));
+    //後で買うリストから削除
     startTransition(() => {
-      onSave(productId, userId, setBuyLaterList);
+      onDelete(productId, userId, setBuyLaterList);
     });
   };
+
   //削除ボタン
   const handleDelete = (productId: string) => {
     startTransition(() => {
@@ -106,9 +132,9 @@ export const AfterBuyCart = () => {
           </p> //後で買うが空
         ) : (
           <ul className="space-y-4 text-base text-gray-800">
-            {buyLaterList.map((item, i) => (
+            {buyLaterList.map((item, index) => (
               <li
-                key={i}
+                key={index}
                 className="flex flex-col lg:flex-row items-center justify-between bg-pink-100 rounded-xl p-3 shadow-sm relative"
               >
                 <div className="w-1/2 flex items-center">
@@ -116,6 +142,37 @@ export const AfterBuyCart = () => {
                     {item.productName}
                   </p>
                   <p className="w-1/4 text-gray-600">{item.productId}</p>
+                </div>
+
+                <div className="w-1/4 flex items-center justify-end gap-2 lg:gap-4">
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-success btn-circle hover:text-white group relative"
+                    onClick={() => handleAdd(item.productId)}
+                  >
+                    <ShoppingCart />
+                    <span
+                      className="opacity-0 w-[70px] h-[20px] invisible rounded text-[12px]
+                      font-bold text-white bg-slate-500 top-11 -left-4.5
+           group-hover:visible group-hover:opacity-100 absolute "
+                    >
+                      cart
+                    </span>
+                  </button>
+                  <button
+                    type="button"
+                    className="btn btn-ghost btn-error btn-circle hover:text-white group relative"
+                    onClick={() => handleDelete(item.productId)}
+                  >
+                    <Trash2 />
+                    <span
+                      className="opacity-0 w-[70px] h-[20px ] invisible rounded text-[12px] 
+          font-bold text-white bg-slate-500 top-11 -left-4.5
+           group-hover:visible group-hover:opacity-100 absolute "
+                    >
+                      delete
+                    </span>
+                  </button>
                 </div>
               </li>
             ))}

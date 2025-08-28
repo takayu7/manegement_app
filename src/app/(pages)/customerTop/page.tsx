@@ -13,9 +13,11 @@ export default async function Page() {
           <TopCarousel />
         </div>
         <div>
+          <h2 className="font-bold">Sales Ranking</h2>
           <SalesRanking />
         </div>
-        <div className="flex justify-center">
+        <div >
+          <h2 className="font-bold">Star Ranking</h2>
           <StarRanking />
         </div>
       </div>

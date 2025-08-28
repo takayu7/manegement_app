@@ -3,13 +3,17 @@
 import { jpMoneyChange } from "@/app/lib/utils";
 import { Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
-import { CartItem, Product, BuyProductList } from "@/app/types/type";
-import { Plus, Minus, ShoppingBag } from "lucide-react";
-import { useEffect, useState } from "react";
+import {
+  CartItem,
+  Product,
+  BuyProductList,
+  userItemsType,
+} from "@/app/types/type";
+import { Plus, Minus, ShoppingBag, ClipboardList } from "lucide-react";
+import { useEffect, useState, startTransition } from "react";
 import { useSessionStorage } from "@/app/hooks/useSessionStorage";
 import useStore from "@/app/store/useStore";
-
-// import React, { useState, useTransition } from "react";
+import { onAdd } from "@/app/components/cart/CustomerCart";
 
 interface CartDialogProps {
   product: Product[];
@@ -27,6 +31,7 @@ export const CartDialog: React.FC<CartDialogProps> = ({
 }) => {
   const [items, setItems] = useState<CartItem[]>(cartItems);
   const [buyItems, setBuyItems] = useState<BuyProductList[]>([]);
+  const [buyLaterList, setBuyLaterList] = useState<userItemsType[]>([]);
 
   const userId = useSessionStorage("staffId", "0");
 
@@ -59,15 +64,23 @@ export const CartDialog: React.FC<CartDialogProps> = ({
   //購入ボタン
   const handleBuy = (cart: CartItem[], product: BuyProductList[]) => {
     if (items.length === 0) return;
-
     onSave(cart, product);
-
     //トースト
     toast.error("Thank you for your purchase!!", {
       position: "bottom-right",
       autoClose: 4000, //4秒
       theme: "colored",
     });
+  };
+
+  //後で買うリストに追加ボタン
+  const handleAdd = (productId: string) => {
+    startTransition(() => {
+      onAdd(productId, userId, setBuyLaterList);
+    });
+    console.log(buyLaterList)
+    //cartから削除
+    setStoreCartItem(cartItems.filter((item) => item.id !== productId));
   };
 
   //購入数変更ボタン（プラス）
@@ -89,7 +102,6 @@ export const CartDialog: React.FC<CartDialogProps> = ({
           )
           .filter((item) => item.buyCount > 0) //数量が0の場合は削除
     );
-    
   };
 
   return (
@@ -143,10 +155,31 @@ export const CartDialog: React.FC<CartDialogProps> = ({
                     </p>
                     <button
                       type="button"
-                      className="btn btn-ghost btn-error btn-circle hover:text-white"
+                      className="btn btn-ghost btn-success btn-circle hover:text-white group relative"
+                      onClick={() => handleAdd(item.id)}
+                    >
+                      <ClipboardList />
+                      <span
+                        className="opacity-0 w-[74px] invisible rounded text-[12px] 
+          font-bold text-white py-1 bg-slate-500 top-11 -left-4.5
+           group-hover:visible group-hover:opacity-100 absolute "
+                      >
+                        buy later
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-error btn-circle hover:text-white group relative"
                       onClick={() => onDelete(item.id)}
                     >
                       <Trash2 />
+                      <span
+                        className="opacity-0 w-[74px] invisible rounded text-[12px] 
+          font-bold text-white py-1 bg-slate-500 top-11 -left-4.5
+           group-hover:visible group-hover:opacity-100 absolute "
+                      >
+                        delete
+                      </span>
                     </button>
                   </div>
                 </li>
@@ -168,7 +201,10 @@ export const CartDialog: React.FC<CartDialogProps> = ({
             </button>
             <button
               className="btn bg-blue-900 hover:bg-blue-800 btn-lg px-6 py-2 text-white font-semibold rounded-lg"
-              onClick={() => { onClose(); setStoreCartItem(items); }}
+              onClick={() => {
+                onClose();
+                setStoreCartItem(items);
+              }}
             >
               Cancel
             </button>

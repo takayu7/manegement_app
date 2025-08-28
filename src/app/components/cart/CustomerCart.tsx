@@ -5,14 +5,39 @@ import { Product, CartItem, BuyProductList } from "@/app/types/type";
 import { onSave } from "@/app/components/product/ProductList";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { jpMoneyChange } from "@/app/lib/utils";
-import { Plus, Minus, ShoppingBag, Trash2 } from "lucide-react";
+import { Plus, Minus, ShoppingBag, Trash2, ClipboardList } from "lucide-react";
 import { useSessionStorage } from "@/app/hooks/useSessionStorage";
+import { userItemsType } from "@/app/types/type";
+
+type SetProductDatas = React.Dispatch<React.SetStateAction<userItemsType[]>>;
+
+export const onAdd = async (
+  productId: string,
+  userId: string,
+  setBuyLaterList: SetProductDatas
+) => {
+  // 購入履歴の登録
+  await fetch(`/api/userItems/${userId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ productId, userId }),
+    cache: "no-store",
+  });
+
+  // 商品一覧を再取得してstateを更新
+  const updated = await fetch(`/api/userItems/${userId}`);
+  const updatedData = await updated.json();
+  setBuyLaterList(updatedData);
+};
 
 export const CustomerCart = () => {
   //store情報の取得
   const cartItems = useStore((state) => state.cartItem);
   const setStoreCartItem = useStore((state) => state.setStoreCartItem);
   const userId = useSessionStorage("staffId", "0");
+  const [buyLaterList, setBuyLaterList] = useState<userItemsType[]>([]);
 
   const [items, setItems] = useState<CartItem[]>(cartItems);
   const [buyItems, setBuyItems] = useState<BuyProductList[]>([]);
@@ -20,7 +45,6 @@ export const CustomerCart = () => {
   //アニメーションの制御
   const [showThanks, setShowThanks] = useState(false);
   const [showAirplane, setShowAirplane] = useState(false);
-
   console.log(productDatas);
 
   //cartItemsをitemsにセット
@@ -41,7 +65,7 @@ export const CustomerCart = () => {
     setBuyItems(result);
   }, [userId, items]);
 
-  // buyボタン(購入)(CartDialog内)
+  // buyボタン(購入)
   const handleBuy = (cart: CartItem[], product: BuyProductList[]) => {
     startTransition(() => {
       console.log(product);
@@ -52,9 +76,19 @@ export const CustomerCart = () => {
     setStoreCartItem([]);
   };
 
-  //deleteボタン(削除)(CartDialog内)
+  //deleteボタン(削除)
   const handleDelete = (id: string) => {
     setStoreCartItem(cartItems.filter((item) => item.id !== id));
+  };
+
+  //後で買うリストに追加ボタン
+  const handleAdd = (productId: string) => {
+    startTransition(() => {
+      onAdd(productId, userId, setBuyLaterList);
+    });
+    console.log(buyLaterList)
+    //cartから削除
+    setStoreCartItem(cartItems.filter((item) => item.id !== productId));
   };
 
   //購入数変更ボタン（プラス）
@@ -94,17 +128,17 @@ export const CustomerCart = () => {
                 <h1 className="text-5xl font-bold text-white">Thank You!!</h1>
                 <div className="flex items-center justify-center">
                   <p className="py-6 text-white">
-                    Thank you so much for shopping with us! We’re excited for you
-                    to receive your order and hope it brings you joy. Your support
-                    means a lot to us!
+                    Thank you so much for shopping with us! We’re excited for
+                    you to receive your order and hope it brings you joy. Your
+                    support means a lot to us!
                   </p>
-                <Player
-                  autoplay
-                  loop={false}
-                  src="/lottie/Thanks.json"
-                  style={{ height: "20vh", width: "20vw" }}
-                />
-</div>
+                  <Player
+                    autoplay
+                    loop={false}
+                    src="/lottie/Thanks.json"
+                    style={{ height: "20vh", width: "20vw" }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -154,10 +188,31 @@ export const CustomerCart = () => {
                 </p>
                 <button
                   type="button"
-                  className="btn btn-ghost btn-error btn-circle hover:text-white"
+                  className="btn btn-ghost btn-success btn-circle hover:text-white group relative"
+                  onClick={() => handleAdd(item.id)}
+                >
+                  <ClipboardList />
+                  <span
+                    className="opacity-0 w-[74px] invisible rounded text-[12px] 
+          font-bold text-white py-1 bg-slate-500 top-11 -left-4.5
+           group-hover:visible group-hover:opacity-100 absolute "
+                  >
+                    buy later
+                  </span>
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-ghost btn-error btn-circle hover:text-white group relative"
                   onClick={() => handleDelete(item.id)}
                 >
                   <Trash2 />
+                  <span
+                    className="opacity-0 w-[74px] invisible rounded text-[12px] 
+          font-bold text-white py-1 bg-slate-500 top-11 -left-4.5
+           group-hover:visible group-hover:opacity-100 absolute "
+                  >
+                    delete
+                  </span>
                 </button>
               </div>
             </li>
