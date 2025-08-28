@@ -36,15 +36,17 @@ export const CustomerRank = () => {
   }, [userId,trigger]);
 
   const rankColor = () => {
-    if (totalSales > 1000000) return "bg-yellow-400 border-2 border-yellow-500";
-    if (totalSales > 500000) return "bg-gray-300 border-2 border-gray-400";
+    if (totalSales > 1000000) return "bg-linear-to-r/hsl from-indigo-500 to-teal-400 text-white";
+    if (totalSales > 600000) return "bg-yellow-400 border-2 border-yellow-500";
+    if (totalSales > 300000) return "bg-gray-300 border-2 border-gray-400";
     return "bg-orange-700 border-2 border-orange-800";
   };
 
     const rankBar = () => {
     if (totalSales > 1000000) return 100;
-    if (totalSales > 500000) return totalSales / 1000000 * 100;
-    return totalSales / 500000 * 100;
+    if (totalSales > 600000) return totalSales / 1000000 * 100;
+    if (totalSales > 300000) return totalSales / 600000 * 100;
+    return totalSales / 300000 * 100;
   };
 
   return (
@@ -62,7 +64,7 @@ export const CustomerRank = () => {
               <Trophy className="h-6 w-6 " />
             </button>
           </div>
-          <progress className={`progress w-30 ${rankBar() === 100 && "progress-warning"}`} value={rankBar()} max="100" />
+          <progress className={`progress w-30 ${rankBar() === 100 && "progress-primary"}`} value={rankBar()} max="100" />
         </div>
       )}
     </>

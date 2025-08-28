@@ -15,7 +15,8 @@ export const onSave = async (
   setFavoriteList: SetProductDatas
 ) => {
   // 購入履歴の登録
-  await fetch(`/api/favorite/${userId}`, {
+  // POSTが完了してからGETで再取得
+  const postRes = await fetch(`/api/favorite/${userId}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -23,11 +24,11 @@ export const onSave = async (
     body: JSON.stringify({ productId, userId, isFavorite }),
     cache: "no-store",
   });
-
-  // 商品一覧を再取得してstateを更新
-  const updated = await fetch(`/api/favorite/${userId}`);
-  const updatedData = await updated.json();
-  setFavoriteList(updatedData);
+  if (postRes.ok) {
+    const updated = await fetch(`/api/favorite/${userId}`);
+    const updatedData = await updated.json();
+    setFavoriteList(updatedData);
+  }
 };
 
 export const Test = () => {
@@ -102,7 +103,7 @@ export const Test = () => {
                   )
                 }
               >
-                <Heart className="w-3 h-3"/>
+                <Heart className="w-3 h-3" />
               </button>
             </li>
           ))}
