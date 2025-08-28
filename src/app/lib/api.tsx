@@ -20,6 +20,7 @@ import {
   userItemsType,
 } from "@/app/types/type";
 import { generateCustomId } from "@/app/lib/utils";
+// import { is } from "./../../../.next/server/chunks/825";
 
 const sql = postgres(process.env.POSTGRES_URL!);
 
@@ -530,7 +531,7 @@ export async function createReview(review: ReviewRecType) {
   }
 }
 
-//　後で買うとお気に入りの取得
+//　後で買うの取得
 export async function fetchUserItemDatas(userId: string) {
   try {
     const data = await sql<
@@ -571,10 +572,52 @@ export async function fetchUserItemDatas(userId: string) {
   }
 }
 
+//　お気に入りの取得
+export async function fetchUserFavoriteDatas(userId: string) {
+  try {
+    const data = await sql<
+      {
+        product_id: string;
+        product_name: string;
+      }[]
+    >`
+  SELECT
+    ui.user_id,
+    bl.product_id,
+    p.name AS product_name
+  FROM user_items ui
+  LEFT JOIN LATERAL unnest(string_to_array(ui.favorite, ',')) AS bl(product_id) ON TRUE
+  LEFT JOIN product p ON p.id = bl.product_id
+  WHERE ui.user_id = ${userId}
+`;
+    //データがなければ空を返す
+    if (!data) {
+      return data;
+    }
+
+    // スネークケース→キャメルケース変換（1件ずつ）
+    const result: userItemsType[] = data.map((item) => ({
+      userId: userId,
+      productId: item.product_id,
+      productName: item.product_name,
+    }));
+
+    return result;
+  } catch (error) {
+    console.error("Database Error:", error);
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+    throw new Error("Failed to fetch review data.");
+  }
+}
+
 // 後で購入の登録
 type userItemsReq = {
   productId: string;
   userId: string;
+  isFavorite?: boolean;
 };
 export async function upUserItemDatas({ productId, userId }: userItemsReq) {
   const myLaterList: userItemsType[] = await fetchUserItemDatas(userId);
@@ -611,6 +654,76 @@ export async function upUserItemDatas({ productId, userId }: userItemsReq) {
   }
 }
 
+// お気に入りの登録
+export async function upFavoriteDatas({
+  productId,
+  userId,
+  isFavorite,
+}: userItemsReq) {
+  const myFavoriteList: userItemsType[] = await fetchUserFavoriteDatas(userId);
+
+  try {
+    //お気に入りがONの時
+    if (isFavorite) {
+      //DBにuserIdが一致する行が無いとき
+      if (!myFavoriteList || myFavoriteList.length === 0) {
+        //新しく行を作成する
+        await sql`
+        INSERT INTO user_items (user_id, favorite)
+        VALUES (${userId}, ${productId});
+      `;
+      //既存のuserIdが一致する行があるとき
+      } else {
+        //すでにお気に入りに登録されているか確認
+        const isExist = myFavoriteList.some(
+          (item) => item.productId === productId
+        );
+        if (isExist) {
+          return;
+        } else {
+          await sql`
+            UPDATE user_items
+            SET favorite =
+            CASE
+              WHEN favorite IS NULL OR favorite = '' THEN ${productId}
+              ELSE favorite || ',' || ${productId}
+            END
+            WHERE user_id = ${userId}
+          `;
+        }
+      }
+    } else {
+      if (!myFavoriteList || myFavoriteList.length === 0) {
+      return;
+    } else {
+      const isExist = myFavoriteList.some((item) => item.productId === productId);
+      if (!isExist) {
+        return;
+      } else {
+        await sql`
+            UPDATE user_items
+            SET buy_later = array_to_string(array_remove(string_to_array(buy_later, ','), ${productId}), ',')
+            WHERE user_id = ${userId}
+          `;
+        // buy_laterがnullまたは空文字になった場合は行ごと削除
+        await sql`
+            DELETE FROM user_items
+            WHERE user_id = ${userId} AND (buy_later IS NULL OR buy_later = '')
+          `;
+      }
+    }
+    }
+  } catch (error) {
+    console.error("Database Error:", error);
+    if (error instanceof Error) {
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+    }
+    throw new Error("Failed to create shift.");
+  }
+}
+
+//後で買うの削除
 export async function deleteUserItemDatas({ productId, userId }: userItemsReq) {
   const myLaterList: userItemsType[] = await fetchUserItemDatas(userId);
 
