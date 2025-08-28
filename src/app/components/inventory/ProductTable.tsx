@@ -148,7 +148,7 @@ const ProductTable = () => {
   };
 
   return (
-    <div className="overflow-x-auto max-h-[600px] border rounded-lg border-gray-200 relative">
+    <div className="overflow-x-auto max-h-[400px] border rounded-lg border-gray-200 relative">
       {/* アニメーション */}
       {loading ? (
         <Player
