@@ -43,7 +43,7 @@ export const TopCarousel = () => {
           {productDatas.map((product) => (
             <CarouselItem
               key={product.id}
-              className="md:basis-1/2 lg:basis-1/3 "
+              className="sm:basis-1/2 lg:basis-1/3 "
               onClick={() => handleDetail(product)}
             >
              
@@ -71,7 +71,7 @@ export const TopCarousel = () => {
       </Carousel>
 
       {/* 商品詳細ダイアログ */}
-      {isCarouselDetailOpen && (
+      {isCarouselDetailOpen && selectedProduct && (
         <CarouselDetailDialog
           product={selectedProduct}
           onClose={() => setIsCarouselDetailOpen(false)}

@@ -75,7 +75,7 @@ export const SalesRanking = () => {
       </Table>
 
       {/* 商品詳細ダイアログ */}
-      {isCarouselDetailOpen && (
+      {isCarouselDetailOpen && selectedProduct && (
         <CarouselDetailDialog
           product={selectedProduct}
           onClose={() => setIsCarouselDetailOpen(false)}

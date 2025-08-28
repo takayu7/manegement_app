@@ -157,7 +157,7 @@ export const StarRanking = () => {
       </Table>
 
       {/* 商品詳細ダイアログ */}
-      {isCarouselDetailOpen && (
+      {isCarouselDetailOpen && selectedProduct && (
         <CarouselDetailDialog
           product={selectedProduct}
           onClose={() => setIsCarouselDetailOpen(false)}
