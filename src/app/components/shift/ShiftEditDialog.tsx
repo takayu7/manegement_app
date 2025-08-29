@@ -90,7 +90,7 @@ export const ShiftEditDialog: React.FC<Prop> = ({
     };
   }, [generateMonthShiftData]);
 
-  const [shiftList, setShiftList] = useState<ShiftType[]>([]);
+  //const [shiftList, setShiftList] = useState<ShiftType[]>([]);
   const [loading, setLoading] = useState(true);
   const {
     register,
@@ -105,7 +105,7 @@ export const ShiftEditDialog: React.FC<Prop> = ({
     resolver: zodResolver(formSchema),
   });
 
-  console.log(shiftList);
+  //console.log(shiftList);
 
   //defaultValuesに値を挿入する処理
   useEffect(() => {
@@ -119,7 +119,7 @@ export const ShiftEditDialog: React.FC<Prop> = ({
     fetch(`/api/shift/targetDate/${targetDate}`)
       .then((res) => res.json())
       .then((data) => {
-        setShiftList(data);
+        //setShiftList(data);
 
         // userId に一致するシフトを探す
         const userShift = data.find((t: ShiftType) => t.userId === userId);
