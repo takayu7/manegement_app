@@ -63,18 +63,18 @@ export const ShiftMessageForAdmin = () => {
 
   return (
     <>
-      <div className="flex items-center">
+      <div className="flex items-center lg:mt-[-85px]">
         <div
-          className="relative top-5 left-10 max-w-sm rounded-2xl border border-blue-300 bg-blue-100 p-4 text-blue-900 shadow
+          className="relative top-15 left-5 max-w-55 rounded-2xl border border-blue-300 bg-blue-100 p-4 text-blue-900 shadow
            after:content-[''] after:absolute after:-bottom-2 after:left-8
-           after:block after:h-4 after:w-4 after:rotate-45 after:bg-blue-100
-           after:border-r after:border-b after:border-blue-300"
+           after:block sm:after:h-4 sm:after:w-4 after:rotate-45 after:bg-blue-100
+           after:border-r after:border-b after:border-white sm:after:border-blue-300 sm:top-20 sm:left-65 sm:max-w-100 md:top-20 md:left-30 md:max-w-100 lg:top-15 lg:left-10 lg:max-w-65"
         >
           {allUserTodayShift.map((shift, index) =>
             shift.shiftData?.status === 1 &&
             typeof shift.shiftData.startTime === "string" &&
             typeof shift.shiftData.endTime === "string" ? (
-              <div key={index}>
+              <div key={index} className="my-3">
                 <span className="font-bold">{shift.name}</span> will be at work
                 from{" "}
                 <span className="font-bold">
