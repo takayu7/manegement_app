@@ -5,7 +5,7 @@ import { Player } from "@lottiefiles/react-lottie-player";
 import { useSessionStorage } from "@/app/hooks/useSessionStorage";
 import { CircleX } from "lucide-react";
 import { Product } from "@/app/types/type";
-import { CategoryImages, renderStarRating } from "@/app/lib/utils";
+import { CategoryImages,  } from "@/app/lib/utils";
 
 interface AddReviewDialogProps {
   product: Product;
@@ -21,6 +21,7 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [comment, setComment] = useState("");
+    const [starRating, setStarRating] = useState(3);
 
   const productId = product.id;
   const productName = product.name;
@@ -44,7 +45,7 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
   const handleAdd = () => {
     const review: ReviewRecType = {
       productId: productId,
-      star: 3,
+      star: starRating,
       comment: comment,
       userId: userId,
     };
@@ -57,6 +58,27 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
       .then((data) => setProductReviewDatas(data))
       .then(onClose)
       .finally(() => setLoading(false));
+  };
+
+    // 評価を星に変換
+  const renderStarRating = (rating: number) => {
+    const array = Array.from({ length: 5 }, (_, i) => i + 1);
+    return (
+      <div className="rating">
+        {array.map((star) => (
+          <div
+            key={star}
+            className="mask mask-star bg-yellow-400"
+            aria-label={`${star} star`}
+            aria-current={star === rating ? "true" : "false"}
+            style={{
+              maskSize: "20px",
+            }}
+            onClick={() => setStarRating(star)} // 評価を追加
+          ></div>
+        ))}
+      </div>
+    );
   };
 
   return (
@@ -96,7 +118,7 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
                 <div className="mt-1 mb-15">
                   <div className="flex flex-col gap-4 mt-2">
                     {/* 星 */}
-                    <div>{renderStarRating(3)}</div>
+                    <div>{renderStarRating(starRating)}</div>
 
                     {/* コメント */}
                     <textarea
