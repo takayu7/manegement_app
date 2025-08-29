@@ -32,12 +32,19 @@ export const onAdd = async (
   setBuyLaterList(updatedData);
 };
 
-export const CustomerCart = () => {
+interface AfterBuyCartProps {
+  setBuyLaterList: React.Dispatch<React.SetStateAction<userItemsType[]>>;
+}
+
+
+export const CustomerCart : React.FC<AfterBuyCartProps> = ({
+  setBuyLaterList,
+}) => {
   //store情報の取得
   const cartItems = useStore((state) => state.cartItem);
   const setStoreCartItem = useStore((state) => state.setStoreCartItem);
   const userId = useSessionStorage("staffId", "0");
-  const [buyLaterList, setBuyLaterList] = useState<userItemsType[]>([]);
+  // const [buyLaterList, setBuyLaterList] = useState<userItemsType[]>([]);
 
   const [items, setItems] = useState<CartItem[]>(cartItems);
   const [buyItems, setBuyItems] = useState<BuyProductList[]>([]);
@@ -61,18 +68,16 @@ export const CustomerCart = () => {
       count: item.buyCount,
       buyDate: null,
     }));
-    console.log(result);
     setBuyItems(result);
   }, [userId, items]);
 
   // buyボタン(購入)
   const handleBuy = (cart: CartItem[], product: BuyProductList[]) => {
     startTransition(() => {
-      console.log(product);
       onSave(cart, product, setProductDatas);
     });
     setShowThanks(true);
-    setTimeout(() => setShowThanks(false), 4000);
+    setTimeout(() => setShowThanks(false), 5000);
     setStoreCartItem([]);
   };
 
@@ -86,7 +91,6 @@ export const CustomerCart = () => {
     startTransition(() => {
       onAdd(productId, userId, setBuyLaterList);
     });
-    console.log(buyLaterList)
     //cartから削除
     setStoreCartItem(cartItems.filter((item) => item.id !== productId));
   };
@@ -127,16 +131,11 @@ export const CustomerCart = () => {
               <div className="max-w-md">
                 <h1 className="text-5xl font-bold text-white">Thank You!!</h1>
                 <div className="flex items-center justify-center">
-                  <p className="py-6 text-white">
-                    Thank you so much for shopping with us! We’re excited for
-                    you to receive your order and hope it brings you joy. Your
-                    support means a lot to us!
-                  </p>
                   <Player
                     autoplay
                     loop={false}
-                    src="/lottie/Thanks.json"
-                    style={{ height: "20vh", width: "20vw" }}
+                    src="/lottie/success.json"
+                    style={{ height: "30vh", width: "30vw" }}
                   />
                 </div>
               </div>

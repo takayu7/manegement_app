@@ -50,17 +50,22 @@ export const onDelete = async (
   setBuyLaterList(updatedData);
 };
 
-export const AfterBuyCart = () => {
+interface AfterBuyCartProps {
+  buyLaterList: userItemsType[];
+  setBuyLaterList: React.Dispatch<React.SetStateAction<userItemsType[]>>;
+}
+
+export const AfterBuyCart: React.FC<AfterBuyCartProps> = ({
+  buyLaterList,
+  setBuyLaterList,
+}) => {
   //store情報の取得
   const userId = useSessionStorage("staffId", "0");
-  const [buyLaterList, setBuyLaterList] = useState<userItemsType[]>([]);
+  // const [buyLaterList, setBuyLaterList] = useState<userItemsType[]>([]);
   //アニメーションの制御
   const [Loading, setLoading] = useState(false);
   const addStoreCartItem = useStore((state) => state.addStoreCartItem);
   const cartItems = useStore((state) => state.cartItem);
-
-  console.log(userId);
-  console.log(buyLaterList);
 
   //DBからデータの取得
   useEffect(() => {
@@ -70,7 +75,7 @@ export const AfterBuyCart = () => {
       .then((res) => res.json())
       .then((data) => setBuyLaterList(data))
       .finally(() => setLoading(false));
-  }, [userId]);
+  }, [userId, setBuyLaterList]);
 
   // cartに追加ボタン
   const handleAdd = (productId: string) => {
@@ -126,7 +131,8 @@ export const AfterBuyCart = () => {
               width: "100px",
             }}
           />
-        ) : buyLaterList.length <= 0 ? (
+        ) : buyLaterList.length <= 0 ||
+          buyLaterList.some((data) => data.productId === null) ? (
           <p className="text-center text-gray-500 italic">
             Your buy later list is empty :(
           </p> //後で買うが空
@@ -141,7 +147,6 @@ export const AfterBuyCart = () => {
                   <p className="w-3/4 font-semibold text-lg">
                     {item.productName}
                   </p>
-                  <p className="w-1/4 text-gray-600">{item.productId}</p>
                 </div>
 
                 <div className="w-1/4 flex items-center justify-end gap-2 lg:gap-4">
@@ -178,20 +183,6 @@ export const AfterBuyCart = () => {
             ))}
           </ul>
         )}
-      </div>
-      <div className="flex justify-center gap-4 mt-6">
-        <button
-          className="btn bg-pink-400 text-white hover:bg-pink-500 btn-lg px-6 py-2 font-semibold rounded-lg"
-          onClick={() => handleAdd("u28943")}
-        >
-          add
-        </button>
-        <button
-          className="btn bg-pink-400 text-white hover:bg-pink-500 btn-lg px-6 py-2 font-semibold rounded-lg"
-          onClick={() => handleDelete("u28943")}
-        >
-          delete
-        </button>
       </div>
     </>
   );
