@@ -69,7 +69,7 @@ export const UserEditDialog: React.FC<EditDialogProps> = ({ user, onSave }) => {
             <label className="w-40 text-black">NAME </label>
             <input
               {...register("name")}
-              id="name"
+              //id="name"
               className="input rounded-sm border-2 p-1 text-lg md:mx-5 text-black "
             />
           </li>
@@ -80,7 +80,7 @@ export const UserEditDialog: React.FC<EditDialogProps> = ({ user, onSave }) => {
             <input
               {...register("password")}
               type="password"
-              id="name"
+              //id="name"
               className="input rounded-sm border-2 p-1 text-lg md:mx-5 text-black "
             />
           </li>
@@ -96,7 +96,6 @@ export const UserEditDialog: React.FC<EditDialogProps> = ({ user, onSave }) => {
                     type="radio"
                     name="icon"
                     value={icon.id}
-                    //name="icon"
                     checked={watch("icon") == icon.id}
                     onChange={(e) => {
                       setValue("icon", Number(e.target.value));

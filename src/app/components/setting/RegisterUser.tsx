@@ -117,7 +117,7 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
           <input
             {...register("name")}
             type="text"
-            id="name"
+            //id="name"
             placeholder="name"
             className="input input-bordered text-black"
           />
@@ -129,7 +129,7 @@ export const RegisterUser: React.FC<RegisterUserProps> = ({ onSave }) => {
           <input
             {...register("password")}
             type="text"
-            id="password"
+            //id="password"
             placeholder="password"
             className="input input-bordered text-black"
           />
