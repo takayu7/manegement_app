@@ -141,7 +141,11 @@ export const ShowShift = () => {
         </div>
       ) : (
         <div>
-          <div className="flex flex-row">
+          <div
+            className={`flex ${
+              window.innerWidth >= 700 ? "flex-row" : "flex-col gap-3"
+            }`}
+          >
             {/* 月セレクト */}
             <select
               onChange={handleChange}
@@ -156,7 +160,12 @@ export const ShowShift = () => {
             </select>
 
             {/* シフトの検索 */}
-            <form onSubmit={handleSubmit(searchUser)}>
+            <form
+              onSubmit={handleSubmit(searchUser)}
+              className={`${
+                window.innerWidth < 700 && "ml-[-20px] flex flex-row"
+              }`}
+            >
               <input
                 {...register("name")}
                 type="text"
@@ -186,7 +195,7 @@ export const ShowShift = () => {
               <div key={user.id}>
                 {newShiftList !== undefined ? (
                   <>
-                    <div className="mt-5 bg-base-100 border-base-300 collapse border">
+                    <div className="mt-5 bg-base-100 border-base-300 collapse border overflow-x-auto">
                       <input type="checkbox" className="peer" />
                       <div className="px-[16px] collapse-title bg-[#6E6B41] text-[30px] text-primary-content text-center peer-checked:bg-[#d4deda] peer-checked:text-black">
                         {newShiftList.name}
@@ -219,7 +228,7 @@ export const ShowShift = () => {
                   </>
                 ) : (
                   <>
-                    <div className="mt-5 bg-base-100 border-base-300 collapse border">
+                    <div className="mt-5 bg-base-100 border-base-300 collapse border overflow-x-auto">
                       <input type="checkbox" className="peer" />
                       <div className="px-[16px] collapse-title bg-[#6E6B41] text-[30px] text-primary-content text-center peer-checked:bg-[#d4deda] peer-checked:text-black">
                         {user.name}

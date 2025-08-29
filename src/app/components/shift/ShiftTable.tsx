@@ -67,7 +67,7 @@ export const ShiftTable: React.FC<Props> = ({ shift, targetDate = "" }) => {
             {/* 左側にスタッフ情報 */}
             <th
               rowSpan={days.length + 1}
-              className="border-r border-gray-800 w-40"
+              className="border-r border-gray-800 w-30"
             >
               <Image
                 src={`${SelectStaffIcon(String(shift.icon))}`}

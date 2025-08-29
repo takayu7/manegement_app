@@ -198,15 +198,15 @@ export const ShiftEditDialog: React.FC<Prop> = ({
     <dialog id="editShift" className="modal overflow-y-auto md:p-5">
       <form
         onSubmit={handleSubmit(handleSaveClick)}
-        className="w-2/3 h-120 bg-blue-300 p-1  rounded-lg"
+        className="lg:w-2/3 h-120 bg-blue-300 p-1 rounded-lg"
       >
         <h2 className="my-5 text-xl md:text-4xl font-bold text-center">
           {getValues("name")}
         </h2>
-        <div className="ml-20 h-80 overflow-y-auto">
+        <div className="lg:ml-20 h-80 overflow-y-auto">
           {watch("shiftData").map((s, index) => (
             <div key={index}>
-              <div className="grid grid-cols-7 gap-2 mb-6">
+              <div className="grid grid-cols-7 gap-2 mt-1 mb-7">
                 <p className="my-auto">{s.shiftDate.toLocaleDateString()}</p>
 
                 {/* stuts（ここから）*/}
@@ -226,7 +226,9 @@ export const ShiftEditDialog: React.FC<Prop> = ({
                           setValue(`shiftData.${index}.endTime`, "");
                         }
                       }}
-                      className={`select rounded-sm border-3 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
+                      className={`${
+                        window.innerWidth <= 480 ? "input" : "select"
+                      } rounded-sm border-3 p-1 ml-7 lg:ml-0 lg:text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
                         s.startTime ? "select-secondary" : ""
                       }`}
                     >
@@ -252,7 +254,9 @@ export const ShiftEditDialog: React.FC<Prop> = ({
                   //name={`startTime${index}`}
                   disabled={watch(`shiftData.${index}.status`) != 1}
                   required
-                  className={`select rounded-sm border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
+                  className={`${
+                    window.innerWidth <= 480 ? "input" : "select"
+                  } rounded-sm border-2 p-1 ml-10 lg:ml-0 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
                     watch(`shiftData.${index}.startTime`)
                       ? "select-secondary"
                       : ""
@@ -269,8 +273,8 @@ export const ShiftEditDialog: React.FC<Prop> = ({
                   ))}
                 </select>
                 {/* 開始時間（ここまで）*/}
-                <p className="my-auto">:00</p>
-                <p className="my-auto">-</p>
+                <p className="ml-12 my-auto lg:ml-0">:00</p>
+                <p className="ml-7 my-auto lg:ml-0">-</p>
 
                 {/* 終了時間（ここから）*/}
                 <select
@@ -278,7 +282,9 @@ export const ShiftEditDialog: React.FC<Prop> = ({
                   id={`endTime${index}`}
                   disabled={watch(`shiftData.${index}.status`) != 1}
                   required
-                  className={`select rounded-sm border-2 p-1 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
+                  className={`${
+                    window.innerWidth <= 480 ? "input" : "select"
+                  } rounded-sm border-2 p-1 ml-[-10px] lg:ml-0 text-lg border-gray-500 focus:border-pink-500 focus:input-secondary ${
                     watch(`shiftData.${index}.startTime`)
                       ? "select-secondary"
                       : ""
