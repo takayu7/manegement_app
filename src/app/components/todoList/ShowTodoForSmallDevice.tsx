@@ -280,41 +280,43 @@ export const ShowTodoForSmallDevice: React.FC<RegisterTodoProps> = ({
                           <div className="absolute text-white left-30 bottom-9">
                             {todo.name}
                           </div>
-                          {/* 編集ボタン */}
-                          <button
-                            disabled={
-                              !(userName == "管理者" || userName == todo.name)
-                            }
-                            onClick={() => {
-                              console.log(selectedTodo);
-                              setSelectedTodo(todo);
-                              (
-                                document.getElementById(
-                                  "TodoListEditDialog"
-                                ) as HTMLDialogElement
-                              )?.showModal();
-                            }}
-                            className="btn btn-ghost rounded-lg absolute text-white left-45 top-6"
-                          >
-                            <SquarePen />
-                          </button>
-                          {/* 削除ボタン */}
-                          <button
-                            disabled={
-                              !(userName == "管理者" || userName == todo.name)
-                            }
-                            onClick={() => {
-                              setSelectedTodo(todo);
-                              (
-                                document.getElementById(
-                                  "DeleteTodoListDialog"
-                                ) as HTMLDialogElement
-                              )?.showModal();
-                            }}
-                            className="btn btn-ghost rounded-lg absolute text-white left-55 top-6"
-                          >
-                            <Trash2 />
-                          </button>
+                          <div className="flex flex-col">
+                            {/* 編集ボタン */}
+                            <button
+                              disabled={
+                                !(userName == "管理者" || userName == todo.name)
+                              }
+                              onClick={() => {
+                                console.log(selectedTodo);
+                                setSelectedTodo(todo);
+                                (
+                                  document.getElementById(
+                                    "TodoListEditDialog"
+                                  ) as HTMLDialogElement
+                                )?.showModal();
+                              }}
+                              className="btn btn-ghost rounded-lg absolute text-white left-45 mt-[-10px]"
+                            >
+                              <SquarePen />
+                            </button>
+                            {/* 削除ボタン */}
+                            <button
+                              disabled={
+                                !(userName == "管理者" || userName == todo.name)
+                              }
+                              onClick={() => {
+                                setSelectedTodo(todo);
+                                (
+                                  document.getElementById(
+                                    "DeleteTodoListDialog"
+                                  ) as HTMLDialogElement
+                                )?.showModal();
+                              }}
+                              className="btn btn-ghost rounded-lg absolute text-white top-8 left-45"
+                            >
+                              <Trash2 />
+                            </button>
+                          </div>
                         </div>
                       </th>
                     </tr>
