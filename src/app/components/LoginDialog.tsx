@@ -184,13 +184,13 @@ export default function LoginDialog() {
           </form>
           <button
             type="button"
-            className="btn bg-[#CFF7D3] rounded-[4px]  w-[103px] h-[28px] absolute left-[180px] top-[110px]"
+            className="btn bg-[#7af7d1] rounded-[4px] border-0  w-[103px] h-[28px] absolute left-[180px] top-[110px]"
             disabled={isInputChecked}
             onClick={async () => {
               handleLogin();
             }}
           >
-            <span className="text-[#999999]">log in</span>
+            <span className="text-[#797979]">log in</span>
           </button>
         </div>
       </div>

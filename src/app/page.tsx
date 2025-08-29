@@ -28,7 +28,7 @@ export default function Page() {
             <br /> Select Shop
           </h1>
           <button
-            className="btn btn-outline border-4 border-neutral-200 text-neutral-100 rounded-[4px] w-[240px] h-[48px] absolute bottom-[330px] hover:text-neutral-800 xl:bottom-[200px]"
+            className="btn btn-outline border-1 border-neutral-100 text-neutral-100 rounded-[4px] w-[240px] h-[48px] absolute bottom-[330px] hover:text-neutral-800 xl:bottom-[200px]"
             onClick={() =>
               (
                 document.getElementById("LoginDialog") as HTMLDialogElement

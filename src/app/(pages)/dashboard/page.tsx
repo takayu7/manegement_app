@@ -6,7 +6,7 @@ import LineGraph from "@/app/components/dashboard/LineGraph";
 import { Product, Category, UserBuyParameterType } from "@/app/types/type";
 import type { PieChartType } from "@/app/components/dashboard/PieChart";
 import { DataType } from "@/app/components/dashboard/LineGraph";
-
+import { UserBuyParameter } from "@/app/components/top/UserBuyParameter";
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
@@ -114,6 +114,7 @@ export default function Page() {
     <>
       <div className="space-y-6">
         <h1 className="text-xl">Dashboard</h1>
+        <UserBuyParameter />
         <div className="h-80 p-5  border border-gray-300 rounded-md overflow-y-auto">
           {pieChartloading ? (
           <div className="flex justify-center items-center h-80">
