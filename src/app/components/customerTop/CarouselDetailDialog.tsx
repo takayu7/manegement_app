@@ -48,10 +48,6 @@ const CarouselDetailDialog: React.FC<CarouselDetailDialogProps> = ({
     return Math.round(average * 10) / 10;
   };
 
-  // const onClick=()=>{
-  //   navigate("/product")
-  // }
-
   return (
     <>
       <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center" />
@@ -102,7 +98,6 @@ const CarouselDetailDialog: React.FC<CarouselDetailDialogProps> = ({
                 >
                   <CircleX className="mr-0.5" />
                 </button>
-                {/* <button onClick={onClick}></button> */}
               </div>
             </>
           )}

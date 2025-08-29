@@ -137,19 +137,19 @@ export function generateCustomId(): string {
 export const CategoryImages = (catImg: string): string => {
   switch (catImg) {
     case "1":
-      return "/product/image2.jpg";
+      return "/product/plants.jpg";
     case "2":
-      return "/product/image6.jpg";
+      return "/product/clothes.jpg";
     case "3":
-      return "/product/image4.jpg";
+      return "/product/cap.jpg";
     case "4":
-      return "/product/image3.jpg";
+      return "/product/plates.jpg";
     case "5":
-      return "/product/image7.jpg";
+      return "/product/cups.jpg";
     case "6":
-      return "/product/image5.jpg";
+      return "/product/petGoods.jpg";
     case "7":
-      return "/product/image1.jpg";
+      return "/product/shoes.jpg";
     default:
       return "Unknown";
   }

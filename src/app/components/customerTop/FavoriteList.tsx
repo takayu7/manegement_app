@@ -20,7 +20,9 @@ export const FavoriteList = () => {
       .then((res) => res.json())
       .then((data) =>
         setProductDatas(
-          data.filter((i:Product) => favorite.some((f) => f.productId === i.id))
+          data.filter((i: Product) =>
+            favorite.some((f) => f.productId === i.id)
+          )
         )
       );
   }, [favorite]);
@@ -41,7 +43,7 @@ export const FavoriteList = () => {
   return (
     <>
       {productDatas.length > 0 ? (
-        <ul className="flex items-center gap-5 overflow-x-auto mt-2">
+        <ul className="grid items-center gap-3 lg:grid-cols-2 overflow-x-auto mt-2">
           {productDatas.map((product) => (
             <li
               key={product.id}
@@ -51,8 +53,12 @@ export const FavoriteList = () => {
               <div className="font-medium flex ">
                 <Heart className="w-4 h-4 text-red-500" />
               </div>
-              <p>{product.name}</p>
-              <p className="text-right">{jpMoneyChange(product.price)}</p>
+              <div className="flex lg:flex-row flex-col lg:justify-between flex-1">
+                <p>{product.name}</p>
+                <p>
+                  {jpMoneyChange(product.price)}
+                </p>
+              </div>
             </li>
           ))}
         </ul>

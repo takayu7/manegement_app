@@ -90,7 +90,6 @@ export const ProductList = () => {
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   //アニメーション
   const [showThanks, setShowThanks] = useState(false);
-  const [showHeart, setShowHeart] = useState(false);
   // ローディング状態
   const [loading, setLoading] = useState(true);
 
@@ -207,8 +206,6 @@ export const ProductList = () => {
     startTransition(() => {
       onFavorite(productId, userId, isFavorite, setFavorite);
     });
-    setShowHeart(true);
-    setTimeout(() => setShowHeart(false), 1000);
   };
 
   //お気に入りのみ表示ボタン
@@ -241,11 +238,6 @@ export const ProductList = () => {
           />
         </div>
       )}
-      {showHeart && (
-        <div className="">
-          <Player autoplay loop={false} src="/lottie/Heart.json" />
-        </div>
-      )}
 
       <main className="h-screen">
         <h1 className="mb-5 text-xl md:text-4xl font-bold ">
@@ -268,6 +260,7 @@ export const ProductList = () => {
             <button
               className="btn btn-outline btn-secondary  hover:text-white"
               onClick={() => handleFavoriteList()}
+              disabled={favorite.length <= 0}
             >
               favorite
             </button>
