@@ -44,17 +44,17 @@ const staffLinks: linkType[] = [
     icon: Download,
   },
   {
-    name: "todo",
+    name: "Todo",
     href: "/todolist",
     icon: SquarePen,
   },
   {
-    name: "dashboard",
+    name: "Dashboard",
     href: "/dashboard",
     icon: ChartNoAxesCombined,
   },
   {
-    name: "shift",
+    name: "Shift",
     href: "/shift",
     icon: CalendarCheck2,
   },

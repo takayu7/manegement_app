@@ -114,7 +114,6 @@ export default function Page() {
     <>
       <div className="space-y-6">
         <h1 className="text-xl">Dashboard</h1>
-        <UserBuyParameter />
         <div className="h-80 p-5  border border-gray-300 rounded-md overflow-y-auto">
           {pieChartloading ? (
           <div className="flex justify-center items-center h-80">
@@ -131,6 +130,7 @@ export default function Page() {
         ) : (
           <LineGraph data={changedDataList} />
         )}
+        <UserBuyParameter />
       </div>
     </>
   );

@@ -55,10 +55,17 @@ export const UserBuyParameter = () => {
         return acc;
       }, [] as UserPartDataType[])
     );
+    //売上順に並び替える
+    setBuyProductDatas((list) =>
+      list.sort(
+        (a: UserPartDataType, b: UserPartDataType) =>
+          b.totalPrice - a.totalPrice
+      )
+    );
   }, [buyProductList]);
 
   return (
-    <>
+    <div className="gap-1">
       {/* アニメーション */}
       {loading ? (
         <Player
@@ -74,7 +81,7 @@ export const UserBuyParameter = () => {
         buyProductDatas.map((product, index) => (
           <div
             key={index}
-            className="flex flex-col items-center gap-3 p-3 lg:flex-row"
+            className="flex flex-col items-center gap-1 p-2 lg:flex-row"
           >
             <div key={index} className="flex items-center gap-3 p-3">
               <Image
@@ -95,6 +102,6 @@ export const UserBuyParameter = () => {
           </div>
         ))
       )}
-    </>
+    </div>
   );
 };

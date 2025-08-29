@@ -10,7 +10,7 @@ export default async function Page() {
     <>
       <div className="space-y-6 relative">
         <ParentCompForShift />
-        <div className="flex  border-gray-300 items-center flex-col gap-2 lg:flex-row md:justify-between lg:border-b-2">
+        <div className=" border-gray-300 gap-1">
           <TopTodoMessage />
           <CountDown />
         </div>

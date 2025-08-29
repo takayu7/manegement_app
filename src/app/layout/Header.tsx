@@ -8,11 +8,6 @@ import { CustomerRank } from "@/app/components/customerTop/CustomerRank";
 export default function Header() {
   const [userName, setUserName] = useState<string | null>(null);
   const [userIcon, setUserIcon] = useState<string>("0");
-  const [angle, setAngle] = useState(0);
-
-  const handleClick = () => {
-    setAngle((prev) => prev + 360); // 360度ずつ回転
-  };
 
   // 値の取得処理を関数化
   const updateHeaderInfo = () => {
@@ -52,19 +47,13 @@ export default function Header() {
       )}
       <CustomerRank />
       <div
-        onClick={handleClick}
-        style={{
-          display: "inline-block",
-          cursor: "pointer",
-          transition: "transform 0.5s ease-in-out",
-          transform: `rotate(${angle}deg)`,
-        }}
+        className="hidden md:block"
       >
         <Player
           autoplay
           loop
           src="/lottie/Lottie_Lego.json"
-          style={{ height: "100px", width: "100px" }}
+          style={{ height: "100px", width: "100px"}}
         />
       </div>
     </div>
