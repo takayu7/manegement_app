@@ -1,4 +1,6 @@
+
 "use client";
+export const dynamic = "force-dynamic";
 import React, { useState } from "react";
 import { CustomerCart } from '@/app/components/cart/CustomerCart';
 import { AfterBuyCart } from "@/app/components/cart/AfterBuyCart";
