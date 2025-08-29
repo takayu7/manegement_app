@@ -71,10 +71,10 @@ export const ShiftMessage = () => {
     <>
       <div className="h-0 flex items-center">
         <div
-          className="relative top-5 left-10 max-w-sm max-h-20 rounded-2xl border border-blue-300 bg-blue-100 p-4 text-blue-900 shadow
+          className="relative top-13 left-5 max-w-55 rounded-2xl border border-blue-300 bg-blue-100 p-4 text-blue-900 shadow
            after:content-[''] after:absolute after:-bottom-2 after:left-8
-           after:block after:h-4 after:w-4 after:rotate-45 after:bg-blue-100
-           after:border-r after:border-b after:border-blue-300"
+           after:block sm:after:h-4 sm:after:w-4 after:rotate-45 after:bg-blue-100
+           after:border-r after:border-b after:border-white sm:after:border-blue-300 sm:top-10 sm:left-65 sm:max-w-100 md:top-10 md:left-50 md:max-w-100 lg:top-5 lg:left-10 lg:max-w-sm lg:max-h-20"
         >
           {loginUserShift[0] !== undefined ? (
             <div>
@@ -83,7 +83,7 @@ export const ShiftMessage = () => {
                   typeof shift?.startTime === "string" &&
                   typeof shift?.endTime === "string" && (
                     <div key={index}>
-                      I’m at work today from{" "}
+                      I’m at work from{" "}
                       <span className="font-bold">
                         {formatTime(shift.startTime)}
                       </span>{" "}
@@ -92,7 +92,6 @@ export const ShiftMessage = () => {
                         {formatTime(shift?.endTime)}
                       </span>
                       {`\u0020`}
-                      {`\u0021`}
                       {`\u0021`}
                       <br />
                       Let’s do our best today{`\u0020`}

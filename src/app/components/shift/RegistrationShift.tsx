@@ -37,8 +37,8 @@ export const RegistrationShift = () => {
   const [shiftData, setShiftData] = useState<ShiftType>(defaultData);
   const [userId, setUserId] = useState<string>("");
 
-  console.log(shiftData);
-  console.log(shiftList);
+  // console.log(shiftData);
+  // console.log(shiftList);
 
   // セッションストレージからユーザーIDを取得して状態を更新する関数
   const updateHeaderInfo = useCallback(() => {

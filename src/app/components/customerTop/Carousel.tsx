@@ -15,7 +15,7 @@ import { CategoryImages } from "@/app/lib/utils";
 
 export const TopCarousel = () => {
   const [productDatas, setProductDatas] = useState<Product[]>([]);
-  const [isCarouselDetailOpen, setIsCarouselDetailOpen]=useState(false);
+  const [isCarouselDetailOpen, setIsCarouselDetailOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   // 商品データの取得
@@ -46,23 +46,25 @@ export const TopCarousel = () => {
               className="sm:basis-1/2 lg:basis-1/3 "
               onClick={() => handleDetail(product)}
             >
-             
-                <div className="p-1">
-                  <Card className="bg-gray-100 h-100 w-70 max-w-sm flex">
-                    <CardContent className="flex aspect-video items-center justify-center p-0">
-                      <Image
-                        src={`${CategoryImages(String(product.category))}`}
-                        alt={product.name}
-                        width={500}
-                        height={500}
-                        className="rounded-xl object-cover h-full m-full flex items-center"
-                      />
-                    </CardContent>
-                    <CardFooter className="flex flex-col">
-                      <span className="text-lg">{product.name}</span>
-                    </CardFooter>
-                  </Card>
-                </div>
+              <div className="p-1">
+                <Card className="bg-gray-100 h-70 w-70 max-w-sm flex group">
+                  <CardContent className="flex aspect-video items-center justify-center p-0">
+                    <Image
+                      src={`${CategoryImages(String(product.category))}`}
+                      alt={product.name}
+                      width={500}
+                      height={500}
+                      className="rounded-xl object-cover h-full m-full flex items-center transition-transform duration-300 group-hover:scale-95"
+                    />
+                  </CardContent>
+                  <CardFooter className="absolute top-35 flex rounded-r-lg w-50 h-30 bg-black/40 ">
+                    <div className="h-30 w-3 bg-orange-500 group-hover:bg-cyan-500 absolute left-0 transition-colors duration-300" />
+                    <span className="text-lg tracking-wide text-white font-bold">
+                      {product.name}
+                    </span>
+                  </CardFooter>
+                </Card>
+              </div>
             </CarouselItem>
           ))}
         </CarouselContent>

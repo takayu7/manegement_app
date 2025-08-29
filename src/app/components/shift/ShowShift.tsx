@@ -208,7 +208,7 @@ export const ShowShift = () => {
                                 "editShift"
                               ) as HTMLDialogElement
                             )?.showModal();
-                            console.log(userId);
+                            //console.log(userId);
                           }}
                           className="btn btn-primary ml-5 mb-10  bg-white text-black"
                         >
@@ -238,7 +238,7 @@ export const ShowShift = () => {
                                 "editShift"
                               ) as HTMLDialogElement
                             )?.showModal();
-                            console.log(user.id);
+                            //console.log(user.id);
                           }}
                           className="btn btn-primary ml-5 mb-10 bg-white text-black"
                         >

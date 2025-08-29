@@ -60,7 +60,7 @@ export const SupplierEditDialog: React.FC<EditDialogProps> = ({
             <label className="w-40 text-black">NAME </label>
             <input
               {...register("name")}
-              id="name"
+              //id="name"
               className="input rounded-sm border-2 p-1 text-lg md:mx-5 text-black "
             />
           </li>
