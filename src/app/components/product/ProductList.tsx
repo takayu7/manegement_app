@@ -75,7 +75,7 @@ export const onFavorite = async (
   setFavoriteList(updatedData);
 };
 
-export const ProductList = (product: Product) => {
+export const ProductList = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [productDatas, setProductDatas] = useState<Product[]>([]);
   const [buyProductId, setBuyProductId] = useState<{ [id: string]: number }>(
@@ -99,7 +99,6 @@ export const ProductList = (product: Product) => {
   const cartItems = useStore((state) => state.cartItem);
 
   const userId = useSessionStorage("staffId", "0");
-  console.log(product);
 
   // 商品データの取得
   async function ferchProductData() {
@@ -244,12 +243,7 @@ export const ProductList = (product: Product) => {
       )}
       {showHeart && (
         <div className="">
-          <Player
-            autoplay
-            loop={false}
-            src="/lottie/Heart.json"
-            
-          />
+          <Player autoplay loop={false} src="/lottie/Heart.json" />
         </div>
       )}
 
