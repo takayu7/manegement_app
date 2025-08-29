@@ -107,7 +107,7 @@ export const CartDialog: React.FC<CartDialogProps> = ({
   return (
     <>
       <div className="fixed inset-0 bg-black/40 z-50 flex justify-center items-center">
-        <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[600px] relative">
+        <div className="bg-white p-5 lg:p-8 rounded-2xl w-full max-w-[700px] relative overflow-auto h-3/5 flex flex-col ">
           <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
             Cart
           </h2>
@@ -122,9 +122,9 @@ export const CartDialog: React.FC<CartDialogProps> = ({
                   key={item.id}
                   className="flex flex-col lg:flex-row items-center justify-between bg-pink-100 rounded-xl p-2 lg:p-3 shadow-sm relative gap-2"
                 >
-                  <div className="flex flex-row lg:flex-col items-center">
+                  <div className="flex flex-row lg:flex-col items-center justify-center">
                     <p className="font-semibold text-lg">{item.name}</p>
-                    <p className=" text-gray-600">
+                    <p className=" text-gray-800 pl-3">
                       {jpMoneyChange(item.price)}
                     </p>
                   </div>
@@ -132,14 +132,14 @@ export const CartDialog: React.FC<CartDialogProps> = ({
                   <div className="flex items-center gap-4">
                     <div className="flex items-center gap-3">
                       <button
-                        className="btn btn-sm lg:btn-md btn-outline btn-circle"
+                        className="btn btn-sm lg:btn-sm btn-outline btn-circle"
                         onClick={() => handleDecrease(item.id)}
                       >
                         <Minus />
                       </button>
                       <label>{item.buyCount}</label>
                       <button
-                        className="btn btn-sm lg:btn-md btn-outline btn-circle"
+                        className="btn btn-sm lg:btn-sm btn-outline btn-circle"
                         onClick={() => handleIncrease(item.id)}
                         disabled={item.count <= item.buyCount}
                       >
