@@ -23,7 +23,7 @@ export const SalesRanking = () => {
     fetch(`/api/products`)
       .then((res) => res.json())
       .then((data) =>
-        setProductDatas(data.sort((a, b) => b.order - a.order).slice(0, 5))
+        setProductDatas(data.sort((a:Product, b:Product) => (b.order-b.count) - (a.order-a.count)).slice(0, 5))
       );
   }, []);
 
