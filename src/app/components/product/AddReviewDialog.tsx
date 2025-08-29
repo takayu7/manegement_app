@@ -10,9 +10,7 @@ import { CategoryImages, renderStarRating } from "@/app/lib/utils";
 interface AddReviewDialogProps {
   product: Product;
   onClose: () => void;
-  setProductReviewDatas: React.Dispatch<
-    React.SetStateAction< ReviewType[] >
-  >;
+  setProductReviewDatas: React.Dispatch<React.SetStateAction<ReviewType[]>>;
 }
 
 export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
@@ -20,10 +18,8 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
   onClose,
   setProductReviewDatas,
 }) => {
-
   const [loading, setLoading] = useState(false);
   const [isPending, startTransition] = useTransition();
-  const [starRating, setStarRating] = useState(3);
   const [comment, setComment] = useState("");
 
   const productId = product.id;
@@ -48,18 +44,18 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
   const handleAdd = () => {
     const review: ReviewRecType = {
       productId: productId,
-      star: starRating,
+      star: 3,
       comment: comment,
       userId: userId,
     };
     startTransition(() => {
       setLoading(true);
-      onSave(review)
+      onSave(review);
     });
-     fetch(`/api/review/${productId}`)
+    fetch(`/api/review/${productId}`)
       .then((res) => res.json())
       .then((data) => setProductReviewDatas(data))
-      .then((onClose))
+      .then(onClose)
       .finally(() => setLoading(false));
   };
 
@@ -100,7 +96,7 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
                 <div className="mt-1 mb-15">
                   <div className="flex flex-col gap-4 mt-2">
                     {/* 星 */}
-                    <div>{renderStarRating(starRating)}</div>
+                    <div>{renderStarRating(3)}</div>
 
                     {/* コメント */}
                     <textarea
