@@ -43,7 +43,7 @@ export const TopCarousel = () => {
           {productDatas.map((product) => (
             <CarouselItem
               key={product.id}
-              className="sm:basis-1/2 lg:basis-1/3 "
+              className="lg:basis-1/3 basis-1/"
               onClick={() => handleDetail(product)}
             >
               <div className="p-1">
