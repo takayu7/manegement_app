@@ -122,7 +122,8 @@ export const AddReviewDialog: React.FC<AddReviewDialogProps> = ({
 
                     {/* コメント */}
                     <textarea
-                      className="textarea textarea-bordered  mx-5 w-full h-23 resize"
+                    name="comment"
+                      className="textarea textarea-neutral border-2 w-60 h-28 resize"
                       placeholder="write review"
                       value={comment}
                       onChange={(e) => setComment(e.target.value)}
