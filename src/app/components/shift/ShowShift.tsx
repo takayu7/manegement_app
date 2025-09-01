@@ -201,7 +201,7 @@ export const ShowShift = () => {
                         {newShiftList.name}
                       </div>
                       <div
-                        className="flex flex-col collapse-content lg:flex-row bg-[#6E6B41]
+                        className="flex flex-col collapse-content bg-[#6E6B41]
          text-primary-content peer-checked:bg-[#d4deda] peer-checked:text-secondary-content"
                       >
                         <ShiftTable
@@ -219,7 +219,7 @@ export const ShowShift = () => {
                             )?.showModal();
                             //console.log(userId);
                           }}
-                          className="btn btn-primary ml-5 mb-10  bg-white text-black"
+                          className="btn btn-primary w-40 mt-5 sm:mt-0 ml-5 mb-10  bg-white text-black"
                         >
                           Edit {newShiftList.name}’s Shift
                         </button>
@@ -234,7 +234,7 @@ export const ShowShift = () => {
                         {user.name}
                       </div>
                       <div
-                        className="collapse-content lg:flex-row bg-[#6E6B41]
+                        className="flex flex-col collapse-content bg-[#6E6B41]
          text-primary-content peer-checked:bg-[#d4deda] peer-checked:text-secondary-content"
                       >
                         <NoPlanShiftTable user={user} targetDate={targetDate} />
@@ -249,7 +249,7 @@ export const ShowShift = () => {
                             )?.showModal();
                             //console.log(user.id);
                           }}
-                          className="btn btn-primary ml-5 mb-10 bg-white text-black"
+                          className="btn btn-primary w-40 mt-5 sm:mt-0 ml-5 mb-10 bg-white text-black"
                         >
                           Edit {user.name}’s Shift
                         </button>
