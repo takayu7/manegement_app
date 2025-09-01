@@ -41,26 +41,30 @@ export const NoPlanShiftTable: React.FC<Props> = ({
 
   return (
     <>
-      <table key={user.id} className="table m-3 w-full border border-gray-800">
+      <table
+        key={user.id}
+        className="table m-0 sm:m-3 w-25 sm:w-full border border-gray-800"
+      >
         <tbody>
-          <tr>
-            <th
-              rowSpan={days.length + 1}
-              className="border-r border-gray-800 w-40"
-            >
-              <Image
-                src={`${SelectStaffIcon(String(user.icon))}`}
-                alt="スタッフアイコン"
-                width={40}
-                height={40}
-                className="mt-[10px] ml-[10px] mb-[10px] w-auto h-auto rounded-lg shadow-md"
-              />
-              <h2 className="mt-2 text-black text-lg font-semibold">
-                {user.name}
-              </h2>
-            </th>
-          </tr>
-
+          {window.innerWidth > 480 && (
+            <tr>
+              <th
+                rowSpan={days.length + 1}
+                className="border-r border-gray-800 w-40"
+              >
+                <Image
+                  src={`${SelectStaffIcon(String(user.icon))}`}
+                  alt="スタッフアイコン"
+                  width={40}
+                  height={40}
+                  className="mt-[10px] ml-[10px] mb-[10px] w-auto h-auto rounded-lg shadow-md"
+                />
+                <h2 className="mt-2 text-black text-lg font-semibold">
+                  {user.name}
+                </h2>
+              </th>
+            </tr>
+          )}
           {days.map((day) => {
             const dateKey = `${targetDate}-${day}`;
             return (

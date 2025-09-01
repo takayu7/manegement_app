@@ -201,7 +201,7 @@ export const ShowShift = () => {
                         {newShiftList.name}
                       </div>
                       <div
-                        className="collapse-content lg:flex-row bg-[#6E6B41]
+                        className="flex flex-col collapse-content lg:flex-row bg-[#6E6B41]
          text-primary-content peer-checked:bg-[#d4deda] peer-checked:text-secondary-content"
                       >
                         <ShiftTable

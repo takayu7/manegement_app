@@ -60,28 +60,29 @@ export const ShiftTable: React.FC<Props> = ({ shift, targetDate = "" }) => {
     <>
       <table
         key={shift.userId}
-        className="table m-3 w-full border border-gray-800"
+        className="table m-0 sm:m-3 w-full border border-gray-800"
       >
         <tbody>
-          <tr>
-            {/* 左側にスタッフ情報 */}
-            <th
-              rowSpan={days.length + 1}
-              className="border-r border-gray-800 w-30"
-            >
-              <Image
-                src={`${SelectStaffIcon(String(shift.icon))}`}
-                alt="スタッフアイコン"
-                width={40}
-                height={40}
-                className="mt-[10px] ml-[10px] mb-[10px] w-auto h-auto rounded-lg shadow-md"
-              />
-              <h2 className="mt-2 text-black text-lg font-semibold">
-                {shift.name}
-              </h2>
-            </th>
-          </tr>
-
+          {window.innerWidth > 480 && (
+            <tr>
+              {/* 左側にスタッフ情報 */}
+              <th
+                rowSpan={days.length + 1}
+                className="border-r border-gray-800 w-30"
+              >
+                <Image
+                  src={`${SelectStaffIcon(String(shift.icon))}`}
+                  alt="スタッフアイコン"
+                  width={40}
+                  height={40}
+                  className="mt-[10px] ml-[10px] mb-[10px] w-auto h-auto rounded-lg shadow-md"
+                />
+                <h2 className="mt-2 text-black text-lg font-semibold">
+                  {shift.name}
+                </h2>
+              </th>
+            </tr>
+          )}
           {/* 日ごとのシフト */}
           {days.map((day) => {
             const dateKey = `${targetDate}-${day}`;
@@ -106,13 +107,13 @@ export const ShiftTable: React.FC<Props> = ({ shift, targetDate = "" }) => {
             }
 
             return (
-              <tr key={day}>
+              <tr key={day} className="h-1">
                 <td className="p-4 mb-2 border-b border-gray-800">
                   <p className="text-sm text-gray-600">{showingDate}</p>
                 </td>
                 {shiftForDay ? (
                   <>
-                    <td className="p-4 mb-2 border-b border-gray-800">
+                    <td className="py-0 sm:p-4 mb-2 border-b border-gray-800">
                       <p className="text-sm text-gray-600">{timeZone}</p>
                     </td>
                     <td className="p-4 mb-2 border-b border-gray-800">
